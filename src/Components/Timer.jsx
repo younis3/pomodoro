@@ -35,10 +35,10 @@ function Timer({
           isPlaying={animate}
           duration={timer}
           size={size}
-          colors={["#9c2929"]}
+          colors={["#1b5475d1"]}
           strokeLinecap={"square"}
           strokeWidth={25}
-          trailColor="#11121d29"
+          trailColor="#11121d0"
           onComplete={() => {
             // stopAnimate()
           }}
@@ -62,6 +62,7 @@ const StyledTimerContainer = styled.div`
   display: flex;
   justify-content: center;
   color: #2b2b2ce4;
+  margin-bottom: 3vh;
 `;
 
 const StyledTimerContentWrapper = styled.div`
@@ -71,8 +72,9 @@ const StyledTimerContentWrapper = styled.div`
   .value {
     padding: 10px;
     font-size: 98px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    &:hover{
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+    &:hover {
       cursor: pointer;
     }
   }
@@ -81,18 +83,18 @@ const StyledTimerContentWrapper = styled.div`
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
   }
   .categoryBtn {
-      background-color: #689fcc;
-      border-radius: 50%;
-      border: none;
-      width: 11px;
-      height: 11px;
-      margin-right: 10px;
-    }
+    background-color: #689fcc;
+    border-radius: 50%;
+    border: none;
+    width: 11px;
+    height: 11px;
+    margin-right: 10px;
+  }
   .category {
     font-size: 26px;
   }

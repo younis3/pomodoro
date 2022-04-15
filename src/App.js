@@ -1,5 +1,5 @@
 import './App.css';
-import Pomodoro from './Pages/Pomodoro';
+import Pomodoro from './pages/Pomodoro';
 
 function App() {
   return (
