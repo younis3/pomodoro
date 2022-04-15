@@ -1,5 +1,6 @@
 import React from "react";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import Timer from "../Components/Timer";
+import styled from "styled-components";
 
 function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
   const children = ({ remainingTime }) => {
@@ -11,26 +12,19 @@ function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
 
   return (
     <div>
-      <h1>hi Pomodoro</h1>
-      <div className="timer-wapprer">
-        <CountdownCircleTimer
-          key={key}
-          isPlaying={animate}
-          duration={timer}
-          size={size}
-          colors={["#A30000"]}
-          strokeLinecap={"square"}
-          strokeWidth={25}
-          trailColor="#151932"
-          onComplete={() => {
-            // stopAnimate()
-          }}
-        >
-          {children}
-        </CountdownCircleTimer>
-      </div>
+      <PomodoroContainer>
+        <h1>hi Pomodoro</h1>
+        <Timer />
+      </PomodoroContainer>
     </div>
   );
 }
 
 export default Pomodoro;
+
+
+//styles
+const PomodoroContainer = styled.div`
+  background-color: #353434;
+  height: 100vh;
+`;
