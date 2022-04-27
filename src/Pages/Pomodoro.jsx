@@ -52,7 +52,7 @@ export default Pomodoro;
 /****************** styles ******************/
 
 const StyledHeader = styled.header`
-  color: #7773acb7;
+  color: #464d72b7;
   h1 {
     padding-top: 6vh;
   }
