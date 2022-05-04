@@ -1,4 +1,4 @@
 # pomodoro
 ### REACT APP
 
-####  app still being developed..
+####  app still being developed...
