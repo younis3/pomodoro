@@ -1,4 +1,6 @@
 import React from "react";
+import { useState, useEffect } from "react";
+
 import Timer from "../components/Timer";
 import styled from "styled-components";
 import InputSlider from "../components/InputSlider";
@@ -11,6 +13,43 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 
 function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
+
+  const TIMER = 60;
+  const [animation, setAnimation] = useState(true);
+  const [time, setTime] = useState(0);
+  const [pauseBtn, setPauseBtn] = useState(true);
+  const [playBtn, setPlayBtn] = useState(false);
+  const [stopBtn, setStopBtn] = useState(false);
+
+  useEffect(()=> {
+    setTime(TIMER);
+  }, [stopBtn])
+  
+
+
+  const pause = () => {
+    setPauseBtn(false);
+    setPlayBtn(true);
+    setStopBtn(true);
+    setAnimation(false)
+  }
+
+  const play = () => {
+    setPauseBtn(true);
+    setPlayBtn(false);
+    setStopBtn(false);
+    setAnimation(true)
+  }
+
+  const stop = () => {
+    setPauseBtn(true);
+    setPlayBtn(false);
+    setStopBtn(false);
+    setTime(TIMER);
+  }
+
+ 
+
   return (
     <div>
       <StyledHeader>
@@ -28,16 +67,19 @@ function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
         </button>
       </UpperButtonsDiv>
 
-      <Timer />
+      <Timer
+        animate={animation}
+        timer = {time}
+      />
 
       <InputSlider />
 
       <DownButtonsDiv>
-        <button>
+        {pauseBtn && <button onClick={pause}>
           <PauseIcon fontSize="inherit" />
-        </button>
-        {/* <button><PlayCircleOutlineIcon fontSize="inherit"/></button> */}
-        {/* <button><StopCircleIcon fontSize="inherit"/></button> */}
+        </button>}
+        {playBtn && <button onClick={play}><PlayCircleOutlineIcon fontSize="inherit" /></button>}
+        {stopBtn && <button onClick={stop}><StopCircleIcon fontSize="inherit" /></button>}
       </DownButtonsDiv>
     </div>
   );
