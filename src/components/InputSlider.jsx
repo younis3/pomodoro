@@ -30,7 +30,13 @@ export default InputSlider;
 const StyledSliderDiv = styled.div`
   margin: auto;
   padding: auto;
-  width: 20%;
+  width: 40%;
+  @media (max-width: 600px) {
+  width: 60%;
+
+  }
+
+
 `;
 
 const StyledSlider = styled(Slider)({

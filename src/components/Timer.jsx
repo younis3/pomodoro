@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 function Timer({
   key = 1,
-  timer = 240,
-  animate = true,
+  timer,
+  animate,
   size = 380,
   category = "study",
 }) {
