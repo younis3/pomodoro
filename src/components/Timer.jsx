@@ -1,14 +1,16 @@
 import React from "react";
+
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
 
 function Timer({
-  key = 1,
+  key,
   timer,
   animate,
-  size = 380,
+  size = 280,
   category = "study",
 }) {
+
   const children = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60);
     const seconds = remainingTime % 60;
@@ -37,10 +39,10 @@ function Timer({
           size={size}
           colors={["#1b5475d1"]}
           strokeLinecap={"square"}
-          strokeWidth={25}
+          strokeWidth={10}
           trailColor="#11121d0"
           onComplete={() => {
-            // stopAnimate()
+            return { shouldRepeat: false}
           }}
         >
           {children}
@@ -67,11 +69,11 @@ const StyledTimerContainer = styled.div`
 
 const StyledTimerContentWrapper = styled.div`
   .text {
-    font-size: 28px;
+    font-size: 26px;
   }
   .value {
     padding: 10px;
-    font-size: 98px;
+    font-size: 82px;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
       sans-serif;
     &:hover {
@@ -96,6 +98,6 @@ const StyledTimerContentWrapper = styled.div`
     margin-right: 10px;
   }
   .category {
-    font-size: 26px;
+    font-size: 22px;
   }
 `;
