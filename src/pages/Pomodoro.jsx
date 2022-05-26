@@ -12,20 +12,15 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 
-function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
+function Pomodoro({ timer, animate, size }) {
 
-  const TIMER = 60;
-  const [animation, setAnimation] = useState(true);
-  const [time, setTime] = useState(0);
-  const [pauseBtn, setPauseBtn] = useState(true);
-  const [playBtn, setPlayBtn] = useState(false);
+  const TIMER = 120;
+  const [key, setKey] = useState(0);
+  const [animation, setAnimation] = useState(false);
+  const [pauseBtn, setPauseBtn] = useState(false);
+  const [playBtn, setPlayBtn] = useState(true);
   const [stopBtn, setStopBtn] = useState(false);
-
-  useEffect(()=> {
-    setTime(TIMER);
-  }, [stopBtn])
   
-
 
   const pause = () => {
     setPauseBtn(false);
@@ -38,14 +33,15 @@ function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
     setPauseBtn(true);
     setPlayBtn(false);
     setStopBtn(false);
-    setAnimation(true)
+    setAnimation(true);
+
   }
 
   const stop = () => {
-    setPauseBtn(true);
-    setPlayBtn(false);
+    setPauseBtn(false);
+    setPlayBtn(true);
     setStopBtn(false);
-    setTime(TIMER);
+    setKey(prevKey => prevKey + 1); 
   }
 
  
@@ -68,8 +64,9 @@ function Pomodoro({ key = 1, timer = 20, animate = true, size = 380 }) {
       </UpperButtonsDiv>
 
       <Timer
+        key={key}
+        timer = {TIMER}
         animate={animation}
-        timer = {time}
       />
 
       <InputSlider />
@@ -102,7 +99,7 @@ const StyledHeader = styled.header`
     color: #000000a9;
   }
   .lstinHeader {
-    margin-bottom: 10vh;
+    margin-bottom: 9vh;
   }
 `;
 
