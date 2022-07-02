@@ -64,7 +64,7 @@ function Pomodoro({ timer, animate, size }) {
       </UpperButtonsDiv>
 
       <Timer
-        key={key}
+        key2={key}
         timer = {TIMER}
         animate={animation}
       />
@@ -91,23 +91,23 @@ export default Pomodoro;
 /****************** styles ******************/
 
 const StyledHeader = styled.header`
-  color: #373e5fb9;
+  color: #d1d1d1b9;
   h1 {
-    padding-top: 6vh;
-  }
-  h3 {
-    color: #000000a9;
+    padding-top: 5vh;
+    color: #f4f4f5db;
+
   }
   .lstinHeader {
-    margin-bottom: 9vh;
+    margin-bottom: 8vh;
   }
 `;
 
 const UpperButtonsDiv = styled.div`
-  margin-bottom: 6vh;
+  margin-bottom: 5vh;
   display: flex;
   justify-content: center;
   button {
+    color:whitesmoke;
     font-size: 44px;
     border: none;
     padding: 3px;
@@ -121,10 +121,11 @@ const UpperButtonsDiv = styled.div`
 `;
 
 const DownButtonsDiv = styled.div`
-  margin-top: 4vh;
+  margin-top: 3.4vh;
   display: flex;
   justify-content: center;
   button {
+    color:whitesmoke;
     font-size: 80px;
     border: none;
     padding: 3px;

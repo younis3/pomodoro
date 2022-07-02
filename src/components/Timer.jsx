@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 function Timer({
   key,
+  key2,
   timer,
   animate,
   size = 280,
@@ -33,13 +34,13 @@ function Timer({
     <div>
       <StyledTimerContainer>
         <CountdownCircleTimer
-          key={key}
+          key={key2}
           isPlaying={animate}
           duration={timer}
           size={size}
-          colors={["#1b5475d1"]}
+          colors={["#2275a5dc"]}
           strokeLinecap={"square"}
-          strokeWidth={10}
+          strokeWidth={8}
           trailColor="#11121d0"
           onComplete={() => {
             return { shouldRepeat: false}
@@ -69,11 +70,13 @@ const StyledTimerContainer = styled.div`
 
 const StyledTimerContentWrapper = styled.div`
   .text {
+    color:whitesmoke;
     font-size: 26px;
   }
   .value {
-    padding: 10px;
-    font-size: 82px;
+    color:whitesmoke;
+    padding: 12px;
+    font-size: 70px;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
       sans-serif;
     &:hover {
@@ -98,6 +101,7 @@ const StyledTimerContentWrapper = styled.div`
     margin-right: 10px;
   }
   .category {
+    color:whitesmoke;
     font-size: 22px;
   }
 `;

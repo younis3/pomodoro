@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   height: 100vh;
-  background-image: linear-gradient( 126.3deg,  rgba(255, 255, 255, 0.918) 25.2%, rgba(0, 0, 0, 0.589) 125.2% );
+  background: rgb(0,0,0);
+  background-image: linear-gradient(to top, #38383b, #343437, #313133, #2d2d30, #2a2a2c, #272729, #252526, #222223, #1f1f20, #1d1d1d, #1a1a1b, #181818);
 }
 
