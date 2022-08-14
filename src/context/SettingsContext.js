@@ -1,11 +1,12 @@
-import React, {createContext, useState} from "react";
+import {createContext, useState} from "react";
 
-export const SettingsContext = createContext();
+const SettingsContext = createContext();
 
-export const SettingsContextProvider = (props) => {
+export const SettingsContextProvider = ({children}) => {
 
     const [pomodoro, setPomodoro] = useState(0);
-    const [duration, setDuration] = useState({});
+    const [focusDuration, setFocusDuration] = useState(50);
+    const [breakDuration, setBreakDuration] = useState(10);
     const [animate, setAnimate] = useState(false);
 
     const startTimer = () => {
@@ -20,13 +21,12 @@ export const SettingsContextProvider = (props) => {
         setAnimate(false);
     }
 
-    const updateDuration = (updateSettings) => {
-        setDuration(updateSettings);
-    }
 
     return (
-        <SettingsContext.Provider value={{stopTimer, updateDuration}}>
-            {props.children}
+        <SettingsContext.Provider value={{stopTimer, focusDuration, breakDuration, setFocusDuration, setBreakDuration}}>
+            {children}
         </SettingsContext.Provider>
     )
-}
+};
+
+export default SettingsContext;

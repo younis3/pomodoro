@@ -1,50 +1,60 @@
-import React from "react";
 import { useState, useEffect } from "react";
 
-import Timer from "../components/Timer";
+import Timer from "./Timer";
 import styled from "styled-components";
-import InputSlider from "../components/InputSlider";
 
+import { useContext } from "react";
+import SettingsContext from "../context/SettingsContext";
 //icons
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import TuneIcon from "@mui/icons-material/Tune";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
+import SettingsModal from "./SettingsModal";
 
 function Pomodoro({ timer, animate, size }) {
-
-  const TIMER = 120;
   const [key, setKey] = useState(0);
   const [animation, setAnimation] = useState(false);
   const [pauseBtn, setPauseBtn] = useState(false);
   const [playBtn, setPlayBtn] = useState(true);
   const [stopBtn, setStopBtn] = useState(false);
-  
+  const [disableSettings, setDisableSettings] = useState(false);
+
+  const { focusDuration } = useContext(SettingsContext);
+  const TIMER = focusDuration * 60;
+
+  const [settingsToggle, setSettingsToggle] = useState(false);
 
   const pause = () => {
     setPauseBtn(false);
     setPlayBtn(true);
     setStopBtn(true);
-    setAnimation(false)
-  }
+    setAnimation(false);
+  };
 
   const play = () => {
     setPauseBtn(true);
     setPlayBtn(false);
     setStopBtn(false);
     setAnimation(true);
-
-  }
+  };
 
   const stop = () => {
     setPauseBtn(false);
     setPlayBtn(true);
     setStopBtn(false);
-    setKey(prevKey => prevKey + 1); 
-  }
+    setKey((prevKey) => prevKey + 1);
+  };
 
- 
+  const settingsHandler = () => {
+    setSettingsToggle(true);
+    if (playBtn && !stopBtn) {
+      setDisableSettings(false);
+    } else {
+      setDisableSettings(true);
+    }
+  };
 
   return (
     <div>
@@ -58,26 +68,37 @@ function Pomodoro({ timer, animate, size }) {
         <button>
           <MusicNoteIcon fontSize="inherit" />
         </button>
-        <button>
+        <button onClick={settingsHandler}>
           <TuneIcon fontSize="inherit" />
         </button>
       </UpperButtonsDiv>
 
-      <Timer
-        key2={key}
-        timer = {TIMER}
-        animate={animation}
-      />
-
-      <InputSlider />
+      <Timer key2={key} timer={TIMER} animate={animation} />
 
       <DownButtonsDiv>
-        {pauseBtn && <button onClick={pause}>
-          <PauseIcon fontSize="inherit" />
-        </button>}
-        {playBtn && <button onClick={play}><PlayCircleOutlineIcon fontSize="inherit" /></button>}
-        {stopBtn && <button onClick={stop}><StopCircleIcon fontSize="inherit" /></button>}
+        {pauseBtn && (
+          <button onClick={pause}>
+            <PauseIcon fontSize="inherit" />
+          </button>
+        )}
+        {playBtn && (
+          <button onClick={play}>
+            <PlayCircleOutlineIcon fontSize="inherit" />
+          </button>
+        )}
+        {stopBtn && (
+          <button onClick={stop}>
+            <StopCircleIcon fontSize="inherit" />
+          </button>
+        )}
       </DownButtonsDiv>
+
+      {settingsToggle && (
+        <SettingsModal
+          setSettingsToggle={setSettingsToggle}
+          disableStngs={disableSettings}
+        />
+      )}
     </div>
   );
 }
@@ -95,7 +116,6 @@ const StyledHeader = styled.header`
   h1 {
     padding-top: 5vh;
     color: #f4f4f5db;
-
   }
   .lstinHeader {
     margin-bottom: 8vh;
@@ -107,7 +127,7 @@ const UpperButtonsDiv = styled.div`
   display: flex;
   justify-content: center;
   button {
-    color:whitesmoke;
+    color: whitesmoke;
     font-size: 44px;
     border: none;
     padding: 3px;
@@ -125,7 +145,7 @@ const DownButtonsDiv = styled.div`
   display: flex;
   justify-content: center;
   button {
-    color:whitesmoke;
+    color: whitesmoke;
     font-size: 80px;
     border: none;
     padding: 3px;
