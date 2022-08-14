@@ -12,6 +12,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import SettingsModal from "./SettingsModal";
+import SoundsModal from "./SoundsModal";
 
 function Pomodoro({ timer, animate, size }) {
   const [key, setKey] = useState(0);
@@ -25,6 +26,7 @@ function Pomodoro({ timer, animate, size }) {
   const TIMER = focusDuration * 60;
 
   const [settingsToggle, setSettingsToggle] = useState(false);
+  const [soundModalToggle, setSoundModalToggle] = useState(false);
 
   const pause = () => {
     setPauseBtn(false);
@@ -47,13 +49,22 @@ function Pomodoro({ timer, animate, size }) {
     setKey((prevKey) => prevKey + 1);
   };
 
-  const settingsHandler = () => {
-    setSettingsToggle(true);
+  const disableSettingsHandler = () => {
     if (playBtn && !stopBtn) {
       setDisableSettings(false);
     } else {
       setDisableSettings(true);
     }
+  };
+
+  const settingsHandler = () => {
+    setSettingsToggle(true);
+    disableSettingsHandler();
+  };
+
+  const soundsBtnHandler = () => {
+    setSoundModalToggle(true);
+    disableSettingsHandler();
   };
 
   return (
@@ -65,7 +76,7 @@ function Pomodoro({ timer, animate, size }) {
       </StyledHeader>
 
       <UpperButtonsDiv>
-        <button>
+        <button onClick={soundsBtnHandler}>
           <MusicNoteIcon fontSize="inherit" />
         </button>
         <button onClick={settingsHandler}>
@@ -96,6 +107,12 @@ function Pomodoro({ timer, animate, size }) {
       {settingsToggle && (
         <SettingsModal
           setSettingsToggle={setSettingsToggle}
+          disableStngs={disableSettings}
+        />
+      )}
+      {soundModalToggle && (
+        <SoundsModal
+          setSoundModalToggle={setSoundModalToggle}
           disableStngs={disableSettings}
         />
       )}

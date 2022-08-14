@@ -83,7 +83,6 @@ export default SettingsModal;
 //
 //
 /****************** styles ******************/
-
 const StyledSlider = styled(Slider)({
   color: "#5c5c5c",
   height: 38,
@@ -127,7 +126,7 @@ const StyledSlider = styled(Slider)({
   },
 });
 
-const StyledModal = styled.h2`
+const StyledModal = styled.div`
   height: 100vh;
   width: 100vw;
   position: fixed;
@@ -228,9 +227,9 @@ const StyledBreakTitle = styled.div`
 `;
 
 const StyledBreakDuration = styled.div`
+  position: absolute;
   color: white;
   font-size: 18px;
-  position: absolute;
   top: 58%;
   right: 6%;
 `;
@@ -238,11 +237,11 @@ const StyledBreakDuration = styled.div`
 const StyledResetBtn = styled.button`
   position: absolute;
   border: none;
-  padding: 10px;
+  padding: 8px;
   background-color: #ffffffb5;
   color: #303030ac;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   top: 84%;
   &:hover {
     background-color: #d6d3d378;
