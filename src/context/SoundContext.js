@@ -14,7 +14,7 @@ const SoundContext = createContext();
 
 export const SoundContextProvider = ({ children }) => {
 
-    const [chosenSound, setChosenSound] = useState("thunder");
+    const [chosenSound, setChosenSound] = useState("none");
 
     const sounds = {
         "none": null,
