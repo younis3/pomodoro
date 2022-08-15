@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useContext, useEffect } from "react";
+import SoundContext from "../context/SoundContext"; 
 
 //Icons
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,8 +13,11 @@ import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
 import FilterDramaIcon from "@mui/icons-material/FilterDrama";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
-const SoundsModal = ({ setSoundModalToggle }) => {
-  const [chosenSound, setChosenSound] = useState("none");
+const SoundsModal = ({setSoundModalToggle}) => {
+  const {chosenSound} = useContext(SoundContext);
+  const {setChosenSound} = useContext(SoundContext);
+
+
 
   const closeSoundModalHandler = () => {
     setSoundModalToggle(false);
@@ -22,12 +26,10 @@ const SoundsModal = ({ setSoundModalToggle }) => {
   const clickSoundHandler = (e) => {
     const val = e.target.dataset.id;
     setChosenSound(val);
-    // alert(val);
   };
 
   const applyHandler = () => {
     closeSoundModalHandler();
-    // alert(chosenSound);
   };
   return (
     <div>
@@ -198,7 +200,7 @@ const StyledTitle = styled.div`
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 16%;
+  top: 12%;
   width: 180px;
   color: white;
   padding: 10px;
