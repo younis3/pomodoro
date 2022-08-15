@@ -252,18 +252,3 @@ const StyledLabel = styled.div`
   color: white;
 `;
 
-const StyledApplyBtn = styled.button`
-  position: absolute;
-  border: none;
-  padding: 8px;
-  background-color: #ffffffb5;
-  color: #303030ac;
-  font-weight: 600;
-  font-size: 16px;
-  top: 82%;
-  &:hover {
-    background-color: #d6d3d378;
-    color: #ffffffb5;
-    cursor: pointer;
-  }
-`;
