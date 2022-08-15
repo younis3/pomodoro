@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Slider } from "@mui/material/";
 import CloseIcon from "@mui/icons-material/Close";
-// import InputSlider from "../components/InputSlider";
 import { useContext } from "react";
 import SettingsContext from "../context/SettingsContext";
 

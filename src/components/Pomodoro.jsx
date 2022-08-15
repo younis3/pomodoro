@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
-
 import Timer from "./Timer";
 import styled from "styled-components";
-
 import { useContext } from "react";
 import SettingsContext from "../context/SettingsContext";
+import SoundContext from "../context/SoundContext";
+import SettingsModal from "./SettingsModal";
+import SoundsModal from "./SoundsModal";
+
+
 //icons
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import TuneIcon from "@mui/icons-material/Tune";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
-import SettingsModal from "./SettingsModal";
-import SoundsModal from "./SoundsModal";
+
+
 
 function Pomodoro({ timer, animate, size }) {
   const [key, setKey] = useState(0);
@@ -25,14 +28,27 @@ function Pomodoro({ timer, animate, size }) {
   const { focusDuration } = useContext(SettingsContext);
   const TIMER = focusDuration * 60;
 
+  const [isRunning, setIsRunning] = useState("stopped");
   const [settingsToggle, setSettingsToggle] = useState(false);
   const [soundModalToggle, setSoundModalToggle] = useState(false);
+  const {sound} = useContext(SoundContext);
+
+  useEffect(() => {
+    if (isRunning == "running") {
+      sound.play();
+    }
+    else {
+      sound.pause();
+    }
+  }, [sound, isRunning])
+
 
   const pause = () => {
     setPauseBtn(false);
     setPlayBtn(true);
     setStopBtn(true);
     setAnimation(false);
+    setIsRunning('paused');
   };
 
   const play = () => {
@@ -40,6 +56,7 @@ function Pomodoro({ timer, animate, size }) {
     setPlayBtn(false);
     setStopBtn(false);
     setAnimation(true);
+    setIsRunning('running');
   };
 
   const stop = () => {
@@ -47,6 +64,7 @@ function Pomodoro({ timer, animate, size }) {
     setPlayBtn(true);
     setStopBtn(false);
     setKey((prevKey) => prevKey + 1);
+    setIsRunning('stopped');
   };
 
   const disableSettingsHandler = () => {
@@ -127,7 +145,6 @@ export default Pomodoro;
 //
 //
 /****************** styles ******************/
-
 const StyledHeader = styled.header`
   color: #d1d1d1b9;
   h1 {
