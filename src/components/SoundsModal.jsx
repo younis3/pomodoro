@@ -129,7 +129,6 @@ const SoundsModal = ({setSoundModalToggle}) => {
             </StyledIconContainer>
           </StyledIconsContainer>
 
-          <StyledApplyBtn onClick={applyHandler}>Apply</StyledApplyBtn>
         </StyledModalBorder>
       </StyledModal>
     </div>
@@ -159,9 +158,9 @@ const StyledModal = styled.div`
 
 const StyledModalBorder = styled.div`
   height: 60%;
-  width: 85%;
+  width: 90%;
   border: solid 2px rgba(104, 104, 104, 0.432);
-  background-color: rgba(83, 83, 83, 0.486);
+  background-color: rgba(83, 83, 83, 0.718);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,7 +169,7 @@ const StyledModalBorder = styled.div`
   position: relative;
   padding: 5px;
   @media only screen and (max-width: 850px) {
-    height: 65%;
+    height: 70%;
   }
 `;
 
@@ -200,7 +199,7 @@ const StyledTitle = styled.div`
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 12%;
+  top: 17%;
   width: 180px;
   color: white;
   padding: 10px;
@@ -213,8 +212,9 @@ const StyledIconsContainer = styled.ul`
   justify-content: space-evenly;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: 6vh;
   padding-right: 10px;
-  padding-left: 14px;
+  padding-left: 10px;
   margin-left: 8px;
 `;
 
@@ -223,11 +223,11 @@ const StyledIconContainer = styled.li`
 
   text-align: center;
   color: #fcfcfcd3;
-  padding: 6px;
+  padding: 8px;
   margin-top: 14px;
   margin-bottom: 14px;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
   &&:hover {
     cursor: pointer;
     background-color: #97969647;

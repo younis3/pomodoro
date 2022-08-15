@@ -51,8 +51,8 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
               valueLabelDisplay="auto"
               aria-label="duration"
               defaultValue={breakDuration}
-              step={2}
-              min={6}
+              step={5}
+              min={5}
               max={30}
               track={"normal"}
               onChangeCommitted={(_, newValue) => setBreakDuration(newValue)}
@@ -141,9 +141,9 @@ const StyledModal = styled.div`
 
 const StyledModalBorder = styled.div`
   height: 60%;
-  width: 45%;
+  width: 65%;
   border: solid 2px rgba(104, 104, 104, 0.432);
-  background-color: rgba(83, 83, 83, 0.486);
+  background-color: rgba(83, 83, 83, 0.718);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -152,7 +152,7 @@ const StyledModalBorder = styled.div`
   position: relative;
   padding: 5px;
   @media only screen and (max-width: 850px) {
-    height: 65%;
+    height: 70%;
     width: 90%;
   }
 `;
@@ -181,24 +181,18 @@ const StyledSliderDiv = styled.div`
   position: absolute;
   left: 4%;
   top: 33%;
+  width: 92%;
   margin: auto;
   padding: auto;
-  width: 60%;
-  @media (max-width: 850px) {
-    width: 92%;
-  }
 `;
 
 const StyledSlider2Div = styled.div`
   position: absolute;
   left: 4%;
   top: 65%;
+  width: 92%;
   margin: auto;
   padding: auto;
-  width: 60%;
-  @media (max-width: 850px) {
-    width: 92%;
-  }
 `;
 
 const StyledFocusTitle = styled.div`

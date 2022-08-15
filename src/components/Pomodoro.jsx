@@ -36,6 +36,7 @@ function Pomodoro({ timer, animate, size }) {
   useEffect(() => {
     if (isRunning == "running") {
       sound.play();
+      sound.loop = true;
     }
     else {
       sound.pause();
