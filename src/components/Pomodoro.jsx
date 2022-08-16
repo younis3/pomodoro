@@ -6,6 +6,7 @@ import SettingsContext from "../context/SettingsContext";
 import SoundContext from "../context/SoundContext";
 import SettingsModal from "./SettingsModal";
 import SoundsModal from "./SoundsModal";
+import ConfirmDialog from "./ConfirmDialog";
 
 
 //icons
@@ -31,7 +32,9 @@ function Pomodoro({ timer, animate, size }) {
   const [isRunning, setIsRunning] = useState("stopped");
   const [settingsToggle, setSettingsToggle] = useState(false);
   const [soundModalToggle, setSoundModalToggle] = useState(false);
-  const {sound} = useContext(SoundContext);
+  const [confirmStopToggle, setConfirmStopToggle] = useState(false);
+
+  const { sound } = useContext(SoundContext);
 
   useEffect(() => {
     if (isRunning == "running") {
@@ -61,11 +64,7 @@ function Pomodoro({ timer, animate, size }) {
   };
 
   const stop = () => {
-    setPauseBtn(false);
-    setPlayBtn(true);
-    setStopBtn(false);
-    setKey((prevKey) => prevKey + 1);
-    setIsRunning('stopped');
+    setConfirmStopToggle(true);
   };
 
   const disableSettingsHandler = () => {
@@ -121,6 +120,7 @@ function Pomodoro({ timer, animate, size }) {
             <StopCircleIcon fontSize="inherit" />
           </button>
         )}
+        {confirmStopToggle && (<ConfirmDialog setConfirmStopToggle={setConfirmStopToggle} setPauseBtn={setPauseBtn} setPlayBtn={setPlayBtn} setStopBtn={setStopBtn} setKey={setKey} setIsRunning={setIsRunning} />)}
       </DownButtonsDiv>
 
       {settingsToggle && (
