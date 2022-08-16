@@ -7,6 +7,7 @@ function Timer({
   key,
   key2,
   timer,
+  isRunning,
   animate,
   size = 280,
   category = "study",
@@ -18,7 +19,7 @@ function Timer({
 
     return (
       <StyledTimerContentWrapper>
-        <div className="text">Remaining</div>
+        <div className="text">{isRunning == 'running'? 'Stay focused' : 'Start to focus'}</div>
         <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
           seconds < 10 ? `0${seconds}` : seconds
         }`}</div>
@@ -71,7 +72,7 @@ const StyledTimerContainer = styled.div`
 const StyledTimerContentWrapper = styled.div`
   .text {
     color:whitesmoke;
-    font-size: 26px;
+    font-size: 18px;
   }
   .value {
     color:whitesmoke;

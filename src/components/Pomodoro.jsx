@@ -103,7 +103,7 @@ function Pomodoro({ timer, animate, size }) {
         </button>
       </UpperButtonsDiv>
 
-      <Timer key2={key} timer={TIMER} animate={animation} />
+      <Timer key2={key} timer={TIMER} animate={animation} isRunning={isRunning} />
 
       <DownButtonsDiv>
         {pauseBtn && (
