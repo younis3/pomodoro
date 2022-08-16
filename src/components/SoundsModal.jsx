@@ -199,7 +199,6 @@ const StyledTitle = styled.div`
   margin-left: auto;
   margin-right: auto;
   top: 17%;
-  width: 180px;
   color: white;
   padding: 10px;
   font-size: 20px;

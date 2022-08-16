@@ -6,6 +6,7 @@ import SettingsContext from "../context/SettingsContext";
 import SoundContext from "../context/SoundContext";
 import SettingsModal from "./SettingsModal";
 import SoundsModal from "./SoundsModal";
+import CategoryModal from "./CategoryModal";
 import ConfirmDialog from "./ConfirmDialog";
 
 
@@ -32,6 +33,7 @@ function Pomodoro({ timer, animate, size }) {
   const [isRunning, setIsRunning] = useState("stopped");
   const [settingsToggle, setSettingsToggle] = useState(false);
   const [soundModalToggle, setSoundModalToggle] = useState(false);
+  const [categoryModalToggle, setCategoryModalToggle] = useState(false);
   const [confirmStopToggle, setConfirmStopToggle] = useState(false);
 
   const { sound } = useContext(SoundContext);
@@ -102,7 +104,7 @@ function Pomodoro({ timer, animate, size }) {
         </button>
       </UpperButtonsDiv>
 
-      <Timer key2={key} timer={TIMER} animate={animation} isRunning={isRunning} />
+      <Timer key2={key} timer={TIMER} animate={animation} isRunning={isRunning} setCategoryModalToggle={setCategoryModalToggle} />
 
       <DownButtonsDiv>
         {pauseBtn && (
@@ -134,6 +136,9 @@ function Pomodoro({ timer, animate, size }) {
           setSoundModalToggle={setSoundModalToggle}
           disableStngs={disableSettings}
         />
+      )}
+      {categoryModalToggle && (
+        <CategoryModal setCategoryModalToggle={setCategoryModalToggle} />
       )}
     </div>
   );
