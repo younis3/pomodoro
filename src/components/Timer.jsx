@@ -11,7 +11,12 @@ function Timer({
   animate,
   size = 280,
   category = "study",
+  setCategoryModalToggle
 }) {
+
+  const categoryHandler = () => {
+    setCategoryModalToggle(true);
+  }
 
   const children = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60);
@@ -19,11 +24,10 @@ function Timer({
 
     return (
       <StyledTimerContentWrapper>
-        <div className="text">{isRunning == 'running'? 'Stay focused' : 'Start to focus'}</div>
-        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
-          seconds < 10 ? `0${seconds}` : seconds
-        }`}</div>
-        <div className="categoryWrapper">
+        <div className="text">{isRunning == 'running' ? 'Stay focused' : 'Start to focus'}</div>
+        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
+          }`}</div>
+        <div className="categoryWrapper" onClick={categoryHandler}>
           <button className="categoryBtn"></button>
           <div className="category">{category}</div>
         </div>
@@ -44,7 +48,7 @@ function Timer({
           strokeWidth={8}
           trailColor="#11121d0"
           onComplete={() => {
-            return { shouldRepeat: false}
+            return { shouldRepeat: false }
           }}
         >
           {children}
@@ -61,7 +65,6 @@ export default Timer;
 //
 //
 /****************** styles ******************/
-
 const StyledTimerContainer = styled.div`
   display: flex;
   justify-content: center;
