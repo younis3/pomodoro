@@ -66,7 +66,7 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
           )}
           {disableStngs && (
             <StyledErrorP>
-              You Can't Change Values While Session is Running!
+              You can't change values while session is running!
             </StyledErrorP>
           )}
         </StyledModalBorder>
@@ -143,12 +143,11 @@ const StyledModalBorder = styled.div`
   height: 60%;
   width: 65%;
   border: solid 2px rgba(104, 104, 104, 0.432);
-  background-color: rgba(83, 83, 83, 0.718);
+  background-color: rgb(83, 83, 83,0.6);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  opacity: 0.9;
   position: relative;
   padding: 5px;
   @media only screen and (max-width: 850px) {
