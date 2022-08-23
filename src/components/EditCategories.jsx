@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ctgStyles as CTG_STYLE } from "../helper_files/categories";
-import { categories } from "../helper_files/categories";
+import { categories, addCtg } from "../helper_files/categories";
 
 //icons
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -9,16 +9,36 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 const EditCategories = () => {
+  const addCategoryHandler = (e) => {
+    e.preventDefault();
+    let input = e.target.querySelector("input").value;
+    if (input.trim() === "") {
+      //in case user types empty spaces
+      e.target.querySelector("input").focus();
+      return;
+    }
+    // alert(input);
+    addCtg(input.toLowerCase());
+    console.log(categories);
+  };
+
   const capitalizeFirstLetter = (string) => {
     return string[0].toUpperCase() + string.slice(1);
   };
+
   return (
     <div>
       <StyledInputWrapper>
-        <StyledInput type={"text"} id="addCtg" placeholder="Add New Category" />
-        <StyledInputBtn>
-          <AddBoxIcon fontSize="inherit" />
-        </StyledInputBtn>
+        <form id="input" onSubmit={(e) => addCategoryHandler(e)}>
+          <StyledInput
+            type={"text"}
+            id="addCtg"
+            placeholder="Add New Category"
+          />
+          <StyledInputBtn>
+            <AddBoxIcon fontSize="inherit" />
+          </StyledInputBtn>
+        </form>
       </StyledInputWrapper>
 
       <StyledCategoriesWrapper>
