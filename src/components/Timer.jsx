@@ -1,7 +1,9 @@
-import React from "react";
-
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
+import CategoryContext from "../context/CategoryContext";
+import {useContext} from 'react';
+import {ctgStyles as CTG_STYLE} from '../helper_files/categories';
+
 
 function Timer({
   key,
@@ -10,9 +12,10 @@ function Timer({
   isRunning,
   animate,
   size = 280,
-  category = "study",
   setCategoryModalToggle
 }) {
+
+  const {category} = useContext(CategoryContext);
 
   const categoryHandler = () => {
     setCategoryModalToggle(true);
@@ -28,7 +31,7 @@ function Timer({
         <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
           }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler}>
-          <button className="categoryBtn"></button>
+          <StyledCategoryBtn className={category}/>
           <div className="category">{category}</div>
         </div>
       </StyledTimerContentWrapper>
@@ -96,16 +99,19 @@ const StyledTimerContentWrapper = styled.div`
       cursor: pointer;
     }
   }
-  .categoryBtn {
-    background-color: #689fcc;
+
+  .category {
+    color:whitesmoke;
+    font-size: 22px;
+  }
+`;
+
+const StyledCategoryBtn = styled.button`
     border-radius: 50%;
     border: none;
     width: 11px;
     height: 11px;
     margin-right: 10px;
-  }
-  .category {
-    color:whitesmoke;
-    font-size: 22px;
-  }
+    ${CTG_STYLE}
+  
 `;
