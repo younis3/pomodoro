@@ -1,57 +1,83 @@
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
+
+//icons
 import CloseIcon from "@mui/icons-material/Close";
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import ReplyIcon from '@mui/icons-material/Reply';
+
+import { useContext,useRef } from "react";
+import CategoryContext from "../context/CategoryContext";
+import {ctgStyles as CTG_STYLE} from '../helper_files/categories';
+import { categories } from "../helper_files/categories";
 
 const CategoryModal = ({ setCategoryModalToggle }) => {
+
+    const {setCategory} = useContext(CategoryContext);
+
+    const modalBorderRef = useRef();
+    const closeBtnRef = useRef();
+    const editBtnRef = useRef();
+    const backBtnRef = useRef();
+    const categoriesRef = useRef();
+
+
 
     const closeCategoryModalHandler = () => {
         setCategoryModalToggle(false);
     };
 
+    const editCategoryModalHandler = () => {
+        modalBorderRef.current.classList.remove('back');
+        modalBorderRef.current.classList.add('editModal');
+        closeBtnRef.current.classList.add('hide');
+        editBtnRef.current.classList.add('hide');
+        categoriesRef.current.classList.add('hide');
+        backBtnRef.current.classList.remove('hide');
+    };
+
+    const backBtnHandler = () => {
+        modalBorderRef.current.classList.remove('editModal');
+        modalBorderRef.current.classList.add('back');
+        closeBtnRef.current.classList.remove('hide');
+        editBtnRef.current.classList.remove('hide');
+        categoriesRef.current.classList.remove('hide');
+        backBtnRef.current.classList.add('hide');
+    };
+
     const chooseCtgHandler = (ctg) => {
-        // console.log(ctg);
+        setCategory(ctg);
         closeCategoryModalHandler();
     };
+
+    const capitalizeFirstLetter = (string) => {
+        return string[0].toUpperCase() + string.slice(1);
+    }
 
     return (
         <div>
             <StyledModal>
-                <StyledModalBorder>
-                    <StyledCloseBtn onClick={closeCategoryModalHandler}>
+                <StyledModalBorder ref={modalBorderRef}>
+                    <StyledCloseBtn ref={closeBtnRef} onClick={closeCategoryModalHandler}>
                         <CloseIcon fontSize="inherit" />
                     </StyledCloseBtn>
-                    <StyledEditBtn >
+                    <StyledEditBtn ref={editBtnRef} onClick={editCategoryModalHandler}>
                         <ListAltIcon fontSize="inherit" />
                     </StyledEditBtn>
+                    <StyledBackBtn ref={backBtnRef} className="hide" onClick={backBtnHandler}>
+                        <ReplyIcon fontSize="inherit" />
+                    </StyledBackBtn>
                     <StyledTitle>
-                        Focus Category
+                        Focus Categories
                     </StyledTitle>
 
-                    <StyledCtgWrapper>
-                        <StyledCtg onClick={()=>chooseCtgHandler("study")}>
-                            <StyledCtgCircle className="study"/>
-                            <StyledCtgLabel>Study</StyledCtgLabel>
-                        </StyledCtg>
-                        <StyledCtg onClick={()=>chooseCtgHandler("work")}>
-                            <StyledCtgCircle className="work" />
-                            <StyledCtgLabel>Work</StyledCtgLabel>
-                        </StyledCtg>
-                        <StyledCtg onClick={()=>chooseCtgHandler("reading")}>
-                            <StyledCtgCircle className="reading"/>
-                            <StyledCtgLabel>Reading</StyledCtgLabel>
-                        </StyledCtg>
-                        <StyledCtg onClick={()=>chooseCtgHandler("writing")}>
-                            <StyledCtgCircle className="writing"/>
-                            <StyledCtgLabel>Writing</StyledCtgLabel>
-                        </StyledCtg>
-                        <StyledCtg onClick={()=>chooseCtgHandler("workout")}>
-                            <StyledCtgCircle className="workout"/>
-                            <StyledCtgLabel>Workout</StyledCtgLabel>
-                        </StyledCtg>
-                        <StyledCtg onClick={()=>chooseCtgHandler("meditation")}>
-                            <StyledCtgCircle className="meditation"/>
-                            <StyledCtgLabel>Meditation</StyledCtgLabel>
-                        </StyledCtg>
+                    <StyledCtgWrapper ref={categoriesRef}>
+                        {categories?.slice(0,5).map((el)=>{ //view only 5 favorite categories
+                             const ctg = Object.keys(el)[0]
+                             return (<StyledCtg onClick={()=>chooseCtgHandler(ctg)}>
+                                 <StyledCtgCircle className={ctg}/>
+                                 <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
+                            </StyledCtg>)
+                        })}
                     </StyledCtgWrapper>
 
                 </StyledModalBorder>
@@ -81,9 +107,19 @@ const StyledModal = styled.div`
   filter: drop-shadow(8px 5px 2px #0000001c);
 `;
 
+const enlargeModalSizeAnimation = keyframes`
+ 0% { height: 70%; width: 85%; }
+ 100% { height: 100%; width: 100%; }
+`
+
+const reduceModalSizeAnimation = keyframes`
+ 0% { height: 100%; width: 100%; }
+ 100% { height: 70%; width: 85%; }
+`
+
 const StyledModalBorder = styled.div`
-  height: 60%;
-  width: 65%;
+  height: 70%;
+  width: 85%;
   border: solid 2px rgba(104, 104, 104, 0.432);
   background-color: rgb(83, 83, 83,0.6);
   display: flex;
@@ -92,9 +128,29 @@ const StyledModalBorder = styled.div`
   align-items: center;
   position: relative;
   padding: 5px;
-  @media only screen and (max-width: 850px) {
+  /* @media only screen and (max-width: 850px) {
     height: 70%;
     width: 90%;
+  } */
+  &&.editModal{
+    /* height: 100%;
+    width: 100%; */
+    animation-name: ${enlargeModalSizeAnimation};
+    animation-duration: 0.5s;
+    -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
+    -moz-animation-fill-mode: forwards;    /* FF 5+ */
+    -o-animation-fill-mode: forwards;      /* Not implemented yet */
+    -ms-animation-fill-mode: forwards;     /* IE 10+ */
+    animation-fill-mode: forwards;  
+  }
+  &&.back{
+    animation-name: ${reduceModalSizeAnimation};
+    animation-duration: 0.3s;
+    -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
+    -moz-animation-fill-mode: forwards;    /* FF 5+ */
+    -o-animation-fill-mode: forwards;      /* Not implemented yet */
+    -ms-animation-fill-mode: forwards;     /* IE 10+ */
+    animation-fill-mode: forwards;  
   }
 `;
 
@@ -116,6 +172,9 @@ const StyledCloseBtn = styled.button`
   &:hover {
     background-color: rgb(86, 116, 161);
   }
+  &&.hide{
+    display: none;
+  }
 `;
 
 const StyledEditBtn = styled.button`
@@ -136,6 +195,32 @@ const StyledEditBtn = styled.button`
   &:hover {
     background-color: rgb(86, 116, 161);
   }
+  &&.hide{
+    display: none;
+  }
+`;
+
+const StyledBackBtn = styled.button`
+  padding: 6px;
+  padding-top: 10px;
+  padding-left: 11px;
+  padding-right: 11px;
+  font-size: 26px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(29, 24, 28);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  opacity: 0.8;
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  &:hover {
+    background-color: rgb(86, 116, 161);
+  }
+  &&.hide{
+    display: none;
+  }
 `;
 
 const StyledTitle = styled.div`
@@ -152,6 +237,9 @@ const StyledTitle = styled.div`
 const StyledCtgWrapper = styled.div`
     margin-top: 13vh;
     display: block;
+    &&.hide{
+        display: none;
+    }
 `;
 
 const StyledCtg = styled.div`
@@ -170,24 +258,7 @@ const StyledCtgCircle = styled.button`
     height: 11px;
     margin-right: 12px;
     margin-top:1vh;
-    &.study{
-        background-color: #689fcc;
-    }
-    &.work{
-        background-color: #dda675;
-    }
-    &.reading{
-        background-color: #ef745f;
-    }
-    &.writing{
-        background-color: #8ddfb5;
-    }
-    &.workout{
-        background-color: #c8e067;
-    }
-    &.meditation{
-        background-color: #e074d6;
-    }
+    ${CTG_STYLE}
 `;
 
 const StyledCtgLabel = styled.h3`
