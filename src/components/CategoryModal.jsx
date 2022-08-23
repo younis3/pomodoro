@@ -73,7 +73,7 @@ const CategoryModal = ({ setCategoryModalToggle }) => {
                     <StyledCtgWrapper ref={categoriesRef}>
                         {categories?.slice(0,5).map((el)=>{ //view only 5 favorite categories
                              const ctg = Object.keys(el)[0]
-                             return (<StyledCtg onClick={()=>chooseCtgHandler(ctg)}>
+                             return (<StyledCtg key={ctg} onClick={()=>chooseCtgHandler(ctg)}>
                                  <StyledCtgCircle className={ctg}/>
                                  <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
                             </StyledCtg>)
