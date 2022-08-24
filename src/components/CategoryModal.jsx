@@ -9,12 +9,15 @@ import ReplyIcon from "@mui/icons-material/Reply";
 
 import { useContext, useRef } from "react";
 import CategoryContext from "../context/CategoryContext";
-import { ctgStyles as CTG_STYLE } from "../helper_files/categories";
-import { categories } from "../helper_files/categories";
+// import { ctgStyles as CTG_STYLE } from "../helper_files/categories";
+// import { categories } from "../helper_files/categories";
 
 const CategoryModal = ({ setCategoryModalToggle }) => {
   const [editCtgToggle, setEditCtgToggle] = useState(false);
   const { setCategory } = useContext(CategoryContext);
+  const { categories } = useContext(CategoryContext);
+  const { ctgStyles } = useContext(CategoryContext);
+  const CTG_STYLE = ctgStyles;
 
   const modalBorderRef = useRef();
   const closeBtnRef = useRef();
@@ -265,7 +268,6 @@ const StyledCtgCircle = styled.button`
   height: 11px;
   margin-right: 12px;
   margin-top: 1vh;
-  ${CTG_STYLE}
 `;
 
 const StyledCtgLabel = styled.h3`
