@@ -72,17 +72,21 @@ const CategoryModal = ({ setCategoryModalToggle }) => {
           <StyledTitle>Focus Categories</StyledTitle>
 
           <StyledCtgWrapper ref={categoriesRef}>
-            {categories?.slice(0, 5).map((el) => {
-              //view only 5 favorite categories
-              const ctg = el.ctg;
-              const colorValue = el.color;
-              return (
-                <StyledCtg key={ctg} onClick={() => chooseCtgHandler(ctg)}>
-                  <StyledCtgCircle color={colorValue} />
-                  <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
-                </StyledCtg>
-              );
-            })}
+            {categories
+              ?.filter((el) => el.fav == true)
+              ?.map((el) => {
+                //view only the five favorite categories
+                const ctg = el.ctg;
+                const colorValue = el.color;
+                return (
+                  <StyledCtg key={ctg} onClick={() => chooseCtgHandler(ctg)}>
+                    <StyledCtgCircle color={colorValue} />
+                    <StyledCtgLabel>
+                      {capitalizeFirstLetter(ctg)}
+                    </StyledCtgLabel>
+                  </StyledCtg>
+                );
+              })}
           </StyledCtgWrapper>
 
           {editCtgToggle && <EditCategories />}
