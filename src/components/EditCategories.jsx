@@ -8,29 +8,12 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 import { useContext } from "react";
 import CategoryContext from "../context/CategoryContext";
+import { capitalizeFirstLetter } from "../helper_functions";
 
 const EditCategories = () => {
   const { categories } = useContext(CategoryContext);
   const { addCtg } = useContext(CategoryContext);
   const { removeCtg } = useContext(CategoryContext);
-
-  // const ctgColors = () => {
-  //   let string = "";
-  //   /*
-  //   make a style string for each element in the categories array above
-  //   then return the whole string to be placed as a CSS variable (classNames)
-  //   */
-  //   categories?.map((ctgObject) => {
-  //     const key = Object.keys(ctgObject)[0];
-  //     const value = ctgObject[key];
-  //     string += `
-  //     &.${key}{
-  //       background-color: ${value};
-  //     }
-  //     `;
-  //   });
-  //   return string;
-  // };
 
   const addCategoryHandler = (e) => {
     e.preventDefault();
@@ -45,11 +28,9 @@ const EditCategories = () => {
   };
 
   const removeCtgHandler = (ctg) => {
-    removeCtg(ctg);
-  };
-
-  const capitalizeFirstLetter = (string) => {
-    return string[0].toUpperCase() + string.slice(1);
+    if (window.confirm(`Delete ${ctg}!?`)) {
+      removeCtg(ctg);
+    }
   };
 
   return (
@@ -59,6 +40,7 @@ const EditCategories = () => {
           <StyledInput
             type={"text"}
             id="addCtg"
+            maxLength={15}
             placeholder="Add New Category"
           />
           <StyledInputBtn>
@@ -69,8 +51,9 @@ const EditCategories = () => {
 
       <StyledCategoriesWrapper>
         {categories?.map((el) => {
-          const ctg = Object.keys(el)[0];
-          const colorValue = el[ctg];
+          const ctg = el.ctg;
+          const colorValue = el.color;
+
           return (
             <StyledCtgWrapper key={ctg}>
               <StyledCtg>
@@ -134,8 +117,6 @@ const StyledInputBtn = styled.button`
   }
 `;
 
-//----------------------------------
-
 const StyledCategoriesWrapper = styled.ul`
   width: 90vw;
   height: 60vh;
@@ -163,7 +144,6 @@ const StyledCtg = styled.div`
   display: flex;
   flex-direction: row;
   margin-left: 4vw;
-  cursor: pointer;
 `;
 
 const StyledCtgBtns = styled.div`
@@ -195,7 +175,4 @@ const StyledCtgCircle = styled.button`
 
 const StyledCtgLabel = styled.h3`
   color: white;
-  &:hover {
-    color: #fffdfdb5;
-  }
 `;

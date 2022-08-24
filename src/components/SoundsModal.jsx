@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useContext, useEffect } from "react";
-import SoundContext from "../context/SoundContext"; 
+import SoundContext from "../context/SoundContext";
 
 //Icons
 import CloseIcon from "@mui/icons-material/Close";
@@ -13,11 +13,9 @@ import SelfImprovementIcon from "@mui/icons-material/SelfImprovement";
 import FilterDramaIcon from "@mui/icons-material/FilterDrama";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 
-const SoundsModal = ({setSoundModalToggle}) => {
-  const {chosenSound} = useContext(SoundContext);
-  const {setChosenSound} = useContext(SoundContext);
-
-
+const SoundsModal = ({ setSoundModalToggle }) => {
+  const { chosenSound } = useContext(SoundContext);
+  const { setChosenSound } = useContext(SoundContext);
 
   const closeSoundModalHandler = () => {
     setSoundModalToggle(false);
@@ -28,9 +26,6 @@ const SoundsModal = ({setSoundModalToggle}) => {
     setChosenSound(val);
   };
 
-  const applyHandler = () => {
-    closeSoundModalHandler();
-  };
   return (
     <div>
       <StyledModal>
@@ -128,7 +123,6 @@ const SoundsModal = ({setSoundModalToggle}) => {
               </StyledMUIIconWrapper>
             </StyledIconContainer>
           </StyledIconsContainer>
-
         </StyledModalBorder>
       </StyledModal>
     </div>
@@ -249,4 +243,3 @@ const StyledMUIIconWrapper = styled.div`
 const StyledLabel = styled.div`
   color: white;
 `;
-
