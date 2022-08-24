@@ -2,7 +2,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
 import CategoryContext from "../context/CategoryContext";
 import { useContext } from "react";
-// import {ctgStyles as CTG_STYLE} from '../helper_files/categories';
+import { capitalizeFirstLetter } from "../helper_functions";
 
 function Timer({
   key,
@@ -32,8 +32,8 @@ function Timer({
           seconds < 10 ? `0${seconds}` : seconds
         }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler}>
-          <StyledCategoryBtn className={category} />
-          <div className="category">{category}</div>
+          <StyledCategoryBtn color={category.color} />
+          <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
         </div>
       </StyledTimerContentWrapper>
     );
@@ -108,6 +108,7 @@ const StyledTimerContentWrapper = styled.div`
 `;
 
 const StyledCategoryBtn = styled.button`
+  background-color: ${(props) => props.color || "#d5c8c8"};
   border-radius: 50%;
   border: none;
   width: 11px;

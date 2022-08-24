@@ -9,15 +9,12 @@ import ReplyIcon from "@mui/icons-material/Reply";
 
 import { useContext, useRef } from "react";
 import CategoryContext from "../context/CategoryContext";
-// import { ctgStyles as CTG_STYLE } from "../helper_files/categories";
-// import { categories } from "../helper_files/categories";
+import { capitalizeFirstLetter } from "../helper_functions";
 
 const CategoryModal = ({ setCategoryModalToggle }) => {
   const [editCtgToggle, setEditCtgToggle] = useState(false);
   const { setCategory } = useContext(CategoryContext);
   const { categories } = useContext(CategoryContext);
-  const { ctgStyles } = useContext(CategoryContext);
-  const CTG_STYLE = ctgStyles;
 
   const modalBorderRef = useRef();
   const closeBtnRef = useRef();
@@ -49,13 +46,10 @@ const CategoryModal = ({ setCategoryModalToggle }) => {
     setEditCtgToggle(false);
   };
 
-  const chooseCtgHandler = (ctg) => {
-    setCategory(ctg);
+  const chooseCtgHandler = (selectedCtg) => {
+    const objToSet = categories.find((obj) => obj.ctg === selectedCtg);
+    setCategory(objToSet);
     closeCategoryModalHandler();
-  };
-
-  const capitalizeFirstLetter = (string) => {
-    return string[0].toUpperCase() + string.slice(1);
   };
 
   return (
@@ -80,10 +74,11 @@ const CategoryModal = ({ setCategoryModalToggle }) => {
           <StyledCtgWrapper ref={categoriesRef}>
             {categories?.slice(0, 5).map((el) => {
               //view only 5 favorite categories
-              const ctg = Object.keys(el)[0];
+              const ctg = el.ctg;
+              const colorValue = el.color;
               return (
                 <StyledCtg key={ctg} onClick={() => chooseCtgHandler(ctg)}>
-                  <StyledCtgCircle className={ctg} />
+                  <StyledCtgCircle color={colorValue} />
                   <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
                 </StyledCtg>
               );
@@ -139,13 +134,12 @@ const StyledModalBorder = styled.div`
   align-items: center;
   position: relative;
   padding: 5px;
-  /* @media only screen and (max-width: 850px) {
-    height: 70%;
-    width: 90%;
-  } */
+  @media only screen and (max-width: 650px) {
+    padding-right: 5vw;
+  }
   &&.editModal {
     animation-name: ${enlargeModalSizeAnimation};
-    animation-duration: 0.5s;
+    animation-duration: 0.3s;
     -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
     -moz-animation-fill-mode: forwards; /* FF 5+ */
     -o-animation-fill-mode: forwards; /* Not implemented yet */
@@ -154,7 +148,7 @@ const StyledModalBorder = styled.div`
   }
   &&.back {
     animation-name: ${reduceModalSizeAnimation};
-    animation-duration: 0.3s;
+    animation-duration: 0.2s;
     -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
     -moz-animation-fill-mode: forwards; /* FF 5+ */
     -o-animation-fill-mode: forwards; /* Not implemented yet */
@@ -211,6 +205,7 @@ const StyledEditBtn = styled.button`
 `;
 
 const StyledBackBtn = styled.button`
+  position: absolute;
   padding: 6px;
   padding-top: 10px;
   padding-left: 11px;
@@ -222,14 +217,16 @@ const StyledBackBtn = styled.button`
   border-radius: 2px;
   cursor: pointer;
   opacity: 0.8;
-  position: absolute;
   top: 3%;
-  right: 3%;
+  right: 8%;
   &:hover {
     background-color: rgb(86, 116, 161);
   }
   &&.hide {
     display: none;
+  }
+  @media only screen and (max-width: 650px) {
+    right: 8%;
   }
 `;
 
@@ -261,7 +258,7 @@ const StyledCtg = styled.div`
 `;
 
 const StyledCtgCircle = styled.button`
-  background-color: white;
+  background-color: ${(props) => props.color || "#d5c8c8"};
   border-radius: 50%;
   border: none;
   width: 11px;

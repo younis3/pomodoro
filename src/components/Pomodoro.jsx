@@ -9,15 +9,12 @@ import SoundsModal from "./SoundsModal";
 import CategoryModal from "./CategoryModal";
 import ConfirmDialog from "./ConfirmDialog";
 
-
 //icons
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import TuneIcon from "@mui/icons-material/Tune";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
-
-
 
 function Pomodoro({ timer, animate, size }) {
   const [key, setKey] = useState(0);
@@ -42,19 +39,17 @@ function Pomodoro({ timer, animate, size }) {
     if (isRunning == "running") {
       sound.play();
       sound.loop = true;
-    }
-    else {
+    } else {
       sound.pause();
     }
-  }, [sound, isRunning])
-
+  }, [sound, isRunning]);
 
   const pause = () => {
     setPauseBtn(false);
     setPlayBtn(true);
     setStopBtn(true);
     setAnimation(false);
-    setIsRunning('paused');
+    setIsRunning("paused");
   };
 
   const play = () => {
@@ -62,7 +57,7 @@ function Pomodoro({ timer, animate, size }) {
     setPlayBtn(false);
     setStopBtn(false);
     setAnimation(true);
-    setIsRunning('running');
+    setIsRunning("running");
   };
 
   const stop = () => {
@@ -104,7 +99,13 @@ function Pomodoro({ timer, animate, size }) {
         </button>
       </UpperButtonsDiv>
 
-      <Timer key2={key} timer={TIMER} animate={animation} isRunning={isRunning} setCategoryModalToggle={setCategoryModalToggle} />
+      <Timer
+        key2={key}
+        timer={TIMER}
+        animate={animation}
+        isRunning={isRunning}
+        setCategoryModalToggle={setCategoryModalToggle}
+      />
 
       <DownButtonsDiv>
         {pauseBtn && (
@@ -122,7 +123,16 @@ function Pomodoro({ timer, animate, size }) {
             <StopCircleIcon fontSize="inherit" />
           </button>
         )}
-        {confirmStopToggle && (<ConfirmDialog setConfirmStopToggle={setConfirmStopToggle} setPauseBtn={setPauseBtn} setPlayBtn={setPlayBtn} setStopBtn={setStopBtn} setKey={setKey} setIsRunning={setIsRunning} />)}
+        {confirmStopToggle && (
+          <ConfirmDialog
+            setConfirmStopToggle={setConfirmStopToggle}
+            setPauseBtn={setPauseBtn}
+            setPlayBtn={setPlayBtn}
+            setStopBtn={setStopBtn}
+            setKey={setKey}
+            setIsRunning={setIsRunning}
+          />
+        )}
       </DownButtonsDiv>
 
       {settingsToggle && (

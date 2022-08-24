@@ -9,37 +9,34 @@ import nightSound from "../assets/audios/night-sounds-loop.mp3";
 import fireSound from "../assets/audios/Fire-flame-sound-effect.mp3";
 import relaxSound from "../assets/audios/relaxing-tone.mp3";
 
-
 const SoundContext = createContext();
 
 export const SoundContextProvider = ({ children }) => {
+  const [chosenSound, setChosenSound] = useState("none");
 
-    const [chosenSound, setChosenSound] = useState("none");
+  const sounds = {
+    none: null,
+    forest: forestSound,
+    rain: rainSound,
+    thunder: thunderSound,
+    ocean: oceanSound,
+    night: nightSound,
+    fire: fireSound,
+    relax: relaxSound,
+  };
+  const [sound, setSound] = useState(new Audio(sounds[chosenSound]));
 
-    const sounds = {
-        "none": null,
-        "forest": forestSound,
-        "rain": rainSound,
-        "thunder": thunderSound,
-        "ocean": oceanSound,
-        "night": nightSound,
-        "fire": fireSound,
-        "relax": relaxSound
-    };
-    const [sound, setSound] = useState(new Audio(sounds[chosenSound]));
+  useEffect(() => {
+    sound.pause();
+    setSound(new Audio(sounds[chosenSound]));
+    sound.loop = true;
+  }, [chosenSound]);
 
-    useEffect(() => {
-        sound.pause();
-        setSound(new Audio(sounds[chosenSound]));
-        sound.loop = true;
-    }, [chosenSound])
-
-    return (
-        <SoundContext.Provider value={{ chosenSound, setChosenSound, sound}}>
-            {children}
-        </SoundContext.Provider>
-    )
+  return (
+    <SoundContext.Provider value={{ chosenSound, setChosenSound, sound }}>
+      {children}
+    </SoundContext.Provider>
+  );
 };
-
 
 export default SoundContext;
