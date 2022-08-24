@@ -6,7 +6,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CategoryContext from "../context/CategoryContext";
 import { capitalizeFirstLetter } from "../helper_functions";
 
@@ -14,6 +14,8 @@ const EditCategories = () => {
   const { categories } = useContext(CategoryContext);
   const { addCtg } = useContext(CategoryContext);
   const { removeCtg } = useContext(CategoryContext);
+  const { toggleFav } = useContext(CategoryContext);
+  const [refresh, setRefresh] = useState(false);
 
   const addCategoryHandler = (e) => {
     e.preventDefault();
@@ -31,6 +33,11 @@ const EditCategories = () => {
     if (window.confirm(`Delete ${ctg}!?`)) {
       removeCtg(ctg);
     }
+  };
+
+  const FavBtnHandler = (ctg) => {
+    toggleFav(ctg);
+    setRefresh(!refresh);
   };
 
   return (
@@ -53,7 +60,7 @@ const EditCategories = () => {
         {categories?.map((el) => {
           const ctg = el.ctg;
           const colorValue = el.color;
-
+          // console.log(el.fav);
           return (
             <StyledCtgWrapper key={ctg}>
               <StyledCtg>
@@ -61,7 +68,18 @@ const EditCategories = () => {
                 <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
               </StyledCtg>
               <StyledCtgBtns>
-                <FavoriteBorderIcon fontSize="inherit" />
+                {!el.fav && (
+                  <FavoriteBorderIcon
+                    onClick={() => FavBtnHandler(ctg)}
+                    fontSize="inherit"
+                  />
+                )}
+                {el.fav && (
+                  <FavoriteIcon
+                    onClick={() => FavBtnHandler(ctg)}
+                    fontSize="inherit"
+                  />
+                )}
                 <RemoveCircleOutlineIcon
                   onClick={() => removeCtgHandler(ctg)}
                   fontSize="inherit"
