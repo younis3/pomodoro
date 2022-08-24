@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { ctgStyles as CTG_STYLE } from "../helper_files/categories";
-import { categories, addCtg } from "../helper_files/categories";
 
 //icons
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -8,7 +6,32 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
+import { useContext } from "react";
+import CategoryContext from "../context/CategoryContext";
+
 const EditCategories = () => {
+  const { categories } = useContext(CategoryContext);
+  const { addCtg } = useContext(CategoryContext);
+  const { removeCtg } = useContext(CategoryContext);
+
+  // const ctgColors = () => {
+  //   let string = "";
+  //   /*
+  //   make a style string for each element in the categories array above
+  //   then return the whole string to be placed as a CSS variable (classNames)
+  //   */
+  //   categories?.map((ctgObject) => {
+  //     const key = Object.keys(ctgObject)[0];
+  //     const value = ctgObject[key];
+  //     string += `
+  //     &.${key}{
+  //       background-color: ${value};
+  //     }
+  //     `;
+  //   });
+  //   return string;
+  // };
+
   const addCategoryHandler = (e) => {
     e.preventDefault();
     let input = e.target.querySelector("input").value;
@@ -17,9 +40,12 @@ const EditCategories = () => {
       e.target.querySelector("input").focus();
       return;
     }
-    // alert(input);
     addCtg(input.toLowerCase());
-    console.log(categories);
+    e.target.querySelector("input").value = ""; //empty input field after adding new category
+  };
+
+  const removeCtgHandler = (ctg) => {
+    removeCtg(ctg);
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -44,15 +70,19 @@ const EditCategories = () => {
       <StyledCategoriesWrapper>
         {categories?.map((el) => {
           const ctg = Object.keys(el)[0];
+          const colorValue = el[ctg];
           return (
             <StyledCtgWrapper key={ctg}>
               <StyledCtg>
-                <StyledCtgCircle className={ctg} />
+                <StyledCtgCircle color={colorValue} />
                 <StyledCtgLabel>{capitalizeFirstLetter(ctg)}</StyledCtgLabel>
               </StyledCtg>
               <StyledCtgBtns>
                 <FavoriteBorderIcon fontSize="inherit" />
-                <RemoveCircleOutlineIcon fontSize="inherit" />
+                <RemoveCircleOutlineIcon
+                  onClick={() => removeCtgHandler(ctg)}
+                  fontSize="inherit"
+                />
               </StyledCtgBtns>
             </StyledCtgWrapper>
           );
@@ -136,24 +166,6 @@ const StyledCtg = styled.div`
   cursor: pointer;
 `;
 
-const StyledCtgCircle = styled.button`
-  background-color: white;
-  border-radius: 50%;
-  border: none;
-  width: 11px;
-  height: 11px;
-  margin-right: 12px;
-  margin-top: 1vh;
-  ${CTG_STYLE}
-`;
-
-const StyledCtgLabel = styled.h3`
-  color: white;
-  &:hover {
-    color: #fffdfdb5;
-  }
-`;
-
 const StyledCtgBtns = styled.div`
   color: white;
   cursor: pointer;
@@ -161,9 +173,29 @@ const StyledCtgBtns = styled.div`
   padding-right: 3px;
   & * {
     //accessing children styles of this parent div
-    margin-left: 4vw;
     &:hover {
       color: #dad4d4c7;
     }
+    margin-left: 2vw;
+    @media only screen and (max-width: 650px) {
+      margin-left: 4vw;
+    }
+  }
+`;
+
+const StyledCtgCircle = styled.button`
+  background-color: ${(props) => props.color || "#d5c8c8"};
+  border-radius: 50%;
+  border: none;
+  width: 11px;
+  height: 11px;
+  margin-right: 12px;
+  margin-top: 1vh;
+`;
+
+const StyledCtgLabel = styled.h3`
+  color: white;
+  &:hover {
+    color: #fffdfdb5;
   }
 `;

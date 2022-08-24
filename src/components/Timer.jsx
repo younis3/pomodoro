@@ -1,9 +1,8 @@
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
 import CategoryContext from "../context/CategoryContext";
-import {useContext} from 'react';
-import {ctgStyles as CTG_STYLE} from '../helper_files/categories';
-
+import { useContext } from "react";
+// import {ctgStyles as CTG_STYLE} from '../helper_files/categories';
 
 function Timer({
   key,
@@ -12,14 +11,13 @@ function Timer({
   isRunning,
   animate,
   size = 280,
-  setCategoryModalToggle
+  setCategoryModalToggle,
 }) {
-
-  const {category} = useContext(CategoryContext);
+  const { category } = useContext(CategoryContext);
 
   const categoryHandler = () => {
     setCategoryModalToggle(true);
-  }
+  };
 
   const children = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60);
@@ -27,11 +25,14 @@ function Timer({
 
     return (
       <StyledTimerContentWrapper>
-        <div className="text">{isRunning == 'running' ? 'Stay focused' : 'Start to focus'}</div>
-        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
-          }`}</div>
+        <div className="text">
+          {isRunning == "running" ? "Stay focused" : "Start to focus"}
+        </div>
+        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
+          seconds < 10 ? `0${seconds}` : seconds
+        }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler}>
-          <StyledCategoryBtn className={category}/>
+          <StyledCategoryBtn className={category} />
           <div className="category">{category}</div>
         </div>
       </StyledTimerContentWrapper>
@@ -51,7 +52,7 @@ function Timer({
           strokeWidth={8}
           trailColor="#11121d0"
           onComplete={() => {
-            return { shouldRepeat: false }
+            return { shouldRepeat: false };
           }}
         >
           {children}
@@ -77,11 +78,11 @@ const StyledTimerContainer = styled.div`
 
 const StyledTimerContentWrapper = styled.div`
   .text {
-    color:whitesmoke;
+    color: whitesmoke;
     font-size: 18px;
   }
   .value {
-    color:whitesmoke;
+    color: whitesmoke;
     padding: 12px;
     font-size: 70px;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -101,17 +102,15 @@ const StyledTimerContentWrapper = styled.div`
   }
 
   .category {
-    color:whitesmoke;
+    color: whitesmoke;
     font-size: 22px;
   }
 `;
 
 const StyledCategoryBtn = styled.button`
-    border-radius: 50%;
-    border: none;
-    width: 11px;
-    height: 11px;
-    margin-right: 10px;
-    ${CTG_STYLE}
-  
+  border-radius: 50%;
+  border: none;
+  width: 11px;
+  height: 11px;
+  margin-right: 10px;
 `;
