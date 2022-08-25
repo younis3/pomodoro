@@ -26,7 +26,7 @@ function Pomodoro({ timer, animate, size }) {
 
   const { focusDuration } = useContext(SettingsContext);
   // const TIMER = focusDuration * 60;
-  const TIMER = 5;
+  const TIMER = 20;
 
 
   const [isRunning, setIsRunning] = useState("stopped");
@@ -35,9 +35,10 @@ function Pomodoro({ timer, animate, size }) {
   const [categoryModalToggle, setCategoryModalToggle] = useState(false);
   const [confirmStopToggle, setConfirmStopToggle] = useState(false);
   const { sound } = useContext(SoundContext);
+  const [breakStatus, setBreakStatus] = useState(false);
 
   useEffect(() => {
-    if (isRunning == "running") {
+    if (isRunning === "running") {
       sound.play();
       sound.loop = true;
     } else {
@@ -119,6 +120,9 @@ function Pomodoro({ timer, animate, size }) {
         isRunning={isRunning}
         setIsRunning={setIsRunning}
         setCategoryModalToggle={setCategoryModalToggle}
+        breakStatus={breakStatus}
+        setBreakStatus={setBreakStatus}
+
       />
 
       <DownButtonsDiv>
@@ -142,6 +146,7 @@ function Pomodoro({ timer, animate, size }) {
             setConfirmStopToggle={setConfirmStopToggle}
             setKey={setKey}
             setIsRunning={setIsRunning}
+            setBreakStatus={setBreakStatus}
           />
         )}
       </DownButtonsDiv>
