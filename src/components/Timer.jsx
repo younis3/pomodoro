@@ -6,8 +6,8 @@ import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
 
 function Timer({
-  // key,
-  key2,
+  key,
+  setKey,
   timer,
   isRunning,
   setIsRunning,
@@ -15,14 +15,12 @@ function Timer({
   size = 280,
   setCategoryModalToggle,
 }) {
-  const [key, setKey] = useState(key2);
   const { category } = useContext(CategoryContext);
   const { autoRunSwitch } = useContext(SettingsContext);
   const { sessionsCount } = useContext(SettingsContext);
   const [sessionCounter, setSessionCounter] = useState(1);
   const [breakStatus, setBreakStatus] = useState(false);
   const [text, setText] = useState("Start to focus");
-  const [duration, setDuration] = useState(timer);
 
   useEffect(() => {
     if (isRunning === "stopped") {
@@ -67,6 +65,7 @@ function Timer({
         setKey((prevKey) => prevKey + 1);
         return { shouldRepeat: false };
       } else {
+        //count the session to the context (for stats)
         return { shouldRepeat: true };
       }
     }
@@ -103,7 +102,7 @@ function Timer({
         <CountdownCircleTimer
           key={key}
           isPlaying={animate}
-          duration={duration}
+          duration={timer}
           size={size}
           colors={["#2275a5dc"]}
           strokeLinecap={"square"}
