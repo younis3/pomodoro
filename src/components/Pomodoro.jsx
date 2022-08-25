@@ -25,7 +25,9 @@ function Pomodoro({ timer, animate, size }) {
   const [disableSettings, setDisableSettings] = useState(false);
 
   const { focusDuration } = useContext(SettingsContext);
-  const TIMER = focusDuration * 60;
+  // const TIMER = focusDuration * 60;
+  const TIMER = 4;
+
 
   const [isRunning, setIsRunning] = useState("stopped");
   const [settingsToggle, setSettingsToggle] = useState(false);
@@ -110,8 +112,9 @@ function Pomodoro({ timer, animate, size }) {
       </UpperButtonsDiv>
 
       <Timer
-        key2={key}
-        timer={2}
+        key={key}
+        setKey={setKey}
+        timer={TIMER}
         animate={animation}
         isRunning={isRunning}
         setIsRunning={setIsRunning}
@@ -137,9 +140,6 @@ function Pomodoro({ timer, animate, size }) {
         {confirmStopToggle && (
           <ConfirmDialog
             setConfirmStopToggle={setConfirmStopToggle}
-            setPauseBtn={setPauseBtn}
-            setPlayBtn={setPlayBtn}
-            setStopBtn={setStopBtn}
             setKey={setKey}
             setIsRunning={setIsRunning}
           />

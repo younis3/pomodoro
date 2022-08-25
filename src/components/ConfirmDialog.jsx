@@ -2,9 +2,6 @@ import styled from "styled-components";
 
 const ConfirmDialog = ({
   setConfirmStopToggle,
-  setPauseBtn,
-  setPlayBtn,
-  setStopBtn,
   setKey,
   setIsRunning,
 }) => {
@@ -13,11 +10,8 @@ const ConfirmDialog = ({
   };
 
   const stopTimerHandler = () => {
-    // setPauseBtn(false);
-    // setPlayBtn(true);
-    // setStopBtn(false);
-    setKey((prevKey) => prevKey + 1);
     setIsRunning("stopped");
+    setKey((prevKey) => prevKey + 1);
     setConfirmStopToggle(false);
   };
 
