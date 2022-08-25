@@ -4,6 +4,9 @@ import CategoryContext from "../context/CategoryContext";
 import SettingsContext from "../context/SettingsContext";
 import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
+import SoundContext from "../context/SoundContext";
+import alertAudio from "../assets/audios/cell-phone-dbl-beep-notification-83306.mp3";
+import { useUpdateEffect } from 'react-use';
 
 function Timer({
   timerKey,
@@ -14,13 +17,20 @@ function Timer({
   animate,
   size = 280,
   setCategoryModalToggle,
+  breakStatus,
+  setBreakStatus
 }) {
+
   const { category } = useContext(CategoryContext);
   const { autoRunSwitch } = useContext(SettingsContext);
   const { sessionsCount } = useContext(SettingsContext);
   const [sessionCounter, setSessionCounter] = useState(1);
-  const [breakStatus, setBreakStatus] = useState(false);
   const [text, setText] = useState("Start to focus");
+  const { sound } = useContext(SoundContext);
+  const [playAlert, setPlayAlert] = useState(false);
+
+  const alertSound = new Audio(alertAudio);
+
 
   useEffect(() => {
     if (isRunning === "stopped") {
@@ -34,11 +44,28 @@ function Timer({
     }
   }, [isRunning, breakStatus]);
 
+
   const categoryHandler = () => {
     setCategoryModalToggle(true);
   };
 
+  useUpdateEffect(() => {  //same as useEffect but skips first run (react-use library)
+    if (isRunning === "running") {
+      sound.pause();
+      alertSound.play();
+      setTimeout(() => {
+        sound.play();
+      }, 8000);
+    }
+    else if (isRunning === "stopped") {
+      sound.pause();
+      alertSound.play();
+    }
+  }, [playAlert]);
+
+
   const timerCompletedHandler = () => {
+    setPlayAlert(!playAlert);
     if (autoRunSwitch) {
       if (!breakStatus) {  //if it was focus time (not break)
         //count the session to the context (for stats)

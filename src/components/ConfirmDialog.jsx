@@ -4,6 +4,7 @@ const ConfirmDialog = ({
   setConfirmStopToggle,
   setKey,
   setIsRunning,
+  setBreakStatus
 }) => {
   const closeDialogHandler = () => {
     setConfirmStopToggle(false);
@@ -11,6 +12,7 @@ const ConfirmDialog = ({
 
   const stopTimerHandler = () => {
     setIsRunning("stopped");
+    setBreakStatus(false);
     setKey((prevKey) => prevKey + 1);
     setConfirmStopToggle(false);
   };
