@@ -26,7 +26,7 @@ function Pomodoro({ timer, animate, size }) {
 
   const { focusDuration } = useContext(SettingsContext);
   // const TIMER = focusDuration * 60;
-  const TIMER = 4;
+  const TIMER = 5;
 
 
   const [isRunning, setIsRunning] = useState("stopped");
@@ -112,7 +112,7 @@ function Pomodoro({ timer, animate, size }) {
       </UpperButtonsDiv>
 
       <Timer
-        key={key}
+        timerKey={key}
         setKey={setKey}
         timer={TIMER}
         animate={animation}

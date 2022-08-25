@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
 
 function Timer({
-  key,
+  timerKey,
   setKey,
   timer,
   isRunning,
@@ -100,7 +100,7 @@ function Timer({
     <div>
       <StyledTimerContainer>
         <CountdownCircleTimer
-          key={key}
+          key={timerKey}
           isPlaying={animate}
           duration={timer}
           size={size}
