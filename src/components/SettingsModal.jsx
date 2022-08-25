@@ -29,6 +29,33 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
     setSessionsCount(4);
   };
 
+  const breakMarks = [
+    {
+      value: 2,
+    },
+    {
+      value: 3,
+    },
+    {
+      value: 5,
+    },
+    {
+      value: 10,
+    },
+    {
+      value: 15,
+    },
+    {
+      value: 20,
+    },
+    {
+      value: 25,
+    },
+    {
+      value: 30,
+    },
+  ];
+
   return (
     <div>
       <StyledModal>
@@ -63,8 +90,9 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
               valueLabelDisplay="auto"
               aria-label="duration"
               defaultValue={breakDuration}
-              step={5}
-              min={5}
+              step={null}
+              marks={breakMarks}
+              min={2}
               max={30}
               track={"normal"}
               onChangeCommitted={(_, newValue) => setBreakDuration(newValue)}
