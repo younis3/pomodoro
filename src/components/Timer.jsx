@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
 
 function Timer({
-  key,
+  // key,
   key2,
   timer,
   isRunning,
@@ -15,10 +15,11 @@ function Timer({
   size = 280,
   setCategoryModalToggle,
 }) {
+  const [key, setKey] = useState(key2);
   const { category } = useContext(CategoryContext);
   const { autoRunSwitch } = useContext(SettingsContext);
   const { sessionsCount } = useContext(SettingsContext);
-  const [sessionCounter, setSessionCounter] = useState(0);
+  const [sessionCounter, setSessionCounter] = useState(1);
   const [breakStatus, setBreakStatus] = useState(false);
   const [text, setText] = useState("Start to focus");
   const [duration, setDuration] = useState(timer);
@@ -41,16 +42,18 @@ function Timer({
 
   const timerCompletedHandler = () => {
     if (autoRunSwitch) {
-      if (!breakStatus) {
-        //if it was focus time (not break)
+      if (!breakStatus) {  //if it was focus time (not break)
+        //count the session to the context (for stats)
+      } else {
         if (sessionCounter < sessionsCount) {
           setSessionCounter(sessionCounter + 1);
         }
-      } else {
-        if (sessionCounter == sessionsCount) {
+        else if (sessionCounter == sessionsCount) {
           //if user finished all sessions
+          setSessionCounter(1);
           setIsRunning("stopped");
-          setSessionCounter(0);
+          setBreakStatus(false);
+          setKey((prevKey) => prevKey + 1);
           return { shouldRepeat: false };
         }
       }
@@ -61,7 +64,7 @@ function Timer({
       setBreakStatus(!breakStatus);
       if (breakStatus) {
         setIsRunning("stopped");
-        setDuration(timer);
+        setKey((prevKey) => prevKey + 1);
         return { shouldRepeat: false };
       } else {
         return { shouldRepeat: true };
@@ -77,14 +80,15 @@ function Timer({
       <StyledTimerContentWrapper>
         <div className="textWrapper">
           {autoRunSwitch && (
-            <div className="sessions">{`${sessionCounter}/${sessionsCount} - `}</div>
+            <div className="sessions">
+              {`${sessionCounter}/${sessionsCount} - `}
+            </div>
           )}
           <div className="text">{text}</div>
         </div>
 
-        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
-          seconds < 10 ? `0${seconds}` : seconds
-        }`}</div>
+        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
+          }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler}>
           <StyledCategoryBtn color={category.color} />
           <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
@@ -97,7 +101,7 @@ function Timer({
     <div>
       <StyledTimerContainer>
         <CountdownCircleTimer
-          key={key2}
+          key={key}
           isPlaying={animate}
           duration={duration}
           size={size}
