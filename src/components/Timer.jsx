@@ -1,7 +1,8 @@
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
 import CategoryContext from "../context/CategoryContext";
-import { useContext } from "react";
+import SettingsContext from "../context/SettingsContext";
+import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
 
 function Timer({
@@ -9,14 +10,63 @@ function Timer({
   key2,
   timer,
   isRunning,
+  setIsRunning,
   animate,
   size = 280,
   setCategoryModalToggle,
 }) {
   const { category } = useContext(CategoryContext);
+  const { autoRunSwitch } = useContext(SettingsContext);
+  const { sessionsCount } = useContext(SettingsContext);
+  const [sessionCounter, setSessionCounter] = useState(0);
+  const [breakStatus, setBreakStatus] = useState(false);
+  const [text, setText] = useState("Start to focus");
+  const [duration, setDuration] = useState(timer);
+
+  useEffect(() => {
+    if (isRunning === "stopped") {
+      setText("Start to focus");
+    } else {
+      if (breakStatus) {
+        setText("Take a break");
+      } else {
+        setText("Stay focused");
+      }
+    }
+  }, [isRunning, breakStatus]);
 
   const categoryHandler = () => {
     setCategoryModalToggle(true);
+  };
+
+  const timerCompletedHandler = () => {
+    if (autoRunSwitch) {
+      if (!breakStatus) {
+        //if it was focus time (not break)
+        if (sessionCounter < sessionsCount) {
+          setSessionCounter(sessionCounter + 1);
+        }
+      } else {
+        if (sessionCounter == sessionsCount) {
+          //if user finished all sessions
+          setIsRunning("stopped");
+          setSessionCounter(0);
+          return { shouldRepeat: false };
+        }
+      }
+      setBreakStatus(!breakStatus);
+      return { shouldRepeat: true };
+    } else {
+      //if autoRun Switch is turned off
+      setBreakStatus(!breakStatus);
+      if (breakStatus) {
+        setIsRunning("stopped");
+        setDuration(timer);
+        return { shouldRepeat: false };
+      } else {
+        return { shouldRepeat: true };
+      }
+    }
   };
 
   const children = ({ remainingTime }) => {
@@ -25,9 +75,13 @@ function Timer({
 
     return (
       <StyledTimerContentWrapper>
-        <div className="text">
-          {isRunning == "running" ? "Stay focused" : "Start to focus"}
+        <div className="textWrapper">
+          {autoRunSwitch && (
+            <div className="sessions">{`${sessionCounter}/${sessionsCount} - `}</div>
+          )}
+          <div className="text">{text}</div>
         </div>
+
         <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
           seconds < 10 ? `0${seconds}` : seconds
         }`}</div>
@@ -45,15 +99,13 @@ function Timer({
         <CountdownCircleTimer
           key={key2}
           isPlaying={animate}
-          duration={timer}
+          duration={duration}
           size={size}
           colors={["#2275a5dc"]}
           strokeLinecap={"square"}
           strokeWidth={8}
           trailColor="#11121d0"
-          onComplete={() => {
-            return { shouldRepeat: false };
-          }}
+          onComplete={timerCompletedHandler}
         >
           {children}
         </CountdownCircleTimer>
@@ -77,7 +129,16 @@ const StyledTimerContainer = styled.div`
 `;
 
 const StyledTimerContentWrapper = styled.div`
+  .textWrapper {
+    display: flex;
+    justify-content: center;
+  }
+  .sessions {
+    color: whitesmoke;
+    font-size: 18px;
+  }
   .text {
+    margin-left: 2vw;
     color: whitesmoke;
     font-size: 18px;
   }

@@ -1,38 +1,42 @@
 import styled from "styled-components";
 
-const ConfirmDialog = ({ setConfirmStopToggle, setPauseBtn, setPlayBtn, setStopBtn, setKey, setIsRunning }) => {
+const ConfirmDialog = ({
+  setConfirmStopToggle,
+  setPauseBtn,
+  setPlayBtn,
+  setStopBtn,
+  setKey,
+  setIsRunning,
+}) => {
+  const closeDialogHandler = () => {
+    setConfirmStopToggle(false);
+  };
 
-    const closeDialogHandler = () => {
-        setConfirmStopToggle(false);
-    }
+  const stopTimerHandler = () => {
+    // setPauseBtn(false);
+    // setPlayBtn(true);
+    // setStopBtn(false);
+    setKey((prevKey) => prevKey + 1);
+    setIsRunning("stopped");
+    setConfirmStopToggle(false);
+  };
 
-    const stopTimerHandler = () => {
-        setPauseBtn(false);
-        setPlayBtn(true);
-        setStopBtn(false);
-        setKey((prevKey) => prevKey + 1);
-        setIsRunning('stopped');
-        setConfirmStopToggle(false);
-    }
+  return (
+    <div>
+      <StyledDialog>
+        <StyledDialogBorder>
+          <StyledTitle>Stop the session!?</StyledTitle>
+          <StyledBtnsWrapper>
+            <StyledBtn onClick={closeDialogHandler}>Cancel</StyledBtn>
+            <StyledBtn onClick={stopTimerHandler}>Stop</StyledBtn>
+          </StyledBtnsWrapper>
+        </StyledDialogBorder>
+      </StyledDialog>
+    </div>
+  );
+};
 
-    return (
-        <div>
-            <StyledDialog>
-                <StyledDialogBorder>
-                    <StyledTitle>
-                        Stop the session!?
-                    </StyledTitle>
-                    <StyledBtnsWrapper>
-                        <StyledBtn onClick={closeDialogHandler}>Cancel</StyledBtn>
-                        <StyledBtn onClick={stopTimerHandler}>Stop</StyledBtn>
-                    </StyledBtnsWrapper>
-                </StyledDialogBorder>
-            </StyledDialog>
-        </div>
-    )
-}
-
-export default ConfirmDialog
+export default ConfirmDialog;
 //
 //
 //
@@ -66,7 +70,7 @@ const StyledDialogBorder = styled.div`
   padding: 5px;
   @media only screen and (max-width: 850px) {
     height: 26%;
-  width: 70%;
+    width: 70%;
   }
 `;
 
@@ -80,7 +84,7 @@ const StyledTitle = styled.div`
   color: white;
   padding: 10px;
   font-size: 20px;
-  `;
+`;
 
 const StyledBtnsWrapper = styled.div`
   position: absolute;
@@ -100,4 +104,4 @@ const StyledBtn = styled.div`
     color: #ffffffb5;
     cursor: pointer;
   }
-  `;
+`;

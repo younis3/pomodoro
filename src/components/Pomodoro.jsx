@@ -32,7 +32,6 @@ function Pomodoro({ timer, animate, size }) {
   const [soundModalToggle, setSoundModalToggle] = useState(false);
   const [categoryModalToggle, setCategoryModalToggle] = useState(false);
   const [confirmStopToggle, setConfirmStopToggle] = useState(false);
-
   const { sound } = useContext(SoundContext);
 
   useEffect(() => {
@@ -44,19 +43,30 @@ function Pomodoro({ timer, animate, size }) {
     }
   }, [sound, isRunning]);
 
+  useEffect(() => {
+    if (isRunning === "running") {
+      setPauseBtn(true);
+      setPlayBtn(false);
+      setStopBtn(false);
+      setAnimation(true);
+    } else if (isRunning === "paused") {
+      setPauseBtn(false);
+      setPlayBtn(true);
+      setStopBtn(true);
+      setAnimation(false);
+    } else if (isRunning === "stopped") {
+      setPauseBtn(false);
+      setPlayBtn(true);
+      setStopBtn(false);
+      setAnimation(false);
+    }
+  }, [isRunning]);
+
   const pause = () => {
-    setPauseBtn(false);
-    setPlayBtn(true);
-    setStopBtn(true);
-    setAnimation(false);
     setIsRunning("paused");
   };
 
   const play = () => {
-    setPauseBtn(true);
-    setPlayBtn(false);
-    setStopBtn(false);
-    setAnimation(true);
     setIsRunning("running");
   };
 
@@ -101,9 +111,10 @@ function Pomodoro({ timer, animate, size }) {
 
       <Timer
         key2={key}
-        timer={TIMER}
+        timer={2}
         animate={animation}
         isRunning={isRunning}
+        setIsRunning={setIsRunning}
         setCategoryModalToggle={setCategoryModalToggle}
       />
 
