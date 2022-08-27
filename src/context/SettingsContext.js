@@ -3,8 +3,8 @@ import { createContext, useState } from "react";
 const SettingsContext = createContext();
 
 export const SettingsContextProvider = ({ children }) => {
-  const [focusDuration, setFocusDuration] = useState(50);
-  const [breakDuration, setBreakDuration] = useState(10);
+  const [focusDuration, setFocusDuration] = useState(20);
+  const [breakDuration, setBreakDuration] = useState(12);
   const [sessionsCount, setSessionsCount] = useState(4);
   const [autoRunSwitch, setAutoRunSwitch] = useState(false);
 

@@ -60,7 +60,6 @@ const EditCategories = () => {
         {categories?.map((el) => {
           const ctg = el.ctg;
           const colorValue = el.color;
-          // console.log(el.fav);
           return (
             <StyledCtgWrapper key={ctg}>
               <StyledCtg>
@@ -136,13 +135,20 @@ const StyledInputBtn = styled.button`
 `;
 
 const StyledCategoriesWrapper = styled.ul`
-  width: 90vw;
-  height: 60vh;
   overflow: hidden;
   overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  width: 90vw;
+  height: 60vh;
   margin-top: 13vh;
   display: flex;
   flex-direction: column;
+  &::-webkit-scrollbar {
+    /* hides scrollbar */
+    width: 0;
+    height: 0;
+  }
   &&.hide {
     display: none;
   }

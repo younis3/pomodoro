@@ -16,18 +16,13 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 
-function Pomodoro({ timer, animate, size }) {
+function Pomodoro() {
   const [key, setKey] = useState(0);
   const [animation, setAnimation] = useState(false);
   const [pauseBtn, setPauseBtn] = useState(false);
   const [playBtn, setPlayBtn] = useState(true);
   const [stopBtn, setStopBtn] = useState(false);
   const [disableSettings, setDisableSettings] = useState(false);
-
-  const { focusDuration } = useContext(SettingsContext);
-  // const TIMER = focusDuration * 60;
-  const TIMER = 20;
-
 
   const [isRunning, setIsRunning] = useState("stopped");
   const [settingsToggle, setSettingsToggle] = useState(false);
@@ -36,6 +31,14 @@ function Pomodoro({ timer, animate, size }) {
   const [confirmStopToggle, setConfirmStopToggle] = useState(false);
   const { sound } = useContext(SoundContext);
   const [breakStatus, setBreakStatus] = useState(false);
+  const { focusDuration } = useContext(SettingsContext);
+  const { breakDuration } = useContext(SettingsContext);
+  const [timerDuration, setTimerDuration] = useState(focusDuration);
+
+  useEffect(() => {
+    breakStatus ? setTimerDuration(breakDuration) : setTimerDuration(focusDuration);
+  }, [breakStatus])
+
 
   useEffect(() => {
     if (isRunning === "running") {
@@ -115,14 +118,13 @@ function Pomodoro({ timer, animate, size }) {
       <Timer
         timerKey={key}
         setKey={setKey}
-        timer={TIMER}
+        timer={timerDuration}
         animate={animation}
         isRunning={isRunning}
         setIsRunning={setIsRunning}
         setCategoryModalToggle={setCategoryModalToggle}
         breakStatus={breakStatus}
         setBreakStatus={setBreakStatus}
-
       />
 
       <DownButtonsDiv>
