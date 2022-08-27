@@ -11,7 +11,7 @@ import { useContext, useRef } from "react";
 import CategoryContext from "../context/CategoryContext";
 import { capitalizeFirstLetter } from "../helper_functions";
 
-const CategoryModal = ({ setCategoryModalToggle }) => {
+const CategoryModal = ({ setCategoryModalToggle, breakStatus }) => {
   const [editCtgToggle, setEditCtgToggle] = useState(false);
   const { setCategory } = useContext(CategoryContext);
   const { categories } = useContext(CategoryContext);
@@ -47,6 +47,10 @@ const CategoryModal = ({ setCategoryModalToggle }) => {
   };
 
   const chooseCtgHandler = (selectedCtg) => {
+    if (breakStatus) {
+      alert("Woops! You can't change the category in break time!")
+      return;
+    }
     const objToSet = categories.find((obj) => obj.ctg === selectedCtg);
     setCategory(objToSet);
     closeCategoryModalHandler();
