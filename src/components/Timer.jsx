@@ -115,7 +115,7 @@ function Timer({
 
         <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
           }`}</div>
-        <div className="categoryWrapper" onClick={categoryHandler}>
+        <div className="categoryWrapper" onClick={categoryHandler} disabled={breakStatus}>
           <StyledCategoryBtn color={category.color} />
           <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
         </div>
@@ -191,6 +191,10 @@ const StyledTimerContentWrapper = styled.div`
       cursor: pointer;
     }
   }
+  .categoryWrapper[disabled]{
+    pointer-events: none;
+    opacity: 0.4;
+   }
 
   .category {
     color: whitesmoke;

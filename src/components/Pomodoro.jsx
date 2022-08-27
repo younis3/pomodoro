@@ -166,7 +166,7 @@ function Pomodoro() {
         />
       )}
       {categoryModalToggle && (
-        <CategoryModal setCategoryModalToggle={setCategoryModalToggle} />
+        <CategoryModal setCategoryModalToggle={setCategoryModalToggle} breakStatus={breakStatus} />
       )}
     </div>
   );
