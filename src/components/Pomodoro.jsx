@@ -30,6 +30,7 @@ function Pomodoro() {
   const [categoryModalToggle, setCategoryModalToggle] = useState(false);
   const [confirmStopToggle, setConfirmStopToggle] = useState(false);
   const { sound } = useContext(SoundContext);
+  const { chosenSound } = useContext(SoundContext);
   const [breakStatus, setBreakStatus] = useState(false);
   const { focusDuration } = useContext(SettingsContext);
   const { breakDuration } = useContext(SettingsContext);
@@ -41,7 +42,7 @@ function Pomodoro() {
 
 
   useEffect(() => {
-    if (isRunning === "running") {
+    if (isRunning === "running" && chosenSound !== "none") {
       sound.play();
       sound.loop = true;
     } else {

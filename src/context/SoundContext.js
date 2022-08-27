@@ -8,7 +8,7 @@ import oceanSound from "../assets/audios/ocean-waves-crashing-sound-effect.mp3";
 import nightSound from "../assets/audios/night-sounds-loop.mp3";
 import fireSound from "../assets/audios/Fire-flame-sound-effect.mp3";
 import relaxSound from "../assets/audios/relaxing-tone.mp3";
-// import notify from " ";
+
 const SoundContext = createContext();
 
 export const SoundContextProvider = ({ children }) => {
@@ -24,12 +24,16 @@ export const SoundContextProvider = ({ children }) => {
     fire: fireSound,
     relax: relaxSound,
   };
-  const [sound, setSound] = useState(new Audio(sounds[chosenSound]));
+  const [sound, setSound] = useState((chosenSound) =>
+    chosenSound !== "none" ? new Audio(sounds[chosenSound]) : null
+  );
 
   useEffect(() => {
     sound.pause();
-    setSound(new Audio(sounds[chosenSound]));
-    sound.loop = true;
+    if (chosenSound !== "none") {
+      setSound(new Audio(sounds[chosenSound]));
+      sound.loop = true;
+    }
   }, [chosenSound]);
 
   return (

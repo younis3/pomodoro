@@ -27,6 +27,7 @@ function Timer({
   const [sessionCounter, setSessionCounter] = useState(1);
   const [text, setText] = useState("Start to focus");
   const { sound } = useContext(SoundContext);
+  const { chosenSound } = useContext(SoundContext);
   const [playAlert, setPlayAlert] = useState(false);
 
   const alertSound = new Audio(alertAudio);
@@ -51,10 +52,14 @@ function Timer({
 
   useUpdateEffect(() => {  //same as useEffect but skips first run (react-use library)
     if (isRunning === "running") {
-      sound.pause();
+      if (chosenSound !== "none") {
+        sound.pause();
+      }
       alertSound.play();
       setTimeout(() => {
-        sound.play();
+        if (chosenSound !== "none") {
+          sound.play();
+        }
       }, 8000);
     }
     else if (isRunning === "stopped") {
