@@ -38,7 +38,7 @@ function Pomodoro() {
 
   useEffect(() => {
     breakStatus ? setTimerDuration(breakDuration) : setTimerDuration(focusDuration);
-  }, [breakStatus])
+  }, [breakStatus, focusDuration])
 
 
   useEffect(() => {
