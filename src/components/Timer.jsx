@@ -134,7 +134,7 @@ function Timer({
         <CountdownCircleTimer
           key={timerKey}
           isPlaying={animate}
-          duration={timer}
+          duration={timer * 60}
           size={size}
           colors={["#2275a5dc"]}
           strokeLinecap={"square"}

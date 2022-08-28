@@ -5,7 +5,7 @@ const SettingsContext = createContext();
 //get settings values from local storage
 const getFocusDuration = () => {
   if (localStorage.getItem(`focusDuration`) === null) {
-    const focusD = 20;
+    const focusD = 25;
     localStorage.setItem(`focusDuration`, JSON.stringify(focusD));
     return focusD;
   } else {
@@ -15,7 +15,7 @@ const getFocusDuration = () => {
 
 const getBreakDuration = () => {
   if (localStorage.getItem(`breakDuration`) === null) {
-    const breakD = 12;
+    const breakD = 5;
     localStorage.setItem(`breakDuration`, JSON.stringify(breakD));
     return breakD;
   } else {
