@@ -1,19 +1,45 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const CategoryContext = createContext();
 
-export const CategoryContextProvider = ({ children }) => {
-  const ctgs = [
-    { ctg: "study", color: "#689fcc", fav: true },
-    { ctg: "work", color: "#dda675", fav: true },
-    { ctg: "reading", color: "#ef745f", fav: true },
-    { ctg: "writing", color: "#8ddfb5", fav: true },
-    { ctg: "workout", color: "#c8e067", fav: true },
-    { ctg: "meditation", color: "#e074d6", fav: false },
-  ];
+const ctgs_default = [
+  { ctg: "study", color: "#689fcc", fav: true },
+  { ctg: "work", color: "#dda675", fav: true },
+  { ctg: "reading", color: "#ef745f", fav: true },
+  { ctg: "writing", color: "#8ddfb5", fav: true },
+  { ctg: "workout", color: "#c8e067", fav: true },
+  { ctg: "meditation", color: "#e074d6", fav: false },
+];
 
-  const [categories, setCategories] = useState(ctgs);
-  const [category, setCategory] = useState(categories[0]);
+const getCtgArray = () => {
+  if (localStorage.getItem(`categories`) === null) {
+    localStorage.setItem(`categories`, JSON.stringify(ctgs_default));
+    return ctgs_default;
+  } else {
+    return JSON.parse(localStorage.getItem("categories"));
+  }
+};
+
+const getChosenCtg = () => {
+  if (localStorage.getItem(`ChosenCategory`) === null) {
+    localStorage.setItem(`ChosenCategory`, JSON.stringify(ctgs_default[0]));
+    return ctgs_default[0];
+  } else {
+    return JSON.parse(localStorage.getItem("ChosenCategory"));
+  }
+};
+
+export const CategoryContextProvider = ({ children }) => {
+  const [categories, setCategories] = useState(getCtgArray);
+  const [category, setCategory] = useState(getChosenCtg);
+
+  useEffect(() => {
+    localStorage.setItem("categories", JSON.stringify(categories));
+  }, [categories]);
+
+  useEffect(() => {
+    localStorage.setItem("ChosenCategory", JSON.stringify(category));
+  }, [category]);
 
   const addCtg = (ctgToAdd) => {
     if (categories.find((obj) => obj.ctg === ctgToAdd)) {
@@ -60,6 +86,8 @@ export const CategoryContextProvider = ({ children }) => {
         alert("Maximum number of 5 favorite categories reached");
       }
     }
+    //save object changes (fav/unfav) to local storage
+    localStorage.setItem("categories", JSON.stringify(categories));
   };
 
   return (
