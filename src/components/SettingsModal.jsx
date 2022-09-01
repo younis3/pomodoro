@@ -24,8 +24,8 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
   };
 
   const resetHandler = () => {
-    setFocusDuration(50);
-    setBreakDuration(10);
+    setFocusDuration(25);
+    setBreakDuration(5);
     setSessionsCount(4);
   };
 
