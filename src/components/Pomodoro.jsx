@@ -37,9 +37,10 @@ function Pomodoro() {
   const [timerDuration, setTimerDuration] = useState(focusDuration);
 
   useEffect(() => {
-    breakStatus ? setTimerDuration(breakDuration) : setTimerDuration(focusDuration);
-  }, [breakStatus, focusDuration])
-
+    breakStatus
+      ? setTimerDuration(breakDuration)
+      : setTimerDuration(focusDuration);
+  }, [breakStatus, focusDuration]);
 
   useEffect(() => {
     if (isRunning === "running" && chosenSound !== "none") {
@@ -167,7 +168,10 @@ function Pomodoro() {
         />
       )}
       {categoryModalToggle && (
-        <CategoryModal setCategoryModalToggle={setCategoryModalToggle} breakStatus={breakStatus} />
+        <CategoryModal
+          setCategoryModalToggle={setCategoryModalToggle}
+          breakStatus={breakStatus}
+        />
       )}
     </div>
   );
@@ -183,7 +187,7 @@ export default Pomodoro;
 const StyledHeader = styled.header`
   color: #d1d1d1b9;
   h1 {
-    padding-top: 5vh;
+    padding-top: 11vh;
     color: #f4f4f5db;
   }
   .lstinHeader {
