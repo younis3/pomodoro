@@ -106,16 +106,18 @@ const StyledForm = styled.form`
 `;
 
 const StyledContinue = styled.div`
-  margin-top: 6vh;
+  margin-top: 7vh;
   opacity: 0.8;
   width: 100%;
   &:hover {
     cursor: pointer;
-    color: #7896ef;
   }
   h3 {
     color: whitesmoke;
     opacity: 0.7;
     font-size: small;
+    &:hover {
+      color: #98daee;
+    }
   }
 `;
