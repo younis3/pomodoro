@@ -15,6 +15,7 @@ const Navbar = () => {
   useEffect(() => {
     switch (urlLocation) {
       case "/login":
+      case "/signup":
         navRef.current.classList.add("hide");
         break;
       case "/":

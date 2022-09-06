@@ -14,7 +14,7 @@ const LoginPage = () => {
             <input type={"password"} placeholder={"Password"} />
             <button>Sign In</button>
             <h4 style={{ marginTop: "3vh" }}>
-              Don't have an account? <a href="/signup">Sign Up</a>
+              Don't have an account? <Link to="/signup">Sign Up</Link>
             </h4>
             <h4>
               Or Sign In with
