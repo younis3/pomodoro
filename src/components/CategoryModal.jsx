@@ -48,7 +48,7 @@ const CategoryModal = ({ setCategoryModalToggle, breakStatus }) => {
 
   const chooseCtgHandler = (selectedCtg) => {
     if (breakStatus) {
-      alert("Woops! You can't change the category in break time!")
+      alert("Woops! You can't change the category in break time!");
       return;
     }
     const objToSet = categories.find((obj) => obj.ctg === selectedCtg);
@@ -122,17 +122,17 @@ const StyledModal = styled.div`
 `;
 
 const enlargeModalSizeAnimation = keyframes`
- 0% { height: 70%; width: 85%; }
+ 0% { height: 65%; width: 85%; }
  100% { height: 100%; width: 100%; }
 `;
 
 const reduceModalSizeAnimation = keyframes`
  0% { height: 100%; width: 100%; }
- 100% { height: 70%; width: 85%; }
+ 100% { height: 65%; width: 85%; }
 `;
 
 const StyledModalBorder = styled.div`
-  height: 70%;
+  height: 65%;
   width: 85%;
   border: solid 2px rgba(104, 104, 104, 0.432);
   background-color: rgb(83, 83, 83, 0.6);
