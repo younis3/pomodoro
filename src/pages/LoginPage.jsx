@@ -2,23 +2,48 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import ReplyIcon from "@mui/icons-material/Reply";
+import AuthContext from "../context/AuthContext";
+import { useContext, useRef } from "react";
+import { auth } from "../firebase";
 
 const LoginPage = () => {
+  const { googleSignIn } = useContext(AuthContext);
+  const { emailPasswordLogin } = useContext(AuthContext);
+
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  const defaultLoginHandler = (e) => {
+    e.preventDefault();
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    emailPasswordLogin(auth, email, password);
+  };
+
+  const loginWithGoogleHandler = (e) => {
+    e.preventDefault();
+    googleSignIn();
+  };
+
   return (
     <div>
       <StyledOuter>
         <StyledFormContainer>
           <StyledForm>
-            <input type={"email"} placeholder={"Email"} />
-            <input type={"password"} placeholder={"Password"} />
-            <button>Sign In</button>
+            <input type={"email"} placeholder={"Email"} ref={emailRef} />
+            <input
+              type={"password"}
+              placeholder={"Password"}
+              ref={passwordRef}
+            />
+            <button onClick={defaultLoginHandler}>Sign In</button>
             <h4 style={{ marginTop: "3vh" }}>
               Don't have an account? <Link to="/signup">Sign Up</Link>
             </h4>
             <h4>
               Or Sign In with
               <div className="google">
-                <button>
+                <button onClick={loginWithGoogleHandler}>
                   <GoogleIcon style={{ paddingRight: "6px" }} />
                   Google
                 </button>

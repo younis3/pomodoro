@@ -1,16 +1,24 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
+import { auth } from "../firebase";
+import AuthContext from "../context/AuthContext";
 
 const Navbar = () => {
   const urlLocation = useLocation().pathname;
 
-  const isLoggedIn = false;
+  const [isLoggedIn, setIsloggedIn] = useState(false);
   const userName = "Y3";
 
   const navRef = useRef();
   const pomodoroRef = useRef();
   const statsRef = useRef();
+
+  const { logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    !auth.currentUser ? setIsloggedIn(false) : setIsloggedIn(true);
+  }, [auth.currentUser]);
 
   useEffect(() => {
     switch (urlLocation) {
@@ -35,6 +43,10 @@ const Navbar = () => {
     }
   }, [urlLocation]);
 
+  const signoutHandler = () => {
+    logout();
+  };
+
   return (
     <StyledNavWrapper>
       <StyledNav ref={navRef}>
@@ -47,11 +59,9 @@ const Navbar = () => {
             )}
             {isLoggedIn && <h4 className="welcome">Welcome {userName}!</h4>}
             {isLoggedIn && (
-              <Link to="/logout" style={{ textDecoration: "none" }}>
-                <li className="navItem" id="logout">
-                  Sign Out
-                </li>
-              </Link>
+              <li className="navItem" id="logout" onClick={signoutHandler}>
+                Sign Out
+              </li>
             )}
           </div>
         )}

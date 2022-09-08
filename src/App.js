@@ -2,18 +2,19 @@ import "./App.css";
 import { SettingsContextProvider } from "./context/SettingsContext";
 import { SoundContextProvider } from "./context/SoundContext";
 import { CategoryContextProvider } from "./context/CategoryContext";
+import { AuthContextProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import StatsPAge from "./pages/StatsPage";
 import NotFound from "./pages/NotFound";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <AuthContextProvider>
         <CategoryContextProvider>
           <SoundContextProvider>
             <SettingsContextProvider>
@@ -28,8 +29,8 @@ function App() {
             </SettingsContextProvider>
           </SoundContextProvider>
         </CategoryContextProvider>
-      </div>
-    </Router>
+      </AuthContextProvider>
+    </div>
   );
 }
 

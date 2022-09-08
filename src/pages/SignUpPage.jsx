@@ -1,19 +1,52 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import ReplyIcon from "@mui/icons-material/Reply";
+import { useContext, useRef } from "react";
+import AuthContext from "../context/AuthContext";
+import { auth } from "../firebase";
 
 const SignUpPage = () => {
+  const { emailPasswordSignUp } = useContext(AuthContext);
+
+  const firstNameRef = useRef();
+  const lastNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
+
+  const regUserHandler = (e) => {
+    e.preventDefault();
+    const firstName = firstNameRef.current.value;
+    const lastName = lastNameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const confirmPassword = confirmPasswordRef.current.value;
+
+    emailPasswordSignUp(auth, firstName, lastName, email, password);
+  };
   return (
     <div>
       <StyledOuter>
         <StyledFormContainer>
           <StyledForm>
-            <input type={"text"} placeholder={"First Name"} />
-            <input type={"text"} placeholder={"Last Name"} />
-            <input type={"email"} placeholder={"Email"} />
-            <input type={"password"} placeholder={"Password"} />
-            <input type={"password"} placeholder={"Confirm Password"} />
-            <button>Sign Up</button>
+            <input
+              type={"text"}
+              placeholder={"First Name"}
+              ref={firstNameRef}
+            />
+            <input type={"text"} placeholder={"Last Name"} ref={lastNameRef} />
+            <input type={"email"} placeholder={"Email"} ref={emailRef} />
+            <input
+              type={"password"}
+              placeholder={"Password"}
+              ref={passwordRef}
+            />
+            <input
+              type={"password"}
+              placeholder={"Confirm Password"}
+              ref={confirmPasswordRef}
+            />
+            <button onClick={regUserHandler}>Sign Up</button>
             <h4 style={{ marginTop: "3vh" }}>
               Already have an account? <Link to="/login">Sign In</Link>
             </h4>
