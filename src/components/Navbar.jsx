@@ -1,15 +1,13 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef, useContext } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import AuthContext from "../context/AuthContext";
 import AppStateContext from "../context/AppStateContext";
+import { doc, getDoc } from "firebase/firestore";
 
 const Navbar = () => {
   const urlLocation = useLocation().pathname;
-
-  const [isLoggedIn, setIsloggedIn] = useState(false);
-  const userName = "Y3";
 
   const navRef = useRef();
   const pomodoroRef = useRef();
@@ -18,9 +16,32 @@ const Navbar = () => {
   const { logout } = useContext(AuthContext);
   const { timerState } = useContext(AppStateContext);
 
-  useEffect(() => {
-    !auth.currentUser ? setIsloggedIn(false) : setIsloggedIn(true);
-  }, [auth.currentUser]);
+  const [userFirstName, setUserFirstName] = useState("");
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      auth.currentUser = user;
+      if (auth.currentUser) {
+        console.log(auth.currentUser.email);
+
+        //changing first name
+        getUserFirstName(auth.currentUser.uid);
+      }
+    } else {
+      // User is not signed in.
+      console.log("not signed in");
+    }
+  });
+
+  const getUserFirstName = async (uid) => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      setUserFirstName(docSnap.data().firstName);
+    } else {
+      console.log("No such document!");
+    }
+  };
 
   useEffect(() => {
     switch (urlLocation) {
@@ -56,18 +77,20 @@ const Navbar = () => {
     logout();
   };
 
+  setTimeout(() => {}, 10000);
+
   return (
     <StyledNavWrapper>
       <StyledNav ref={navRef}>
         {urlLocation !== "/login" && (
           <div className="leftContainer">
-            {!isLoggedIn && (
+            {!auth.currentUser && (
               <Link to="/login" style={{ textDecoration: "none" }}>
                 <li className="navItem">Sign In</li>
               </Link>
             )}
-            {isLoggedIn && <h4 className="welcome">Welcome {userName}!</h4>}
-            {isLoggedIn && (
+            {auth.currentUser && <h4 className="welcome">Welcome {userFirstName}!</h4>}
+            {auth.currentUser && (
               <li className="navItem" id="logout" onClick={signoutHandler}>
                 Sign Out
               </li>
