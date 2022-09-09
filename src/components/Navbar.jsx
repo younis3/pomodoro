@@ -1,15 +1,15 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef, useContext } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import AuthContext from "../context/AuthContext";
 import AppStateContext from "../context/AppStateContext";
+import { doc, getDoc } from "firebase/firestore";
 
 const Navbar = () => {
   const urlLocation = useLocation().pathname;
 
   const [isLoggedIn, setIsloggedIn] = useState(false);
-  const userName = "Y3";
 
   const navRef = useRef();
   const pomodoroRef = useRef();
@@ -18,8 +18,25 @@ const Navbar = () => {
   const { logout } = useContext(AuthContext);
   const { timerState } = useContext(AppStateContext);
 
+  const userFirstNameRef = useRef();
+
+  const getUserFirstName = async (uid) => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      userFirstNameRef.current = docSnap.data().firstName;
+    } else {
+      console.log("No such document!");
+    }
+  };
+
   useEffect(() => {
     !auth.currentUser ? setIsloggedIn(false) : setIsloggedIn(true);
+    console.log(auth.currentUser?.email);
+    //changing first name
+    if (auth.currentUser) {
+      getUserFirstName(auth.currentUser.uid);
+    }
   }, [auth.currentUser]);
 
   useEffect(() => {
@@ -66,7 +83,7 @@ const Navbar = () => {
                 <li className="navItem">Sign In</li>
               </Link>
             )}
-            {isLoggedIn && <h4 className="welcome">Welcome {userName}!</h4>}
+            {isLoggedIn && <h4 className="welcome">Welcome {userFirstNameRef.current}!</h4>}
             {isLoggedIn && (
               <li className="navItem" id="logout" onClick={signoutHandler}>
                 Sign Out

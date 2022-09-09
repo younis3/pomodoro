@@ -9,11 +9,13 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { capitalizeFirstLetter } from "../helper_functions";
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   let navigate = useNavigate();
+
   const googleSignIn = async () => {
     try {
       const result = await loginWithGoogle();
@@ -21,8 +23,8 @@ export const AuthContextProvider = ({ children }) => {
         // add user to db if it doesn't exist yet
         await setDoc(doc(db, "users", result.user.uid), {
           uid: result.user.uid,
-          firstName: result._tokenResponse.firstName,
-          lastName: result._tokenResponse.lastName,
+          firstName: capitalizeFirstLetter(result._tokenResponse.firstName),
+          lastName: capitalizeFirstLetter(result._tokenResponse.lastName),
           email: result._tokenResponse.email,
         });
         navigate("/");
@@ -39,14 +41,14 @@ export const AuthContextProvider = ({ children }) => {
   const emailPasswordSignUp = async (auth, firstName, lastName, email, password) => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(result);
+      // console.log(result);
       // user added to authinticated users (not the db)
 
       try {
         await setDoc(doc(db, "users", result.user.uid), {
           uid: result.user.uid,
-          firstName: firstName,
-          lastName: lastName,
+          firstName: capitalizeFirstLetter(firstName),
+          lastName: capitalizeFirstLetter(lastName),
           email: email,
         });
         try {
@@ -70,7 +72,7 @@ export const AuthContextProvider = ({ children }) => {
   const emailPasswordLogin = async (auth, email, password) => {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      console.log(result);
+      // console.log(result);
       navigate("/");
     } catch (error) {
       const errorMessage = error.message;
