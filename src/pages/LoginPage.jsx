@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
-import ReplyIcon from "@mui/icons-material/Reply";
+import CloseIcon from "@mui/icons-material/Close";
 import AuthContext from "../context/AuthContext";
 import { useContext, useRef } from "react";
 import { auth } from "../firebase";
@@ -29,34 +29,35 @@ const LoginPage = () => {
     <div>
       <StyledOuter>
         <StyledFormContainer>
+          <StyledBackBtnWrapper>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <StyledCloseBtn>
+                <CloseIcon style={{ color: "white", fontSize: "inherit" }} />
+              </StyledCloseBtn>
+            </Link>
+          </StyledBackBtnWrapper>
           <StyledForm>
             <input type={"email"} placeholder={"Email"} ref={emailRef} />
-            <input
-              type={"password"}
-              placeholder={"Password"}
-              ref={passwordRef}
-            />
+            <input type={"password"} placeholder={"Password"} ref={passwordRef} />
             <button onClick={defaultLoginHandler}>Sign In</button>
-            <h4 style={{ marginTop: "3vh" }}>
+            <h4 style={{ marginTop: "2.8vh" }}>
               Don't have an account? <Link to="/signup">Sign Up</Link>
             </h4>
+            <StyledDivider>
+              <h3 className="leftLine"> _____________ </h3>
+              <h2>or</h2>
+              <h3 className="rightLine"> _____________ </h3>
+            </StyledDivider>
             <h4>
-              Or Sign In with
               <div className="google">
                 <button onClick={loginWithGoogleHandler}>
                   <GoogleIcon style={{ paddingRight: "6px" }} />
-                  Google
+                  Sign In with Google
                 </button>
               </div>
             </h4>
           </StyledForm>
         </StyledFormContainer>
-        <StyledContinue>
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <ReplyIcon style={{ color: "white", fontSize: "46px" }} />
-            <h3>Continue using the app without signing in!</h3>
-          </Link>
-        </StyledContinue>
       </StyledOuter>
     </div>
   );
@@ -80,7 +81,8 @@ const StyledOuter = styled.div`
 `;
 
 const StyledFormContainer = styled.div`
-  margin-top: -3vh;
+  position: relative;
+  margin-top: -1vh;
   width: 600px;
   background-color: #3b393962;
   opacity: 0.9;
@@ -88,6 +90,7 @@ const StyledFormContainer = styled.div`
   border: 1px solid #ffffff89;
   @media (max-width: 650px) {
     width: 88vw;
+    margin-top: -3vh;
   }
 `;
 
@@ -96,6 +99,7 @@ const StyledForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 6vh;
 
   input {
     width: 98%;
@@ -128,7 +132,6 @@ const StyledForm = styled.form`
     }
   }
   h4 {
-    margin-top: 1vh;
     font-size: smaller;
     color: #f5f5f5c1;
     a {
@@ -142,25 +145,75 @@ const StyledForm = styled.form`
         display: inline-flex;
         align-items: center;
         color: #ffffff;
-        font-size: smaller;
+        font-size: 13px;
       }
     }
   }
 `;
 
-const StyledContinue = styled.div`
-  margin-top: 7vh;
-  opacity: 0.8;
-  width: 100%;
+const StyledBackBtnWrapper = styled.div`
   &:hover {
     cursor: pointer;
   }
-  h3 {
+  position: absolute;
+  right: 4.8%;
+  top: 3%;
+`;
+
+const StyledCloseBtn = styled.button`
+  padding: 6px;
+  padding-top: 10px;
+  padding-left: 11px;
+  padding-right: 11px;
+  font-size: 26px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(29, 24, 28);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  opacity: 0.8;
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  &:hover {
+    background-color: rgb(86, 116, 161);
+  }
+  &&.hide {
+    display: none;
+  }
+`;
+
+const StyledDivider = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px;
+  margin-top: 1vh;
+  .leftLine {
+    background-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #fff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    font-size: 8px;
+    padding: 2px;
+  }
+  h2 {
     color: whitesmoke;
-    opacity: 0.7;
-    font-size: small;
-    &:hover {
-      color: #98daee;
-    }
+    font-size: 16px;
+    padding: 2px;
+  }
+  .rightLine {
+    background-image: linear-gradient(90deg, #fff 0%, rgba(0, 0, 0, 0));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+    font-size: 8px;
+    text-align: center;
+    padding: 2px;
   }
 `;

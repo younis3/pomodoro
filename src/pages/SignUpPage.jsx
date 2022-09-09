@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import ReplyIcon from "@mui/icons-material/Reply";
+import CloseIcon from "@mui/icons-material/Close";
 import { useContext, useRef } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
@@ -28,36 +28,25 @@ const SignUpPage = () => {
     <div>
       <StyledOuter>
         <StyledFormContainer>
+          <StyledBackBtnWrapper>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <StyledCloseBtn>
+                <CloseIcon style={{ color: "white", fontSize: "inherit" }} />
+              </StyledCloseBtn>
+            </Link>
+          </StyledBackBtnWrapper>
           <StyledForm>
-            <input
-              type={"text"}
-              placeholder={"First Name"}
-              ref={firstNameRef}
-            />
+            <input type={"text"} placeholder={"First Name"} ref={firstNameRef} />
             <input type={"text"} placeholder={"Last Name"} ref={lastNameRef} />
             <input type={"email"} placeholder={"Email"} ref={emailRef} />
-            <input
-              type={"password"}
-              placeholder={"Password"}
-              ref={passwordRef}
-            />
-            <input
-              type={"password"}
-              placeholder={"Confirm Password"}
-              ref={confirmPasswordRef}
-            />
+            <input type={"password"} placeholder={"Password"} ref={passwordRef} />
+            <input type={"password"} placeholder={"Confirm Password"} ref={confirmPasswordRef} />
             <button onClick={regUserHandler}>Sign Up</button>
-            <h4 style={{ marginTop: "3vh" }}>
+            <h4 style={{ marginTop: "2vh" }}>
               Already have an account? <Link to="/login">Sign In</Link>
             </h4>
           </StyledForm>
         </StyledFormContainer>
-        <StyledContinue>
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <ReplyIcon style={{ color: "white", fontSize: "46px" }} />
-            <h3>Continue using the app without signing up!</h3>
-          </Link>
-        </StyledContinue>
       </StyledOuter>
     </div>
   );
@@ -81,7 +70,8 @@ const StyledOuter = styled.div`
 `;
 
 const StyledFormContainer = styled.div`
-  margin-top: -3vh;
+  position: relative;
+  margin-top: -1vh;
   width: 600px;
   background-color: #3b393962;
   opacity: 0.9;
@@ -89,6 +79,7 @@ const StyledFormContainer = styled.div`
   border: 1px solid #ffffff89;
   @media (max-width: 650px) {
     width: 88vw;
+    margin-top: -3vh;
   }
 `;
 
@@ -97,11 +88,12 @@ const StyledForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 6vh;
 
   input {
     width: 98%;
-    padding: 10px;
-    margin: 9px;
+    padding: 9px;
+    margin: 8px;
     background-color: #ffffff11;
     border: 1px solid #dedede7d;
     color: #ffffff;
@@ -129,7 +121,6 @@ const StyledForm = styled.form`
     }
   }
   h4 {
-    margin-top: 1vh;
     font-size: smaller;
     color: #f5f5f5c1;
     a {
@@ -138,19 +129,34 @@ const StyledForm = styled.form`
   }
 `;
 
-const StyledContinue = styled.div`
-  margin-top: 7vh;
-  opacity: 0.8;
-  width: 100%;
+const StyledBackBtnWrapper = styled.div`
   &:hover {
     cursor: pointer;
   }
-  h3 {
-    color: whitesmoke;
-    opacity: 0.7;
-    font-size: small;
-    &:hover {
-      color: #98daee;
-    }
+  position: absolute;
+  right: 4.8%;
+  top: 3%;
+`;
+
+const StyledCloseBtn = styled.button`
+  padding: 6px;
+  padding-top: 10px;
+  padding-left: 11px;
+  padding-right: 11px;
+  font-size: 26px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(29, 24, 28);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  opacity: 0.8;
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  &:hover {
+    background-color: rgb(86, 116, 161);
+  }
+  &&.hide {
+    display: none;
   }
 `;
