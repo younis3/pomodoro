@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useRef, useContext } from "react";
 import { auth } from "../firebase";
 import AuthContext from "../context/AuthContext";
+import AppStateContext from "../context/AppStateContext";
 
 const Navbar = () => {
   const urlLocation = useLocation().pathname;
@@ -15,6 +16,7 @@ const Navbar = () => {
   const statsRef = useRef();
 
   const { logout } = useContext(AuthContext);
+  const { timerState } = useContext(AppStateContext);
 
   useEffect(() => {
     !auth.currentUser ? setIsloggedIn(false) : setIsloggedIn(true);
@@ -44,6 +46,13 @@ const Navbar = () => {
   }, [urlLocation]);
 
   const signoutHandler = () => {
+    if (timerState) {
+      //in case timer is currently running, ask the user to confirm signing out
+      if (window.confirm(`Warning: Signing out will reset the countdown timer`)) {
+        logout();
+      }
+      return;
+    }
     logout();
   };
 

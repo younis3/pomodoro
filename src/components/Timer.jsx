@@ -6,7 +6,8 @@ import { useContext, useState, useEffect } from "react";
 import { capitalizeFirstLetter } from "../helper_functions";
 import SoundContext from "../context/SoundContext";
 import alertAudio from "../assets/audios/cell-phone-dbl-beep-notification-83306.mp3";
-import { useUpdateEffect } from 'react-use';
+import { useUpdateEffect } from "react-use";
+import AppStateContext from "../context/AppStateContext";
 
 function Timer({
   timerKey,
@@ -18,9 +19,8 @@ function Timer({
   size = 280,
   setCategoryModalToggle,
   breakStatus,
-  setBreakStatus
+  setBreakStatus,
 }) {
-
   const { category } = useContext(CategoryContext);
   const { autoRunSwitch } = useContext(SettingsContext);
   const { sessionsCount } = useContext(SettingsContext);
@@ -31,7 +31,11 @@ function Timer({
   const [playAlert, setPlayAlert] = useState(false);
 
   const alertSound = new Audio(alertAudio);
+  const { SetTimerState } = useContext(AppStateContext);
 
+  useEffect(() => {
+    SetTimerState(animate);
+  }, [animate]);
 
   useEffect(() => {
     if (isRunning === "stopped") {
@@ -45,12 +49,12 @@ function Timer({
     }
   }, [isRunning, breakStatus]);
 
-
   const categoryHandler = () => {
     setCategoryModalToggle(true);
   };
 
-  useUpdateEffect(() => {  //same as useEffect but skips first run (react-use library)
+  useUpdateEffect(() => {
+    //same as useEffect but skips first run (react-use library)
     if (isRunning === "running") {
       if (chosenSound !== "none") {
         sound.pause();
@@ -61,24 +65,22 @@ function Timer({
           sound.play();
         }
       }, 8000);
-    }
-    else if (isRunning === "stopped") {
+    } else if (isRunning === "stopped") {
       sound.pause();
       alertSound.play();
     }
   }, [playAlert]);
 
-
   const timerCompletedHandler = () => {
     setPlayAlert(!playAlert);
     if (autoRunSwitch) {
-      if (!breakStatus) {  //if it was focus time (not break)
+      if (!breakStatus) {
+        //if it was focus time (not break)
         //count the session to the context (for stats)
       } else {
         if (sessionCounter < sessionsCount) {
           setSessionCounter(sessionCounter + 1);
-        }
-        else if (sessionCounter == sessionsCount) {
+        } else if (sessionCounter == sessionsCount) {
           //if user finished all sessions
           setSessionCounter(1);
           setIsRunning("stopped");
@@ -111,15 +113,14 @@ function Timer({
       <StyledTimerContentWrapper>
         <div className="textWrapper">
           {autoRunSwitch && (
-            <div className="sessions">
-              {`${sessionCounter}/${sessionsCount} - `}
-            </div>
+            <div className="sessions">{`${sessionCounter}/${sessionsCount} - `}</div>
           )}
           <div className="text">{text}</div>
         </div>
 
-        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds
-          }`}</div>
+        <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
+          seconds < 10 ? `0${seconds}` : seconds
+        }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler} disabled={breakStatus}>
           <StyledCategoryBtn color={category.color} />
           <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
@@ -181,8 +182,7 @@ const StyledTimerContentWrapper = styled.div`
     color: whitesmoke;
     padding: 12px;
     font-size: 70px;
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-      sans-serif;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
     &:hover {
       cursor: pointer;
     }
@@ -196,10 +196,10 @@ const StyledTimerContentWrapper = styled.div`
       cursor: pointer;
     }
   }
-  .categoryWrapper[disabled]{
+  .categoryWrapper[disabled] {
     pointer-events: none;
     opacity: 0.4;
-   }
+  }
 
   .category {
     color: whitesmoke;

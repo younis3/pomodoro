@@ -36,19 +36,9 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
-  const emailPasswordSignUp = async (
-    auth,
-    firstName,
-    lastName,
-    email,
-    password
-  ) => {
+  const emailPasswordSignUp = async (auth, firstName, lastName, email, password) => {
     try {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const result = await createUserWithEmailAndPassword(auth, email, password);
       console.log(result);
       // user added to authinticated users (not the db)
 
@@ -92,7 +82,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       await signOut(auth);
       //user signed out
-      navigate("/");
+      window.location.reload(false); //refresh app and remove current states
     } catch (error) {
       const errorMessage = error.message;
       console.log(errorMessage);
@@ -100,9 +90,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ googleSignIn, emailPasswordSignUp, emailPasswordLogin, logout }}
-    >
+    <AuthContext.Provider value={{ googleSignIn, emailPasswordSignUp, emailPasswordLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
