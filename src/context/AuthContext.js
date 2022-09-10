@@ -16,6 +16,8 @@ export const AuthContextProvider = ({ children }) => {
       .then(async () => {
         try {
           const result = await loginWithGoogle();
+          console.log("User signed in");
+
           try {
             // add user to db if it doesn't exist yet
             await setDoc(doc(db, "users", result.user.uid), {
@@ -47,20 +49,13 @@ export const AuthContextProvider = ({ children }) => {
       // user added to authinticated users (not the db)
 
       try {
+        // add user to db
         await setDoc(doc(db, "users", result.user.uid), {
           uid: result.user.uid,
           firstName: capitalizeFirstLetter(firstName),
           lastName: capitalizeFirstLetter(lastName),
           email: email,
         });
-        try {
-          await signOut(auth);
-          //user signed out
-          navigate("/login");
-        } catch (error) {
-          const errorMessage = error.message;
-          console.log(errorMessage);
-        }
       } catch (error) {
         const errorMessage = error.message;
         console.log(errorMessage);
@@ -76,6 +71,8 @@ export const AuthContextProvider = ({ children }) => {
       .then(async () => {
         try {
           const result = await signInWithEmailAndPassword(auth, email, password);
+          console.log("User signed in");
+
           // console.log(result);
           navigate("/");
         } catch (error) {
@@ -101,7 +98,14 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ googleSignIn, emailPasswordSignUp, emailPasswordLogin, logout }}>
+    <AuthContext.Provider
+      value={{
+        googleSignIn,
+        emailPasswordSignUp,
+        emailPasswordLogin,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

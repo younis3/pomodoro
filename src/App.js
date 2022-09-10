@@ -8,9 +8,10 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import StatsPAge from "./pages/StatsPage";
+import StatsPage from "./pages/StatsPage";
 import NotFound from "./pages/NotFound";
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoutes from "./pages/ProtectedRoutes";
 
 function App() {
   return (
@@ -21,11 +22,13 @@ function App() {
             <SoundContextProvider>
               <SettingsContextProvider>
                 <Navbar />
-                <HomePage />
                 <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/signup" element={<SignUpPage />} />
-                  <Route path="/stats" element={<StatsPAge />} />
+                  <Route path="/" element={<HomePage />} />
+                  <Route element={<ProtectedRoutes />}>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignUpPage />} />
+                  </Route>
+                  <Route path="/stats" element={<StatsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SettingsContextProvider>
