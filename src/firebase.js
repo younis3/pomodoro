@@ -15,7 +15,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// app.auth().setPersistence(app.auth.Auth.Persistence.LOCAL);
 
 // Initialize Firestore DB
 export const db = getFirestore(app);

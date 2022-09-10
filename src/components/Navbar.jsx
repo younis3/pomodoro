@@ -18,19 +18,18 @@ const Navbar = () => {
 
   const [userFirstName, setUserFirstName] = useState("");
 
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      auth.currentUser = user;
-      if (auth.currentUser) {
-        console.log(auth.currentUser.email);
-
-        //changing first name
-        getUserFirstName(auth.currentUser.uid);
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        auth.currentUser = user;
+        if (auth.currentUser) {
+          if (userFirstName === "") {
+            //user signed in
+            getUserFirstName(auth.currentUser.uid);
+          }
+        }
       }
-    } else {
-      // User is not signed in.
-      console.log("not signed in");
-    }
+    });
   });
 
   const getUserFirstName = async (uid) => {
@@ -76,8 +75,6 @@ const Navbar = () => {
     }
     logout();
   };
-
-  setTimeout(() => {}, 10000);
 
   return (
     <StyledNavWrapper>
