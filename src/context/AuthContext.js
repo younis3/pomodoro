@@ -11,11 +11,28 @@ const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   let navigate = useNavigate();
 
+  const updateCurUserLocalStorage = (userObj = {}) => {
+    if (localStorage.getItem(`curUser`) === null) {
+      localStorage.setItem(`curUser`, JSON.stringify(userObj));
+    } else {
+      localStorage.setItem(`curUser`, JSON.stringify(userObj));
+    }
+  };
+
+  const getCurUserLocalStorage = () => {
+    if (localStorage.getItem(`curUser`) !== null) {
+      return JSON.parse(localStorage.getItem("curUser"));
+    } else {
+      return {};
+    }
+  };
+
   const googleSignIn = () => {
     setPersistence(auth, browserLocalPersistence)
       .then(async () => {
         try {
           const result = await loginWithGoogle();
+          updateCurUserLocalStorage(result.user);
           console.log("User signed in");
 
           try {
@@ -45,6 +62,7 @@ export const AuthContextProvider = ({ children }) => {
   const emailPasswordSignUp = async (auth, firstName, lastName, email, password) => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
+      updateCurUserLocalStorage(result.user);
       // console.log(result);
       // user added to authinticated users (not the db)
 
@@ -71,6 +89,7 @@ export const AuthContextProvider = ({ children }) => {
       .then(async () => {
         try {
           const result = await signInWithEmailAndPassword(auth, email, password);
+          updateCurUserLocalStorage(result.user);
           console.log("User signed in");
 
           // console.log(result);
@@ -90,6 +109,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       await signOut(auth);
       //user signed out
+      updateCurUserLocalStorage({});
       window.location.reload(false); //refresh app and remove current states
     } catch (error) {
       const errorMessage = error.message;
@@ -104,6 +124,7 @@ export const AuthContextProvider = ({ children }) => {
         emailPasswordSignUp,
         emailPasswordLogin,
         logout,
+        getCurUserLocalStorage,
       }}
     >
       {children}

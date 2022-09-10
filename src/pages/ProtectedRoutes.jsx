@@ -1,9 +1,11 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
+import AuthContext from "../context/AuthContext";
 
 const ProtectedRoutes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { getCurUserLocalStorage } = useContext(AuthContext);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -20,7 +22,12 @@ const ProtectedRoutes = () => {
     });
   });
 
-  return isLoggedIn ? <Navigate to="/" /> : <Outlet />;
+  let user = getCurUserLocalStorage();
+  if (isLoggedIn || Object.keys(user).length) {
+    return <Navigate to="/" />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoutes;
