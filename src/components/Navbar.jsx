@@ -18,6 +18,10 @@ const Navbar = () => {
 
   const [userFirstName, setUserFirstName] = useState("");
 
+  const { getCurUserLocalStorage } = useContext(AuthContext);
+  let user = getCurUserLocalStorage();
+  let userObjLength = Object.keys(user).length;
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -81,13 +85,16 @@ const Navbar = () => {
       <StyledNav ref={navRef}>
         {urlLocation !== "/login" && (
           <div className="leftContainer">
-            {!auth.currentUser && (
+            {!auth.currentUser && !userObjLength && (
               <Link to="/login" style={{ textDecoration: "none" }}>
-                <li className="navItem">Sign In</li>
+                <li className="navItem"> Sign In </li>
               </Link>
             )}
-            {auth.currentUser && <h4 className="welcome">Welcome {userFirstName}!</h4>}
-            {auth.currentUser && (
+            {!auth.currentUser && userObjLength > 0 && <h4 className="welcome">loading...</h4>}
+            {auth.currentUser && userObjLength > 0 && (
+              <h4 className="welcome">Welcome {userFirstName}!</h4>
+            )}
+            {auth.currentUser && userObjLength > 0 && (
               <li className="navItem" id="logout" onClick={signoutHandler}>
                 Sign Out
               </li>
