@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import CloseIcon from "@mui/icons-material/Close";
 import AuthContext from "../context/AuthContext";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { auth } from "../firebase";
 
 const LoginPage = () => {
   const { googleSignIn } = useContext(AuthContext);
   const { emailPasswordLogin } = useContext(AuthContext);
+
+  const [errorMsg, setErrorMsg] = useState("");
+  const errorRef = useRef();
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -18,6 +21,7 @@ const LoginPage = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     emailPasswordLogin(auth, email, password);
+    // console.log(emailPasswordLogin(auth, email, password));
   };
 
   const loginWithGoogleHandler = (e) => {
@@ -40,6 +44,9 @@ const LoginPage = () => {
             <input type={"email"} placeholder={"Email"} ref={emailRef} />
             <input type={"password"} placeholder={"Password"} ref={passwordRef} />
             <button onClick={defaultLoginHandler}>Sign In</button>
+            <p className="error" ref={errorRef}>
+              {errorMsg}
+            </p>
             <h4 style={{ marginTop: "2.8vh" }}>
               Don't have an account? <Link to="/signup">Sign Up</Link>
             </h4>
@@ -115,6 +122,14 @@ const StyledForm = styled.form`
       box-shadow: 0 0 5px #719ece;
     }
   }
+  .notValid {
+    border: 1px solid #ff535379;
+    &:focus {
+      outline: none !important;
+      border: 1px solid #ff535379;
+      box-shadow: 0 0 5px #e59b2b;
+    }
+  }
 
   button {
     padding: 4px 12px;
@@ -130,6 +145,14 @@ const StyledForm = styled.form`
     &:hover {
       background-color: rgb(86, 116, 161);
     }
+  }
+  .error {
+    color: #fb8989;
+    font-weight: 500;
+    font-size: smaller;
+    /* background-color: #e50e0e46; */
+    padding: 4px 8px;
+    width: 80%;
   }
   h4 {
     font-size: smaller;
