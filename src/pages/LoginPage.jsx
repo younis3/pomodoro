@@ -184,10 +184,10 @@ const StyledBackBtnWrapper = styled.div`
 `;
 
 const StyledCloseBtn = styled.button`
-  padding: 6px;
-  padding-top: 10px;
-  padding-left: 11px;
-  padding-right: 11px;
+  padding: 4px;
+  padding-top: 8px;
+  padding-left: 9px;
+  padding-right: 9px;
   font-size: 26px;
   color: rgb(255, 255, 255);
   background-color: rgb(29, 24, 28);
