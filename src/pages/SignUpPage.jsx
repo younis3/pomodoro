@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useContext, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
-import { hasNumber } from "../helper_functions";
+import { hasNumber, validateOnlyLetters, validateEmail } from "../helper_functions";
 
 const SignUpPage = (e) => {
   const { emailPasswordSignUp } = useContext(AuthContext);
@@ -25,17 +25,17 @@ const SignUpPage = (e) => {
 
   //handle real time validations (onChange events)
   const firstNameHandler = (e) => {
-    const firstName = firstNameRef.current.value;
+    const firstName = firstNameRef.current.value.trim();
     if (firstName === "") {
-      setErrorMsg("First name can't be empty");
+      setErrorMsg("First Name can't be empty");
       firstNameRef.current.classList.add("notValid");
       return firstNameRef.current.focus();
     } else if (firstName.length > 15) {
-      setErrorMsg("First name too long");
+      setErrorMsg("First Name too long");
       firstNameRef.current.classList.add("notValid");
       return firstNameRef.current.focus();
-    } else if (hasNumber(firstName)) {
-      setErrorMsg("First name can't contain any numbers");
+    } else if (!validateOnlyLetters(firstName)) {
+      setErrorMsg("First Name is not valid! (must contain only letters without spaces)");
       firstNameRef.current.classList.add("notValid");
       return firstNameRef.current.focus();
     }
@@ -45,17 +45,17 @@ const SignUpPage = (e) => {
   };
 
   const lasttNameHandler = (e) => {
-    const lastName = lastNameRef.current.value;
+    const lastName = lastNameRef.current.value.trim();
     if (lastName === "") {
-      setErrorMsg("Last name can't be empty");
+      setErrorMsg("Last Name can't be empty");
       lastNameRef.current.classList.add("notValid");
       return lastNameRef.current.focus();
     } else if (lastName.length > 15) {
-      setErrorMsg("Last name too long");
+      setErrorMsg("Last Name too long");
       lastNameRef.current.classList.add("notValid");
       return lastNameRef.current.focus();
-    } else if (hasNumber(lastName)) {
-      setErrorMsg("Last name can't contain any numbers");
+    } else if (!validateOnlyLetters(lastName)) {
+      setErrorMsg("Last Name is not valid! (must contain only letters without spaces)");
       lastNameRef.current.classList.add("notValid");
       return lastNameRef.current.focus();
     }
@@ -65,9 +65,13 @@ const SignUpPage = (e) => {
   };
 
   const emailHandler = (e) => {
-    const email = emailRef.current.value;
+    const email = emailRef.current.value.trim();
     if (email === "") {
       setErrorMsg("Email is required!");
+      emailRef.current.classList.add("notValid");
+      return emailRef.current.focus();
+    } else if (!validateEmail(email)) {
+      setErrorMsg("Email is not valid!!");
       emailRef.current.classList.add("notValid");
       return emailRef.current.focus();
     }
@@ -77,13 +81,13 @@ const SignUpPage = (e) => {
   };
 
   const passwordHandler = (e) => {
-    const password = passwordRef.current.value;
+    const password = passwordRef.current.value.trim();
     if (password === "") {
       setErrorMsg("Password is required!");
       passwordRef.current.classList.add("notValid");
       return passwordRef.current.focus();
     } else if (password.length < 6 || password.length > 20) {
-      setErrorMsg("Password must be between 6 and 20 characters long!");
+      setErrorMsg("Password must be 6-20 characters long!");
       passwordRef.current.classList.add("notValid");
       return passwordRef.current.focus();
     } else if (!hasNumber(password)) {
@@ -97,7 +101,18 @@ const SignUpPage = (e) => {
   };
 
   const confirmPasswordHandler = (e) => {
-    if (confirmPasswordRef.current.value === passwordState) {
+    const confirmPassword = confirmPasswordRef.current.value.trim();
+    if (
+      confirmPassword.length < confirmPasswordRef.current.minLength ||
+      confirmPassword.length > confirmPasswordRef.current.maxLength
+    ) {
+      confirmPasswordRef.current.classList.add("notValid");
+      setErrorMsg(
+        `Confirm Password must be ${confirmPasswordRef.current.minLength}-${confirmPasswordRef.current.maxLength} characters long!`
+      );
+      return confirmPasswordRef.current.focus();
+    }
+    if (confirmPassword === passwordState) {
       errorRef.current.innerHTML = "";
       confirmPasswordRef.current.classList.remove("notValid");
     }
@@ -111,8 +126,25 @@ const SignUpPage = (e) => {
       emailState !== "" &&
       passwordState !== ""
     ) {
+      if (firstNameRef.current.classList.contains("notValid")) {
+        setErrorMsg("First Name is not valid");
+        return firstNameRef.current.focus();
+      } else if (lastNameRef.current.classList.contains("notValid")) {
+        setErrorMsg("Last Name is not valid");
+        return lastNameRef.current.focus();
+      } else if (emailRef.current.classList.contains("notValid")) {
+        setErrorMsg("Emailis not valid");
+        return emailRef.current.focus();
+      } else if (passwordRef.current.classList.contains("notValid")) {
+        setErrorMsg("Password is not valid");
+        return passwordRef.current.focus();
+      } else if (confirmPasswordRef.current.classList.contains("notValid")) {
+        setErrorMsg("Confirm Password doesn't match");
+        return confirmPasswordRef.current.focus();
+      }
+
       if (errorMsg === "") {
-        const confirmPassword = confirmPasswordRef.current.value;
+        const confirmPassword = confirmPasswordRef.current.value.trim();
         if (confirmPassword !== passwordState) {
           errorRef.current.innerHTML = "Error: Passwords do not match!";
           confirmPasswordRef.current.classList.add("notValid");
@@ -139,35 +171,54 @@ const SignUpPage = (e) => {
             </Link>
           </StyledBackBtnWrapper>
           <StyledForm onSubmit={regUserHandler}>
+            <div className="labelWrapper">
+              <span>*</span>
+              <label>First Name</label>
+            </div>
             <input
               type={"text"}
-              placeholder={"First Name"}
+              placeholder={"‎"} //a workaround to prevent chrome autocomplete since it doesn't support autocomplete off
               ref={firstNameRef}
               onChange={firstNameHandler}
+              autoComplete={"off"}
               maxLength={15}
               required
             />
+            <div className="labelWrapper">
+              <span>*</span>
+              <label>Last Name</label>
+            </div>
             <input
               type={"text"}
-              placeholder={"Last Name"}
+              placeholder={"‎"}
               ref={lastNameRef}
               onChange={lasttNameHandler}
               maxLength={15}
               required
             />
-            <input type={"email"} placeholder={"Email"} ref={emailRef} onChange={emailHandler} />
+            <div className="labelWrapper">
+              <span>*</span>
+              <label>Email</label>
+            </div>
+            <input type={"email"} ref={emailRef} onChange={emailHandler} required />
+            <div className="labelWrapper">
+              <span>*</span>
+              <label>Password</label>
+            </div>
             <input
               type={"password"}
-              placeholder={"Password"}
               ref={passwordRef}
               onChange={passwordHandler}
               minLength={6}
               maxLength={20}
               required
             />
+            <div className="labelWrapper">
+              <span>*</span>
+              <label>Confirm Password</label>
+            </div>
             <input
               type={"password"}
-              placeholder={"Confirm Password"}
               ref={confirmPasswordRef}
               onChange={confirmPasswordHandler}
               minLength={6}
@@ -226,10 +277,27 @@ const StyledForm = styled.form`
   align-items: center;
   margin-top: 6vh;
 
+  .labelWrapper {
+    display: flex;
+    width: 99%;
+    margin-bottom: -4px;
+    span {
+      color: #ee5c4f9c;
+      padding-right: 2px;
+      justify-content: center;
+      align-items: center;
+    }
+    label {
+      font-size: small;
+      color: #f5f5f597;
+    }
+  }
+
   input {
     width: 98%;
-    padding: 9px;
-    margin: 8px;
+    padding: 7px;
+    margin: 6px;
+    margin-bottom: 2.4vh;
     background-color: #ffffff11;
     border: 1px solid #dedede7d;
     color: #ffffff;
