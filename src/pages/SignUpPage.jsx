@@ -6,13 +6,12 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
-import { hasNumber, validateOnlyLetters, validateEmail } from "../helper_functions";
+import { hasNumber, validateNoCharacters, validateEmail } from "../helper_functions";
 
 const SignUpPage = (e) => {
   const { emailPasswordSignUp } = useContext(AuthContext);
 
-  const firstNameRef = useRef();
-  const lastNameRef = useRef();
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -20,8 +19,7 @@ const SignUpPage = (e) => {
   const [errorMsg, setErrorMsg] = useState("");
   const errorRef = useRef();
 
-  const [firstNameState, setFirstNameState] = useState("");
-  const [lastNameState, setLastNameState] = useState("");
+  const [nameState, setnameState] = useState("");
   const [emailState, setEmailState] = useState("");
   const [passwordState, setPasswordState] = useState("");
 
@@ -44,44 +42,24 @@ const SignUpPage = (e) => {
   }, [passVisible, confirmPassVisible]);
 
   //handle real time validations (onChange events)
-  const firstNameHandler = (e) => {
-    const firstName = firstNameRef.current.value.trim();
-    if (firstName === "") {
-      setErrorMsg("First Name can't be empty");
-      firstNameRef.current.classList.add("notValid");
-      return firstNameRef.current.focus();
-    } else if (firstName.length > 15) {
-      setErrorMsg("First Name too long");
-      firstNameRef.current.classList.add("notValid");
-      return firstNameRef.current.focus();
-    } else if (!validateOnlyLetters(firstName)) {
-      setErrorMsg("First Name is not valid! (must contain only letters without spaces)");
-      firstNameRef.current.classList.add("notValid");
-      return firstNameRef.current.focus();
+  const nameHandler = (e) => {
+    const name = nameRef.current.value.trim();
+    if (name === "") {
+      setErrorMsg("Name can't be empty");
+      nameRef.current.classList.add("notValid");
+      return nameRef.current.focus();
+    } else if (name.length > nameRef.current.maxLength) {
+      setErrorMsg("Name too long");
+      nameRef.current.classList.add("notValid");
+      return nameRef.current.focus();
+    } else if (!validateNoCharacters(name)) {
+      setErrorMsg("Name is not valid! \n (Allowed: Alphabets A-Z, Numbers and Space)");
+      nameRef.current.classList.add("notValid");
+      return nameRef.current.focus();
     }
     setErrorMsg("");
-    firstNameRef.current.classList.remove("notValid");
-    setFirstNameState(firstName);
-  };
-
-  const lasttNameHandler = (e) => {
-    const lastName = lastNameRef.current.value.trim();
-    if (lastName === "") {
-      setErrorMsg("Last Name can't be empty");
-      lastNameRef.current.classList.add("notValid");
-      return lastNameRef.current.focus();
-    } else if (lastName.length > 15) {
-      setErrorMsg("Last Name too long");
-      lastNameRef.current.classList.add("notValid");
-      return lastNameRef.current.focus();
-    } else if (!validateOnlyLetters(lastName)) {
-      setErrorMsg("Last Name is not valid! (must contain only letters without spaces)");
-      lastNameRef.current.classList.add("notValid");
-      return lastNameRef.current.focus();
-    }
-    setErrorMsg("");
-    lastNameRef.current.classList.remove("notValid");
-    setLastNameState(lastName);
+    nameRef.current.classList.remove("notValid");
+    setnameState(name);
   };
 
   const emailHandler = (e) => {
@@ -139,27 +117,16 @@ const SignUpPage = (e) => {
 
   const regUserHandler = (e) => {
     e.preventDefault();
-    if (
-      firstNameState !== "" &&
-      lastNameState !== "" &&
-      emailState !== "" &&
-      passwordState !== ""
-    ) {
-      if (firstNameRef.current.classList.contains("notValid")) {
-        setErrorMsg("First Name is not valid");
-        return firstNameRef.current.focus();
-      } else if (lastNameRef.current.classList.contains("notValid")) {
-        setErrorMsg("Last Name is not valid");
-        return lastNameRef.current.focus();
+    if (nameState !== "" && emailState !== "" && passwordState !== "") {
+      if (nameRef.current.classList.contains("notValid")) {
+        setErrorMsg("Name is not valid");
+        return nameRef.current.focus();
       } else if (emailRef.current.classList.contains("notValid")) {
         setErrorMsg("Email is not valid");
         return emailRef.current.focus();
       } else if (passwordRef.current.classList.contains("notValid")) {
         setErrorMsg("Password is not valid");
         return passwordRef.current.focus();
-      } else if (confirmPasswordRef.current.classList.contains("notValid")) {
-        setErrorMsg("Confirm Password doesn't match");
-        return confirmPasswordRef.current.focus();
       }
 
       if (errorMsg === "") {
@@ -170,7 +137,7 @@ const SignUpPage = (e) => {
           return confirmPasswordRef.current.focus();
         } else {
           //all validations passed and passwords match
-          emailPasswordSignUp(auth, firstNameState, lastNameState, emailState, passwordState);
+          emailPasswordSignUp(auth, nameState, emailState, passwordState);
         }
       }
     } else {
@@ -192,34 +159,23 @@ const SignUpPage = (e) => {
           <StyledForm onSubmit={regUserHandler}>
             <div className="labelWrapper">
               <span>*</span>
-              <label>First Name</label>
+              <label>Name</label>
             </div>
             <input
               type={"text"}
               placeholder={"‎"} //a workaround to prevent chrome autocomplete since it doesn't support autocomplete off
-              ref={firstNameRef}
-              onChange={firstNameHandler}
+              ref={nameRef}
+              onChange={nameHandler}
               autoComplete={"off"}
-              maxLength={15}
+              maxLength={25}
               required
             />
-            <div className="labelWrapper">
-              <span>*</span>
-              <label>Last Name</label>
-            </div>
-            <input
-              type={"text"}
-              placeholder={"‎"}
-              ref={lastNameRef}
-              onChange={lasttNameHandler}
-              maxLength={15}
-              required
-            />
+
             <div className="labelWrapper">
               <span>*</span>
               <label>Email</label>
             </div>
-            <input type={"email"} ref={emailRef} onChange={emailHandler} required />
+            <input type={"email"} ref={emailRef} onChange={emailHandler} maxLength={36} required />
             <div className="labelWrapper">
               <span>*</span>
               <label>Password</label>
@@ -340,7 +296,7 @@ const StyledForm = styled.form`
     width: 98%;
     padding: 9px;
     margin: 6px;
-    margin-bottom: 2.4vh;
+    margin-bottom: 3vh;
     background-color: #ffffff13;
     border: 1px solid #dedede7d;
     color: #ffffff;
@@ -431,7 +387,8 @@ const StyledForm = styled.form`
     font-weight: 500;
     font-size: smaller;
     padding: 4px 8px;
-    width: 80%;
+    width: 90%;
+    white-space: pre-line;
   }
   h4 {
     font-size: smaller;

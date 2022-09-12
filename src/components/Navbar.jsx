@@ -16,7 +16,7 @@ const Navbar = () => {
   const { logout } = useContext(AuthContext);
   const { timerState } = useContext(AppStateContext);
 
-  const [userFirstName, setUserFirstName] = useState("");
+  const [userName, setUserName] = useState("");
 
   const { getCurUserLocalStorage } = useContext(AuthContext);
   let user = getCurUserLocalStorage();
@@ -27,20 +27,26 @@ const Navbar = () => {
       if (user) {
         auth.currentUser = user;
         if (auth.currentUser) {
-          if (userFirstName === "") {
-            //user signed in
-            getUserFirstName(auth.currentUser.uid);
+          //user signed in
+          if (userName === "") {
+            getUserName(auth.currentUser.uid);
           }
         }
       }
     });
   });
 
-  const getUserFirstName = async (uid) => {
+  const getUserName = async (uid) => {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      setUserFirstName(docSnap.data().firstName);
+      let dataStr = docSnap.data().name;
+      // if (!dataStr) {
+      //   dataStr = docSnap.data().firstName;
+      // }
+      console.log(dataStr);
+      const name = dataStr?.split(" ")[0];
+      setUserName(name);
     } else {
       console.log("No such document!");
     }
@@ -92,7 +98,7 @@ const Navbar = () => {
             )}
             {!auth.currentUser && userObjLength > 0 && <h4 className="welcome">loading...</h4>}
             {auth.currentUser && userObjLength > 0 && (
-              <h4 className="welcome">Welcome {userFirstName}!</h4>
+              <h4 className="welcome">Welcome {userName}!</h4>
             )}
             {auth.currentUser && userObjLength > 0 && (
               <li className="navItem" id="logout" onClick={signoutHandler}>

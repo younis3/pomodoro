@@ -19,6 +19,10 @@ export const validateOnlyLetters = (input) => {
   return /^[A-Za-z]*$/.test(input);
 };
 
+export const validateNoCharacters = (input) => {
+  return /^[A-Za-z0-9 ]+$/.test(input);
+};
+
 export const validateEmail = (email) => {
   return String(email)
     .toLowerCase()
