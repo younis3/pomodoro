@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
-import { useContext, useRef, useState } from "react";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { Link } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
 import { hasNumber, validateOnlyLetters, validateEmail } from "../helper_functions";
@@ -22,6 +24,24 @@ const SignUpPage = (e) => {
   const [lastNameState, setLastNameState] = useState("");
   const [emailState, setEmailState] = useState("");
   const [passwordState, setPasswordState] = useState("");
+
+  const [passVisible, setPassVisible] = useState(false);
+  const [confirmPassVisible, setConfirmPassVisible] = useState(false);
+
+  const passVisibleHandler = (e) => {
+    setPassVisible(!passVisible);
+  };
+
+  const confirmPassVisibleHandler = (e) => {
+    setConfirmPassVisible(!confirmPassVisible);
+  };
+
+  useEffect(() => {
+    passVisible ? (passwordRef.current.type = "text") : (passwordRef.current.type = "password");
+    confirmPassVisible
+      ? (confirmPasswordRef.current.type = "text")
+      : (confirmPasswordRef.current.type = "password");
+  }, [passVisible, confirmPassVisible]);
 
   //handle real time validations (onChange events)
   const firstNameHandler = (e) => {
@@ -70,8 +90,9 @@ const SignUpPage = (e) => {
       setErrorMsg("Email is required!");
       emailRef.current.classList.add("notValid");
       return emailRef.current.focus();
-    } else if (!validateEmail(email)) {
-      setErrorMsg("Email is not valid!!");
+    }
+    if (!validateEmail(email)) {
+      setErrorMsg("Email is not valid!");
       emailRef.current.classList.add("notValid");
       return emailRef.current.focus();
     }
@@ -112,10 +133,8 @@ const SignUpPage = (e) => {
       );
       return confirmPasswordRef.current.focus();
     }
-    if (confirmPassword === passwordState) {
-      errorRef.current.innerHTML = "";
-      confirmPasswordRef.current.classList.remove("notValid");
-    }
+    setErrorMsg("");
+    confirmPasswordRef.current.classList.remove("notValid");
   };
 
   const regUserHandler = (e) => {
@@ -133,7 +152,7 @@ const SignUpPage = (e) => {
         setErrorMsg("Last Name is not valid");
         return lastNameRef.current.focus();
       } else if (emailRef.current.classList.contains("notValid")) {
-        setErrorMsg("Emailis not valid");
+        setErrorMsg("Email is not valid");
         return emailRef.current.focus();
       } else if (passwordRef.current.classList.contains("notValid")) {
         setErrorMsg("Password is not valid");
@@ -205,26 +224,48 @@ const SignUpPage = (e) => {
               <span>*</span>
               <label>Password</label>
             </div>
-            <input
-              type={"password"}
-              ref={passwordRef}
-              onChange={passwordHandler}
-              minLength={6}
-              maxLength={20}
-              required
-            />
+            <div className="passInputWrapper">
+              <input
+                type={"password"}
+                ref={passwordRef}
+                onChange={passwordHandler}
+                minLength={6}
+                maxLength={20}
+                required
+              />
+              <span className="eyeBtnWrapper">
+                {passVisible && (
+                  <RemoveRedEyeIcon fontSize="inherit" onClick={passVisibleHandler} />
+                )}
+                {!passVisible && (
+                  <VisibilityOffIcon fontSize="inherit" onClick={passVisibleHandler} />
+                )}
+              </span>
+            </div>
+
             <div className="labelWrapper">
               <span>*</span>
               <label>Confirm Password</label>
             </div>
-            <input
-              type={"password"}
-              ref={confirmPasswordRef}
-              onChange={confirmPasswordHandler}
-              minLength={6}
-              maxLength={20}
-              required
-            />
+            <div className="passInputWrapper">
+              <input
+                type={"password"}
+                ref={confirmPasswordRef}
+                onChange={confirmPasswordHandler}
+                minLength={6}
+                maxLength={20}
+                required
+              />
+              <span className="eyeBtnWrapper">
+                {confirmPassVisible && (
+                  <RemoveRedEyeIcon fontSize="inherit" onClick={confirmPassVisibleHandler} />
+                )}
+                {!confirmPassVisible && (
+                  <VisibilityOffIcon fontSize="inherit" onClick={confirmPassVisibleHandler} />
+                )}
+              </span>
+            </div>
+
             <input type="submit" value={"Sign Up"} />
             <p className="error" ref={errorRef}>
               {errorMsg !== "" ? `Error: ${errorMsg}` : ""}
@@ -260,10 +301,12 @@ const StyledFormContainer = styled.div`
   position: relative;
   margin-top: -1vh;
   width: 600px;
-  background-color: #3b393962;
-  opacity: 0.9;
+  background-color: #4a4a4a79;
+  opacity: 1;
   padding: 36px 14px;
-  border: 1px solid #ffffff89;
+  border: 1px solid #1c18184b;
+  box-shadow: 0 0 22px 2px rgba(0, 0, 0, 0.38);
+
   @media (max-width: 650px) {
     width: 88vw;
     margin-top: -3vh;
@@ -295,13 +338,15 @@ const StyledForm = styled.form`
 
   input {
     width: 98%;
-    padding: 7px;
+    padding: 9px;
     margin: 6px;
     margin-bottom: 2.4vh;
-    background-color: #ffffff11;
+    background-color: #ffffff13;
     border: 1px solid #dedede7d;
     color: #ffffff;
     font-size: 16px;
+    border: none;
+
     &:focus {
       outline: none !important;
       border: 1px solid #63e7de7a;
@@ -316,14 +361,47 @@ const StyledForm = styled.form`
       box-shadow: 0 0 5px #e59b2b;
     }
   }
+
+  .passInputWrapper {
+    display: flex;
+    width: 98%;
+    margin: 6px;
+    margin-bottom: 2.6vh;
+    color: #ffffff;
+    &:focus {
+      outline: none !important;
+      border: 1px solid #63e7de7a;
+      box-shadow: 0 0 5px #719ece;
+    }
+    input {
+      border: none;
+      padding: 8px;
+      margin: 0;
+      font-size: 14px;
+      padding-left: 7px;
+    }
+    input[type="password"] {
+      font-size: 16px;
+    }
+    .eyeBtnWrapper {
+      color: #ffffffbf;
+      background-color: #ffffff13;
+      padding: 8px 14px;
+      outline: none !important;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  }
+
   input[type="submit"] {
-    width: 40%;
-    padding: 4px 12px;
+    width: 98%;
+    padding: 8px 10px;
     margin-top: 2vh;
     margin-bottom: 2vh;
-    font-size: 20px;
+    font-size: 18px;
     color: rgb(255, 255, 255);
-    background-color: rgb(29, 24, 28);
+    background-color: rgb(28, 24, 28);
     border: none;
     border-radius: 2px;
     cursor: pointer;
@@ -352,7 +430,6 @@ const StyledForm = styled.form`
     color: #fb8989;
     font-weight: 500;
     font-size: smaller;
-    /* background-color: #e50e0e46; */
     padding: 4px 8px;
     width: 80%;
   }
@@ -375,10 +452,10 @@ const StyledBackBtnWrapper = styled.div`
 `;
 
 const StyledCloseBtn = styled.button`
-  padding: 6px;
-  padding-top: 10px;
-  padding-left: 11px;
-  padding-right: 11px;
+  padding: 4px;
+  padding-top: 8px;
+  padding-left: 9px;
+  padding-right: 9px;
   font-size: 26px;
   color: rgb(255, 255, 255);
   background-color: rgb(29, 24, 28);
