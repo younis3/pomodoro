@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth, loginWithGoogle } from "../firebase";
@@ -11,6 +11,8 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   let navigate = useNavigate();
+
+  const [firebaseErrorMsg, setFirebaseErrorMsg] = useState("");
 
   const updateCurUserLocalStorage = (userObj = {}) => {
     if (localStorage.getItem(`curUser`) === null) {
@@ -41,8 +43,7 @@ export const AuthContextProvider = ({ children }) => {
             await setDoc(doc(db, "users", result.user.uid), {
               uid: result.user.uid,
               email: result._tokenResponse.email,
-              firstName: capitalizeFirstLetter(result._tokenResponse.firstName),
-              lastName: capitalizeFirstLetter(result._tokenResponse.lastName),
+              name: capitalizeFirstLetter(result.user.displayName),
               dateCreated: getTodayDate(),
               chosenCtg: "study",
               categories: ctgs_default,
@@ -55,8 +56,9 @@ export const AuthContextProvider = ({ children }) => {
             console.log(errorMessage);
           }
         } catch (error) {
-          const errorMessage = error.message;
+          const errorMessage = error.message.slice(10);
           console.log(errorMessage);
+          setFirebaseErrorMsg(errorMessage);
         }
       })
       .catch((error) => {
@@ -65,7 +67,7 @@ export const AuthContextProvider = ({ children }) => {
       });
   };
 
-  const emailPasswordSignUp = async (auth, firstName, lastName, email, password) => {
+  const emailPasswordSignUp = async (auth, name, email, password) => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       updateCurUserLocalStorage(result.user);
@@ -77,8 +79,7 @@ export const AuthContextProvider = ({ children }) => {
         await setDoc(doc(db, "users", result.user.uid), {
           uid: result.user.uid,
           email: email,
-          firstName: capitalizeFirstLetter(firstName),
-          lastName: capitalizeFirstLetter(lastName),
+          name: capitalizeFirstLetter(name),
           dateCreated: getTodayDate(),
           chosenCtg: "study",
           categories: ctgs_default,
@@ -107,8 +108,18 @@ export const AuthContextProvider = ({ children }) => {
           // console.log(result);
           navigate("/");
         } catch (error) {
-          const errorMessage = error.message;
+          const errorMessage = error.message.slice(10);
           console.log(errorMessage);
+          console.log("XX");
+          if (errorMessage === "Error (auth/wrong-password).") {
+            setFirebaseErrorMsg("Error: Wrong Password!");
+          } else if (errorMessage === "Error (auth/user-not-found).") {
+            setFirebaseErrorMsg("Error: User Not Found!");
+          } else if (errorMessage === "Error (auth/invalid-email).") {
+            setFirebaseErrorMsg("Error: Invalid Email!");
+          } else {
+            setFirebaseErrorMsg(errorMessage);
+          }
         }
       })
       .catch((error) => {
@@ -137,6 +148,8 @@ export const AuthContextProvider = ({ children }) => {
         emailPasswordLogin,
         logout,
         getCurUserLocalStorage,
+        firebaseErrorMsg,
+        setFirebaseErrorMsg,
       }}
     >
       {children}

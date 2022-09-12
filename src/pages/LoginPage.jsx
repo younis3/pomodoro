@@ -2,26 +2,58 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import CloseIcon from "@mui/icons-material/Close";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import AuthContext from "../context/AuthContext";
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import { auth } from "../firebase";
+// import { useUpdateEffect } from "react-use";
 
 const LoginPage = () => {
-  const { googleSignIn } = useContext(AuthContext);
-  const { emailPasswordLogin } = useContext(AuthContext);
+  const { emailPasswordLogin, googleSignIn } = useContext(AuthContext);
+  const { firebaseErrorMsg, setFirebaseErrorMsg } = useContext(AuthContext);
 
   const [errorMsg, setErrorMsg] = useState("");
   const errorRef = useRef();
 
+  // errorRef.current.value = errorMsg;
+
+  // setFirebaseErrorMsg("");
+
+  const [passVisible, setPassVisible] = useState(false);
+
+  useEffect(() => {
+    if (firebaseErrorMsg.length || errorMsg.length) {
+      errorRef.current.classList.remove("hide"); //show error
+    } else {
+      errorRef.current.classList.add("hide");
+    }
+  }, [firebaseErrorMsg, errorMsg]);
+
   const emailRef = useRef();
   const passwordRef = useRef();
 
+  const passVisibleHandler = (e) => {
+    setPassVisible(!passVisible);
+  };
+
+  useEffect(() => {
+    passVisible ? (passwordRef.current.type = "text") : (passwordRef.current.type = "password");
+  }, [passVisible]);
+
   const defaultLoginHandler = (e) => {
     e.preventDefault();
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+    const email = emailRef.current.value.trim();
+    const password = passwordRef.current.value.trim();
+    if (email === "") {
+      setErrorMsg("Error: Insert Email");
+      return emailRef.current.focus();
+    } else if (password === "") {
+      setErrorMsg("Error: Insert Password");
+      return passwordRef.current.focus();
+    }
+    setErrorMsg("");
     emailPasswordLogin(auth, email, password);
-    // console.log(emailPasswordLogin(auth, email, password));
   };
 
   const loginWithGoogleHandler = (e) => {
@@ -41,19 +73,36 @@ const LoginPage = () => {
             </Link>
           </StyledBackBtnWrapper>
           <StyledForm>
-            <input type={"email"} placeholder={"Email"} ref={emailRef} />
-            <input type={"password"} placeholder={"Password"} ref={passwordRef} />
+            <input type={"email"} placeholder={"Email"} ref={emailRef} maxLength={36} required />
+            <div className="passInputWrapper">
+              <input
+                type={"password"}
+                placeholder={"Password"}
+                ref={passwordRef}
+                maxLength={20}
+                required
+              />
+              <span className="eyeBtnWrapper">
+                {passVisible && (
+                  <RemoveRedEyeIcon fontSize="inherit" onClick={passVisibleHandler} />
+                )}
+                {!passVisible && (
+                  <VisibilityOffIcon fontSize="inherit" onClick={passVisibleHandler} />
+                )}
+              </span>
+            </div>
+
             <button onClick={defaultLoginHandler}>Sign In</button>
             <p className="error" ref={errorRef}>
-              {errorMsg}
+              {errorMsg ? errorMsg : firebaseErrorMsg}
             </p>
-            <h4 style={{ marginTop: "2.8vh" }}>
+            <h4 style={{ marginTop: "3vh" }}>
               Don't have an account? <Link to="/signup">Sign Up</Link>
             </h4>
             <StyledDivider>
-              <h3 className="leftLine"> _____________ </h3>
+              <h3 className="leftLine"> ________________ </h3>
               <h2>or</h2>
-              <h3 className="rightLine"> _____________ </h3>
+              <h3 className="rightLine"> ________________ </h3>
             </StyledDivider>
             <h4>
               <div className="google">
@@ -91,10 +140,13 @@ const StyledFormContainer = styled.div`
   position: relative;
   margin-top: -1vh;
   width: 600px;
-  background-color: #3b393962;
+  /* background-color: #3b393962; */
+  background-color: #4a4a4a79;
   opacity: 0.9;
   padding: 36px 14px;
-  border: 1px solid #ffffff89;
+  border: 1px solid #1c18184b;
+  box-shadow: 0 0 22px 2px rgba(0, 0, 0, 0.38);
+  /* border: 1px solid #ffffff89; */
   @media (max-width: 650px) {
     width: 88vw;
     margin-top: -3vh;
@@ -108,14 +160,20 @@ const StyledForm = styled.form`
   align-items: center;
   margin-top: 6vh;
 
+  .hide {
+    display: none;
+  }
+
   input {
     width: 98%;
     padding: 12px;
     margin: 12px;
     background-color: #ffffff11;
-    border: 1px solid #dedede7d;
+    /* border: 1px solid #dedede7d; */
     color: #ffffff;
     font-size: 16px;
+    border: none;
+
     &:focus {
       outline: none !important;
       border: 1px solid #63e7de7a;
@@ -131,11 +189,43 @@ const StyledForm = styled.form`
     }
   }
 
+  .passInputWrapper {
+    display: flex;
+    width: 98%;
+    margin: 6px;
+    margin-bottom: 2.5vh;
+    color: #ffffff;
+    &:focus {
+      outline: none !important;
+      border: 1px solid #63e7de7a;
+      box-shadow: 0 0 5px #719ece;
+    }
+    input {
+      border: none;
+      padding: 12px;
+      margin: 0;
+      padding-left: 12px;
+    }
+    input[type="password"] {
+      font-size: 16px;
+    }
+    .eyeBtnWrapper {
+      color: #ffffffbf;
+      background-color: #ffffff13;
+      padding: 10px 14px;
+      outline: none !important;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  }
+
   button {
-    padding: 4px 12px;
+    padding: 8px 6px;
+    width: 98%;
     margin-top: 2vh;
     margin-bottom: 2vh;
-    font-size: 20px;
+    font-size: 18px;
     color: rgb(255, 255, 255);
     background-color: rgb(29, 24, 28);
     border: none;
@@ -147,12 +237,13 @@ const StyledForm = styled.form`
     }
   }
   .error {
-    color: #fb8989;
+    /* color: #fff; */
+    background-color: #d14f4f18;
+    color: #eba8a8de;
     font-weight: 500;
     font-size: smaller;
-    /* background-color: #e50e0e46; */
-    padding: 4px 8px;
-    width: 80%;
+    padding: 8px 6px;
+    width: 98%;
   }
   h4 {
     font-size: smaller;
@@ -161,10 +252,13 @@ const StyledForm = styled.form`
       color: #ffffff;
     }
     .google {
-      padding-left: 5px;
-      padding-right: 5px;
+      padding-left: 8px;
+      padding-right: 8px;
       text-align: center;
       button {
+        width: 100%;
+        padding-right: 22px;
+        padding-left: 22px;
         display: inline-flex;
         align-items: center;
         color: #ffffff;
@@ -212,7 +306,8 @@ const StyledDivider = styled.div`
   justify-content: center;
   position: relative;
   padding: 2px;
-  margin-top: 1vh;
+  margin-top: 1.3vh;
+  margin-bottom: 0.3vh;
   .leftLine {
     background-image: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #fff);
     background-clip: text;
