@@ -3,8 +3,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { doc, setDoc } from "firebase/firestore";
 import { db, auth, loginWithGoogle } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import { capitalizeFirstLetter } from "../helper_functions";
+import { capitalizeFirstLetter, getTodayDate } from "../helper_functions";
 import { setPersistence, browserLocalPersistence } from "firebase/auth";
+import { ctgs_default } from "../values";
 
 const AuthContext = createContext();
 
@@ -39,9 +40,14 @@ export const AuthContextProvider = ({ children }) => {
             // add user to db if it doesn't exist yet
             await setDoc(doc(db, "users", result.user.uid), {
               uid: result.user.uid,
+              email: result._tokenResponse.email,
               firstName: capitalizeFirstLetter(result._tokenResponse.firstName),
               lastName: capitalizeFirstLetter(result._tokenResponse.lastName),
-              email: result._tokenResponse.email,
+              dateCreated: getTodayDate(),
+              chosenCtg: "study",
+              categories: ctgs_default,
+              sessionsCount: 0,
+              sessions: [],
             });
             navigate("/");
           } catch (error) {
@@ -70,9 +76,14 @@ export const AuthContextProvider = ({ children }) => {
         // add user to db
         await setDoc(doc(db, "users", result.user.uid), {
           uid: result.user.uid,
+          email: email,
           firstName: capitalizeFirstLetter(firstName),
           lastName: capitalizeFirstLetter(lastName),
-          email: email,
+          dateCreated: getTodayDate(),
+          chosenCtg: "study",
+          categories: ctgs_default,
+          sessionsCount: 0,
+          sessions: [],
         });
       } catch (error) {
         const errorMessage = error.message;
@@ -90,6 +101,7 @@ export const AuthContextProvider = ({ children }) => {
         try {
           const result = await signInWithEmailAndPassword(auth, email, password);
           updateCurUserLocalStorage(result.user);
+          console.log(result.user);
           console.log("User signed in");
 
           // console.log(result);

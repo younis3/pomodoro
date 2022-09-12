@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
+import { hasNumber } from "../helper_functions";
 
-const SignUpPage = () => {
+const SignUpPage = (e) => {
   const { emailPasswordSignUp } = useContext(AuthContext);
 
   const firstNameRef = useRef();
@@ -14,16 +15,118 @@ const SignUpPage = () => {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
 
+  const [errorMsg, setErrorMsg] = useState("");
+  const errorRef = useRef();
+
+  const [firstNameState, setFirstNameState] = useState("");
+  const [lastNameState, setLastNameState] = useState("");
+  const [emailState, setEmailState] = useState("");
+  const [passwordState, setPasswordState] = useState("");
+
+  //handle real time validations (onChange events)
+  const firstNameHandler = (e) => {
+    const firstName = firstNameRef.current.value;
+    if (firstName === "") {
+      setErrorMsg("First name can't be empty");
+      firstNameRef.current.classList.add("notValid");
+      return firstNameRef.current.focus();
+    } else if (firstName.length > 15) {
+      setErrorMsg("First name too long");
+      firstNameRef.current.classList.add("notValid");
+      return firstNameRef.current.focus();
+    } else if (hasNumber(firstName)) {
+      setErrorMsg("First name can't contain any numbers");
+      firstNameRef.current.classList.add("notValid");
+      return firstNameRef.current.focus();
+    }
+    setErrorMsg("");
+    firstNameRef.current.classList.remove("notValid");
+    setFirstNameState(firstName);
+  };
+
+  const lasttNameHandler = (e) => {
+    const lastName = lastNameRef.current.value;
+    if (lastName === "") {
+      setErrorMsg("Last name can't be empty");
+      lastNameRef.current.classList.add("notValid");
+      return lastNameRef.current.focus();
+    } else if (lastName.length > 15) {
+      setErrorMsg("Last name too long");
+      lastNameRef.current.classList.add("notValid");
+      return lastNameRef.current.focus();
+    } else if (hasNumber(lastName)) {
+      setErrorMsg("Last name can't contain any numbers");
+      lastNameRef.current.classList.add("notValid");
+      return lastNameRef.current.focus();
+    }
+    setErrorMsg("");
+    lastNameRef.current.classList.remove("notValid");
+    setLastNameState(lastName);
+  };
+
+  const emailHandler = (e) => {
+    const email = emailRef.current.value;
+    if (email === "") {
+      setErrorMsg("Email is required!");
+      emailRef.current.classList.add("notValid");
+      return emailRef.current.focus();
+    }
+    setErrorMsg("");
+    emailRef.current.classList.remove("notValid");
+    setEmailState(email);
+  };
+
+  const passwordHandler = (e) => {
+    const password = passwordRef.current.value;
+    if (password === "") {
+      setErrorMsg("Password is required!");
+      passwordRef.current.classList.add("notValid");
+      return passwordRef.current.focus();
+    } else if (password.length < 6 || password.length > 20) {
+      setErrorMsg("Password must be between 6 and 20 characters long!");
+      passwordRef.current.classList.add("notValid");
+      return passwordRef.current.focus();
+    } else if (!hasNumber(password)) {
+      setErrorMsg("Password must contain at least one number!");
+      passwordRef.current.classList.add("notValid");
+      return passwordRef.current.focus();
+    }
+    setErrorMsg("");
+    passwordRef.current.classList.remove("notValid");
+    setPasswordState(password);
+  };
+
+  const confirmPasswordHandler = (e) => {
+    if (confirmPasswordRef.current.value === passwordState) {
+      errorRef.current.innerHTML = "";
+      confirmPasswordRef.current.classList.remove("notValid");
+    }
+  };
+
   const regUserHandler = (e) => {
     e.preventDefault();
-    const firstName = firstNameRef.current.value;
-    const lastName = lastNameRef.current.value;
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-    const confirmPassword = confirmPasswordRef.current.value;
-
-    emailPasswordSignUp(auth, firstName, lastName, email, password);
+    if (
+      firstNameState !== "" &&
+      lastNameState !== "" &&
+      emailState !== "" &&
+      passwordState !== ""
+    ) {
+      if (errorMsg === "") {
+        const confirmPassword = confirmPasswordRef.current.value;
+        if (confirmPassword !== passwordState) {
+          errorRef.current.innerHTML = "Error: Passwords do not match!";
+          confirmPasswordRef.current.classList.add("notValid");
+          return confirmPasswordRef.current.focus();
+        } else {
+          //all validations passed and passwords match
+          emailPasswordSignUp(auth, firstNameState, lastNameState, emailState, passwordState);
+        }
+      }
+    } else {
+      setErrorMsg("All fields are required!");
+    }
   };
+
   return (
     <div>
       <StyledOuter>
@@ -35,13 +138,46 @@ const SignUpPage = () => {
               </StyledCloseBtn>
             </Link>
           </StyledBackBtnWrapper>
-          <StyledForm>
-            <input type={"text"} placeholder={"First Name"} ref={firstNameRef} />
-            <input type={"text"} placeholder={"Last Name"} ref={lastNameRef} />
-            <input type={"email"} placeholder={"Email"} ref={emailRef} />
-            <input type={"password"} placeholder={"Password"} ref={passwordRef} />
-            <input type={"password"} placeholder={"Confirm Password"} ref={confirmPasswordRef} />
-            <button onClick={regUserHandler}>Sign Up</button>
+          <StyledForm onSubmit={regUserHandler}>
+            <input
+              type={"text"}
+              placeholder={"First Name"}
+              ref={firstNameRef}
+              onChange={firstNameHandler}
+              maxLength={15}
+              required
+            />
+            <input
+              type={"text"}
+              placeholder={"Last Name"}
+              ref={lastNameRef}
+              onChange={lasttNameHandler}
+              maxLength={15}
+              required
+            />
+            <input type={"email"} placeholder={"Email"} ref={emailRef} onChange={emailHandler} />
+            <input
+              type={"password"}
+              placeholder={"Password"}
+              ref={passwordRef}
+              onChange={passwordHandler}
+              minLength={6}
+              maxLength={20}
+              required
+            />
+            <input
+              type={"password"}
+              placeholder={"Confirm Password"}
+              ref={confirmPasswordRef}
+              onChange={confirmPasswordHandler}
+              minLength={6}
+              maxLength={20}
+              required
+            />
+            <input type="submit" value={"Sign Up"} />
+            <p className="error" ref={errorRef}>
+              {errorMsg !== "" ? `Error: ${errorMsg}` : ""}
+            </p>
             <h4 style={{ marginTop: "2vh" }}>
               Already have an account? <Link to="/login">Sign In</Link>
             </h4>
@@ -104,6 +240,30 @@ const StyledForm = styled.form`
       box-shadow: 0 0 5px #719ece;
     }
   }
+  .notValid {
+    border: 1px solid #ff535379;
+    &:focus {
+      outline: none !important;
+      border: 1px solid #ff535379;
+      box-shadow: 0 0 5px #e59b2b;
+    }
+  }
+  input[type="submit"] {
+    width: 40%;
+    padding: 4px 12px;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(29, 24, 28);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0.8;
+    &:hover {
+      background-color: rgb(86, 116, 161);
+    }
+  }
 
   button {
     padding: 4px 12px;
@@ -119,6 +279,14 @@ const StyledForm = styled.form`
     &:hover {
       background-color: rgb(86, 116, 161);
     }
+  }
+  .error {
+    color: #fb8989;
+    font-weight: 500;
+    font-size: smaller;
+    /* background-color: #e50e0e46; */
+    padding: 4px 8px;
+    width: 80%;
   }
   h4 {
     font-size: smaller;
