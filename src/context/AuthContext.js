@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, auth, loginWithGoogle } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter, getTodayDate } from "../helper_functions";
@@ -37,20 +37,27 @@ export const AuthContextProvider = ({ children }) => {
           const result = await loginWithGoogle();
           updateCurUserLocalStorage(result.user);
           console.log("User signed in");
-
           try {
-            // add user to db if it doesn't exist yet
-            await setDoc(doc(db, "users", result.user.uid), {
-              uid: result.user.uid,
-              email: result._tokenResponse.email,
-              name: capitalizeFirstLetter(result.user.displayName),
-              dateCreated: getTodayDate(),
-              chosenCtg: "study",
-              categories: ctgs_default,
-              sessionsCount: 0,
-              sessions: [],
-              tasks: [],
-            });
+            const userDocReference = doc(db, "users", result.user.uid);
+            const docSnap = await getDoc(userDocReference);
+            if (!docSnap.exists()) {
+              // add user to db if it doesn't exist yet
+              try {
+                await setDoc(doc(db, "users", result.user.uid), {
+                  uid: result.user.uid,
+                  email: result._tokenResponse.email,
+                  name: capitalizeFirstLetter(result.user.displayName),
+                  dateCreated: getTodayDate(),
+                  chosenCtg: "study",
+                  categories: ctgs_default,
+                  sessionsCount: 0,
+                  sessions: [],
+                  tasks: [],
+                });
+              } catch (error) {
+                console.log(error);
+              }
+            }
             navigate("/");
           } catch (error) {
             const errorMessage = error.message;
