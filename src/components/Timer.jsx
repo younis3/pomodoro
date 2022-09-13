@@ -3,11 +3,14 @@ import styled from "styled-components";
 import CategoryContext from "../context/CategoryContext";
 import SettingsContext from "../context/SettingsContext";
 import { useContext, useState, useEffect } from "react";
-import { capitalizeFirstLetter } from "../helper_functions";
+import { capitalizeFirstLetter, getTodayDateWithHour } from "../helper_functions";
 import SoundContext from "../context/SoundContext";
 import alertAudio from "../assets/audios/cell-phone-dbl-beep-notification-83306.mp3";
 import { useUpdateEffect } from "react-use";
 import AppStateContext from "../context/AppStateContext";
+import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
+import { doc, updateDoc, arrayUnion, increment } from "firebase/firestore";
 
 function Timer({
   timerKey,
@@ -72,6 +75,17 @@ function Timer({
   }, [playAlert]);
 
   const timerCompletedHandler = () => {
+    if (!breakStatus) {
+      // if it was focus time
+      const auth = getAuth();
+      if (auth) {
+        if (auth.currentUser) {
+          // add session to db if user signed in
+          console.log(auth.currentUser.displayName);
+          addSessionToDatabase(auth.currentUser);
+        }
+      }
+    }
     setPlayAlert(!playAlert);
     if (autoRunSwitch) {
       if (!breakStatus) {
@@ -105,6 +119,22 @@ function Timer({
     }
   };
 
+  const addSessionToDatabase = async (user) => {
+    const userDocReference = doc(db, "users", user.uid);
+    try {
+      await updateDoc(userDocReference, {
+        sessionsCount: increment(1), //firestore method to increment numeric values
+        sessions: arrayUnion({
+          sessionCtg: category.ctg,
+          sessionDate: getTodayDateWithHour(),
+          sessionDuration: timer,
+        }),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const children = ({ remainingTime }) => {
     const minutes = Math.floor(remainingTime / 60);
     const seconds = remainingTime % 60;
@@ -135,7 +165,8 @@ function Timer({
         <CountdownCircleTimer
           key={timerKey}
           isPlaying={animate}
-          duration={timer * 60}
+          // duration={timer * 60}
+          duration={timer}
           size={size}
           colors={["#2275a5dc"]}
           strokeLinecap={"square"}

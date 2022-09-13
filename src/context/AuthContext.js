@@ -49,6 +49,7 @@ export const AuthContextProvider = ({ children }) => {
               categories: ctgs_default,
               sessionsCount: 0,
               sessions: [],
+              tasks: [],
             });
             navigate("/");
           } catch (error) {
@@ -85,6 +86,7 @@ export const AuthContextProvider = ({ children }) => {
           categories: ctgs_default,
           sessionsCount: 0,
           sessions: [],
+          tasks: [],
         });
       } catch (error) {
         const errorMessage = error.message;
@@ -149,7 +151,6 @@ export const AuthContextProvider = ({ children }) => {
         logout,
         getCurUserLocalStorage,
         firebaseErrorMsg,
-        setFirebaseErrorMsg,
       }}
     >
       {children}
