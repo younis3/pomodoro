@@ -7,25 +7,45 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 const HistoryTable = ({ user }) => {
   const [userSessionsArr, setUserSessionsArr] = useState([]);
 
-  useEffect(
-    //get sessions data from db
-    () => async () => {
-      console.log(userSessionsArr.length);
-      if (userSessionsArr.length === 0) {
-        const userDocReference = doc(db, "users", user.uid);
-        console.log(user.uid);
-        const docSnap = await getDoc(userDocReference);
-        if (docSnap.exists()) {
-          let data = docSnap.data().sessions;
-          console.log(data);
-          setUserSessionsArr(data);
-        } else {
-          console.log("No such document!");
-        }
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    console.log(userSessionsArr.length);
+    if (userSessionsArr.length === 0) {
+      getSessionsData();
+    }
+  }, []);
+
+  const getSessionsData = async (userID = user.uid) => {
+    const userDocReference = doc(db, "users", userID);
+    console.log(userID);
+    const docSnap = await getDoc(userDocReference);
+    if (docSnap.exists()) {
+      let data = docSnap.data().sessions;
+      console.log(data);
+      setUserSessionsArr(data);
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  // useEffect(
+  //   //get sessions data from db
+  //   () => async () => {
+  //     console.log(userSessionsArr.length);
+  //     if (userSessionsArr.length === 0) {
+  //       const userDocReference = doc(db, "users", user.uid);
+  //       console.log(user.uid);
+  //       const docSnap = await getDoc(userDocReference);
+  //       if (docSnap.exists()) {
+  //         let data = docSnap.data().sessions;
+  //         console.log(data);
+  //         setUserSessionsArr(data);
+  //       } else {
+  //         console.log("No such document!");
+  //       }
+  //     }
+  //   },
+  //   []
+  // );
 
   const deleteSessionHanlder = (i) => {
     console.log(userSessionsArr[i]);
