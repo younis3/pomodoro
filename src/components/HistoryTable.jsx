@@ -15,7 +15,7 @@ const HistoryTable = ({ user }) => {
         try {
           const docSnap = await getDoc(userDocReference);
           if (docSnap.exists()) {
-            // console.log(docSnap.data().sessions);
+            console.log(docSnap.data().sessions);
             setUserSessionsArr(docSnap.data().sessions);
           } else {
             console.log("No such document!");
