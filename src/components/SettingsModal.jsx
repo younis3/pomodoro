@@ -5,6 +5,7 @@ import { useContext } from "react";
 import SettingsContext from "../context/SettingsContext";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { focusMarks, breakMarks } from "../values";
 
 const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
   const closeSettingsModalHandler = () => {
@@ -29,33 +30,6 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
     setSessionsCount(4);
   };
 
-  const breakMarks = [
-    {
-      value: 2,
-    },
-    {
-      value: 3,
-    },
-    {
-      value: 5,
-    },
-    {
-      value: 10,
-    },
-    {
-      value: 15,
-    },
-    {
-      value: 20,
-    },
-    {
-      value: 25,
-    },
-    {
-      value: 30,
-    },
-  ];
-
   return (
     <div>
       <StyledModal>
@@ -72,8 +46,9 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
               valueLabelDisplay="auto"
               aria-label="duration"
               defaultValue={focusDuration}
-              step={5}
-              min={10}
+              marks={focusMarks}
+              step={null}
+              min={1}
               max={120}
               track={"normal"}
               onChangeCommitted={(_, newValue) => setFocusDuration(newValue)}
@@ -90,9 +65,9 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
               valueLabelDisplay="auto"
               aria-label="duration"
               defaultValue={breakDuration}
-              step={null}
               marks={breakMarks}
-              min={2}
+              step={null}
+              min={0.5}
               max={30}
               track={"normal"}
               onChangeCommitted={(_, newValue) => setBreakDuration(newValue)}
@@ -103,11 +78,7 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
           <StyledSwitchWrapper>
             <FormControlLabel
               control={
-                <Switch
-                  checked={autoRunSwitch}
-                  onChange={handleSwitch}
-                  disabled={disableStngs}
-                />
+                <Switch checked={autoRunSwitch} onChange={handleSwitch} disabled={disableStngs} />
               }
               label="Autorun Sessions"
             />
@@ -131,14 +102,10 @@ const SettingsModal = ({ setSettingsToggle, disableStngs }) => {
             />
           </StyledSliderDiv>
           {!disableStngs && (
-            <StyledResetBtn onClick={resetHandler}>
-              Reset to Default
-            </StyledResetBtn>
+            <StyledResetBtn onClick={resetHandler}>Reset to Default</StyledResetBtn>
           )}
           {disableStngs && (
-            <StyledErrorP>
-              You can't change values while session is running!
-            </StyledErrorP>
+            <StyledErrorP>You can't change values while session is running!</StyledErrorP>
           )}
         </StyledModalBorder>
       </StyledModal>
@@ -157,9 +124,9 @@ const StyledSlider = styled(Slider)({
   color: "#5c5c5c",
   height: 38,
   "& .MuiSlider-track": {
-    border: "2px solid white",
-    backgroundColor: "#dbdbdb",
-    color: "#dbdbdb",
+    border: "2px solid #fff",
+    backgroundColor: "#ffffff",
+    color: "#fff",
   },
   "& .MuiSlider-thumb": {
     height: 18,
