@@ -53,7 +53,7 @@ const HistoryTable = ({ user }) => {
 
   return (
     <div>
-      {userSessionsArr.length > 0 && (
+      {user && (
         <StyledTable>
           <thead>
             <tr>
