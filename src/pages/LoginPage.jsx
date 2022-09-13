@@ -1,34 +1,33 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { useContext, useRef, useState, useEffect } from "react";
 import { auth } from "../firebase";
-// import { useUpdateEffect } from "react-use";
+import { useUpdateEffect } from "react-use";
 
 const LoginPage = () => {
-  const { emailPasswordLogin, googleSignIn } = useContext(AuthContext);
-  const { firebaseErrorMsg, setFirebaseErrorMsg } = useContext(AuthContext);
+  const { emailPasswordLogin, googleSignIn, firebaseErrorMsg } = useContext(AuthContext);
+  const [passVisible, setPassVisible] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState("");
   const errorRef = useRef();
 
-  // errorRef.current.value = errorMsg;
-
-  // setFirebaseErrorMsg("");
-
-  const [passVisible, setPassVisible] = useState(false);
+  //skip on first run after rerender
+  useUpdateEffect(() => {
+    setErrorMsg(firebaseErrorMsg);
+  }, [firebaseErrorMsg]);
 
   useEffect(() => {
-    if (firebaseErrorMsg.length || errorMsg.length) {
+    if (errorMsg.length) {
       errorRef.current.classList.remove("hide"); //show error
     } else {
       errorRef.current.classList.add("hide");
     }
-  }, [firebaseErrorMsg, errorMsg]);
+  }, [errorMsg]);
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -94,7 +93,7 @@ const LoginPage = () => {
 
             <button onClick={defaultLoginHandler}>Sign In</button>
             <p className="error" ref={errorRef}>
-              {errorMsg ? errorMsg : firebaseErrorMsg}
+              {errorMsg}
             </p>
             <h4 style={{ marginTop: "3vh" }}>
               Don't have an account? <Link to="/signup">Sign Up</Link>
