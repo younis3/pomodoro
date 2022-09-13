@@ -55,7 +55,7 @@ const HistoryTable = ({ user }) => {
                 <tr key={i}>
                   <td>{session.sessionCtg}</td>
                   <td>{session.sessionDuration}</td>
-                  <td>{session.sessionDate}</td>
+                  <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
                   <td>
                     <div className="deleteBtnWrapper">
                       <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
