@@ -7,8 +7,19 @@ export const getTodayDate = () => {
   return new Date(Date.now()).toLocaleString().split(",")[0];
 };
 
+// export const getTodayDateWithHour = () => {
+//   return new Date(Date.now()).toLocaleString();
+// };
+
 export const getTodayDateWithHour = () => {
-  return new Date(Date.now()).toLocaleString();
+  return (
+    getTodayDate() +
+    " " +
+    new Date(Date.now()).toLocaleString(navigator.language, {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
 };
 
 export const hasNumber = (input) => {
