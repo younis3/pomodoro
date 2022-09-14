@@ -19,7 +19,7 @@ function Timer({
   isRunning,
   setIsRunning,
   animate,
-  size = 280,
+  size = 290,
   setCategoryModalToggle,
   breakStatus,
   setBreakStatus,
@@ -125,6 +125,7 @@ function Timer({
       await updateDoc(userDocReference, {
         sessionsCount: increment(1), //firestore method to increment numeric values
         sessions: arrayUnion({
+          ctgColor: category.color,
           sessionCtg: category.ctg,
           sessionDate: getTodayDateWithHour(),
           sessionDuration: timer,
@@ -168,9 +169,9 @@ function Timer({
           // duration={timer * 60}
           duration={timer}
           size={size}
-          colors={["#2275a5dc"]}
+          colors={["#58a5d2dd"]}
           strokeLinecap={"square"}
-          strokeWidth={8}
+          strokeWidth={7}
           trailColor="#11121d0"
           onComplete={timerCompletedHandler}
         >

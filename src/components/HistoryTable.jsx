@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { capitalizeFirstLetter } from "../helper_functions";
 
 const HistoryTable = ({ user }) => {
   const [userSessionsArr, setUserSessionsArr] = useState([]);
@@ -30,39 +31,43 @@ const HistoryTable = ({ user }) => {
 
   return (
     <div>
-      {user && (
-        <StyledTable>
-          <thead>
-            <tr>
-              <th>
-                <div className="headTh">Category</div>
-              </th>
-              <th>
-                <div className="headTh">Duration (min)</div>
-              </th>
-              <th>
-                <div className="headTh">Session Date</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {userSessionsArr.map((session, i) => {
-              return (
-                <tr key={i}>
-                  <td>{session.sessionCtg}</td>
-                  <td>{session.sessionDuration}</td>
-                  <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
-                  <td>
-                    <div className="deleteBtnWrapper">
-                      <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </StyledTable>
-      )}
+      <StyledOuterDiv>
+        {user && (
+          <StyledTable>
+            <thead>
+              <tr>
+                <th>
+                  <div className="headTh">Category</div>
+                </th>
+                <th>
+                  <div className="headTh">Duration (min)</div>
+                </th>
+                <th>
+                  <div className="headTh">Session Date</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {userSessionsArr.map((session, i) => {
+                return (
+                  <tr key={i}>
+                    <td style={{ fontSize: "smaller" }}>
+                      {capitalizeFirstLetter(session.sessionCtg)}
+                    </td>
+                    <td>{session.sessionDuration}</td>
+                    <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
+                    <td>
+                      <div className="deleteBtnWrapper">
+                        <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </StyledTable>
+        )}
+      </StyledOuterDiv>
     </div>
   );
 };
@@ -74,20 +79,36 @@ export default HistoryTable;
 //
 //
 /****************** styles ******************/
+const StyledOuterDiv = styled.div`
+  height: 80vh;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  &::-webkit-scrollbar {
+    /* hides scrollbar */
+    width: 0;
+    height: 0;
+  }
+`;
+
 const StyledTable = styled.table`
-  width: 60%;
+  /* position: sticky; */
+  width: 70%;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   border-collapse: separate;
   border-spacing: 0 6px;
+
   @media only screen and (max-width: 650px) {
-    width: 90%;
+    width: 94%;
   }
 
   thead {
     .headTh {
       font-size: smaller;
-      padding: 12px;
+      padding: 9px;
     }
     tr {
     }
@@ -98,7 +119,7 @@ const StyledTable = styled.table`
   }
   tbody {
     .deleteBtnWrapper {
-      margin-left: 8px;
+      margin-left: 4px;
       margin-top: 2px;
       padding: 1px;
       font-size: smaller;
