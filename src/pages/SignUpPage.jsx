@@ -7,9 +7,10 @@ import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { auth } from "../firebase";
 import { hasNumber, validateNoCharacters, validateEmail } from "../helper_functions";
+import { useUpdateEffect } from "react-use";
 
 const SignUpPage = (e) => {
-  const { emailPasswordSignUp } = useContext(AuthContext);
+  const { emailPasswordSignUp, firebaseErrorMsg } = useContext(AuthContext);
 
   const nameRef = useRef();
   const emailRef = useRef();
@@ -25,6 +26,11 @@ const SignUpPage = (e) => {
 
   const [passVisible, setPassVisible] = useState(false);
   const [confirmPassVisible, setConfirmPassVisible] = useState(false);
+
+  //skip on first run after rerender
+  useUpdateEffect(() => {
+    setErrorMsg(firebaseErrorMsg);
+  }, [firebaseErrorMsg]);
 
   const passVisibleHandler = (e) => {
     setPassVisible(!passVisible);

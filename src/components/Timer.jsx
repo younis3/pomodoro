@@ -2,7 +2,7 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import styled from "styled-components";
 import CategoryContext from "../context/CategoryContext";
 import SettingsContext from "../context/SettingsContext";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { capitalizeFirstLetter, getTodayDateWithHour } from "../helper_functions";
 import SoundContext from "../context/SoundContext";
 import alertAudio from "../assets/audios/cell-phone-dbl-beep-notification-83306.mp3";
@@ -21,20 +21,22 @@ function Timer({
   animate,
   size = 290,
   setCategoryModalToggle,
-  breakStatus,
-  setBreakStatus,
 }) {
   const { category } = useContext(CategoryContext);
   const { autoRunSwitch } = useContext(SettingsContext);
   const { sessionsCount } = useContext(SettingsContext);
   const [sessionCounter, setSessionCounter] = useState(1);
-  const [text, setText] = useState("Start to focus");
+  const textRef = useRef("Start to focus");
   const { sound } = useContext(SoundContext);
   const { chosenSound } = useContext(SoundContext);
   const [playAlert, setPlayAlert] = useState(false);
-
+  const { breakStatus, changeBreakStatus } = useContext(AppStateContext);
   const alertSound = new Audio(alertAudio);
   const { SetTimerState } = useContext(AppStateContext);
+  const { focusDuration } = useContext(SettingsContext);
+  const { breakDuration } = useContext(SettingsContext);
+  const [refresh, setRefresh] = useState(false);
+  const [timerX, setTimerX] = useState(focusDuration);
 
   useEffect(() => {
     SetTimerState(animate);
@@ -42,15 +44,20 @@ function Timer({
 
   useEffect(() => {
     if (isRunning === "stopped") {
-      setText("Start to focus");
+      textRef.current = "Start to focus";
+      setSessionCounter(1);
     } else {
       if (breakStatus) {
-        setText("Take a break");
+        textRef.current = "Take a break";
       } else {
-        setText("Stay focused");
+        textRef.current = "Stay focused";
       }
     }
   }, [isRunning, breakStatus]);
+
+  useEffect(() => {
+    breakStatus ? setTimerX(breakDuration) : setTimerX(focusDuration);
+  }, [breakStatus, focusDuration]);
 
   const categoryHandler = () => {
     setCategoryModalToggle(true);
@@ -76,44 +83,45 @@ function Timer({
 
   const timerCompletedHandler = () => {
     if (!breakStatus) {
-      // if it was focus time
+      // if it was focus time, save session data
       const auth = getAuth();
       if (auth) {
         if (auth.currentUser) {
-          // add session to db if user signed in
-          console.log(auth.currentUser.displayName);
+          // add session data to db if user signed in
           addSessionToDatabase(auth.currentUser);
         }
       }
     }
-    setPlayAlert(!playAlert);
+    setPlayAlert(!playAlert); //play notify sound (timeout function)
     if (autoRunSwitch) {
-      if (!breakStatus) {
-        //if it was focus time (not break)
-        //count the session to the context (for stats)
-      } else {
+      //if autoRun Switch is turned on
+      if (breakStatus) {
+        //if it was break time
         if (sessionCounter < sessionsCount) {
           setSessionCounter(sessionCounter + 1);
-        } else if (sessionCounter == sessionsCount) {
+        } else if (sessionCounter === sessionsCount) {
           //if user finished all sessions
           setSessionCounter(1);
           setIsRunning("stopped");
-          setBreakStatus(false);
+          changeBreakStatus(false);
           setKey((prevKey) => prevKey + 1);
           return { shouldRepeat: false };
         }
       }
-      setBreakStatus(!breakStatus);
-      return { shouldRepeat: true };
+      changeBreakStatus(!breakStatus);
+      setRefresh(!refresh);
+      setKey((prevKey) => prevKey + 1);
+      return { shouldRepeat: false };
     } else {
       //if autoRun Switch is turned off
-      setBreakStatus(!breakStatus);
       if (breakStatus) {
-        setIsRunning("stopped");
+        setIsRunning("stopped"); //last session is done. restart timer
         setKey((prevKey) => prevKey + 1);
+        changeBreakStatus(false);
         return { shouldRepeat: false };
       } else {
-        //count the session to the context (for stats)
+        setKey((prevKey) => prevKey + 1);
+        changeBreakStatus(true);
         return { shouldRepeat: true };
       }
     }
@@ -146,7 +154,7 @@ function Timer({
           {autoRunSwitch && (
             <div className="sessions">{`${sessionCounter}/${sessionsCount} - `}</div>
           )}
-          <div className="text">{text}</div>
+          <div className="text">{textRef.current}</div>
         </div>
 
         <div className="value">{`${minutes < 10 ? `0${minutes}` : minutes}:${
@@ -166,8 +174,8 @@ function Timer({
         <CountdownCircleTimer
           key={timerKey}
           isPlaying={animate}
-          // duration={timer * 60}
-          duration={timer}
+          // duration={timerX * 60}
+          duration={timerX}
           size={size}
           colors={["#58a5d2dd"]}
           strokeLinecap={"square"}

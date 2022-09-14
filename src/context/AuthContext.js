@@ -81,7 +81,6 @@ export const AuthContextProvider = ({ children }) => {
       updateCurUserLocalStorage(result.user);
       // console.log(result);
       // user added to authinticated users (not the db)
-
       try {
         // add user to db
         await setDoc(doc(db, "users", result.user.uid), {
@@ -96,11 +95,17 @@ export const AuthContextProvider = ({ children }) => {
           tasks: [],
         });
       } catch (error) {
-        const errorMessage = error.message;
+        const errorMessage = error.message.slice(10);
+        setFirebaseErrorMsg(errorMessage);
         console.log(errorMessage);
       }
     } catch (error) {
-      const errorMessage = error.message;
+      const errorMessage = error.message.slice(10);
+      if (errorMessage === "Error (auth/email-already-in-use).") {
+        setFirebaseErrorMsg("Email Already In Use!");
+      } else {
+        setFirebaseErrorMsg(errorMessage);
+      }
       console.log(errorMessage);
     }
   };

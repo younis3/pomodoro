@@ -40,11 +40,7 @@ const Navbar = () => {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      let dataStr = docSnap.data().name;
-      // if (!dataStr) {
-      //   dataStr = docSnap.data().firstName;
-      // }
-      console.log(dataStr);
+      const dataStr = docSnap.data().name;
       const name = dataStr?.split(" ")[0];
       setUserName(name);
     } else {
@@ -91,16 +87,14 @@ const Navbar = () => {
       <StyledNav ref={navRef}>
         {urlLocation !== "/login" && (
           <div className="leftContainer">
-            {!auth.currentUser && !userObjLength && (
+            {!auth.currentUser && (
               <Link to="/login" style={{ textDecoration: "none" }}>
                 <li className="navItem"> Sign In </li>
               </Link>
             )}
-            {!auth.currentUser && userObjLength > 0 && <h4 className="welcome">loading...</h4>}
-            {auth.currentUser && userObjLength > 0 && (
-              <h4 className="welcome">Welcome {userName}!</h4>
-            )}
-            {auth.currentUser && userObjLength > 0 && (
+            {/* {!auth.currentUser && !userObjLength && <h4 className="welcome">loading...</h4>} */}
+            {auth.currentUser && <h4 className="welcome">Welcome {userName}!</h4>}
+            {auth.currentUser && (
               <li className="navItem" id="logout" onClick={signoutHandler}>
                 Sign Out
               </li>
@@ -157,9 +151,12 @@ const StyledNav = styled.ul`
     hsl(0deg 0% 22%) 100%
   ); */
   background-color: transparent;
-  opacity: 0.8;
-  padding: 14px 18px;
+  opacity: 0.9;
+  padding: 16px 18px;
+  margin-top: 0.5vh;
   .navItem {
+    padding-top: 1px;
+    padding-bottom: 1px;
     list-style: none;
     color: #f5f5f5e2;
     font-weight: 600;
