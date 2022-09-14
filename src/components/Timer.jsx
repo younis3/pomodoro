@@ -125,6 +125,7 @@ function Timer({
       await updateDoc(userDocReference, {
         sessionsCount: increment(1), //firestore method to increment numeric values
         sessions: arrayUnion({
+          ctgColor: category.color,
           sessionCtg: category.ctg,
           sessionDate: getTodayDateWithHour(),
           sessionDuration: timer,

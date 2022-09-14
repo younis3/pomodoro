@@ -31,41 +31,43 @@ const HistoryTable = ({ user }) => {
 
   return (
     <div>
-      {user && (
-        <StyledTable>
-          <thead>
-            <tr>
-              <th>
-                <div className="headTh">Category</div>
-              </th>
-              <th>
-                <div className="headTh">Duration (min)</div>
-              </th>
-              <th>
-                <div className="headTh">Session Date</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {userSessionsArr.map((session, i) => {
-              return (
-                <tr key={i}>
-                  <td style={{ fontSize: "smaller" }}>
-                    {capitalizeFirstLetter(session.sessionCtg)}
-                  </td>
-                  <td>{session.sessionDuration}</td>
-                  <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
-                  <td>
-                    <div className="deleteBtnWrapper">
-                      <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </StyledTable>
-      )}
+      <StyledOuterDiv>
+        {user && (
+          <StyledTable>
+            <thead>
+              <tr>
+                <th>
+                  <div className="headTh">Category</div>
+                </th>
+                <th>
+                  <div className="headTh">Duration (min)</div>
+                </th>
+                <th>
+                  <div className="headTh">Session Date</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {userSessionsArr.map((session, i) => {
+                return (
+                  <tr key={i}>
+                    <td style={{ fontSize: "smaller" }}>
+                      {capitalizeFirstLetter(session.sessionCtg)}
+                    </td>
+                    <td>{session.sessionDuration}</td>
+                    <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
+                    <td>
+                      <div className="deleteBtnWrapper">
+                        <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </StyledTable>
+        )}
+      </StyledOuterDiv>
     </div>
   );
 };
@@ -77,17 +79,28 @@ export default HistoryTable;
 //
 //
 /****************** styles ******************/
+const StyledOuterDiv = styled.div`
+  height: 80vh;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  &::-webkit-scrollbar {
+    /* hides scrollbar */
+    width: 0;
+    height: 0;
+  }
+`;
+
 const StyledTable = styled.table`
+  /* position: sticky; */
   width: 70%;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   border-collapse: separate;
   border-spacing: 0 6px;
-  overflow: hidden;
-  overflow-y: scroll;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+
   @media only screen and (max-width: 650px) {
     width: 94%;
   }
