@@ -11,15 +11,24 @@ export const getTodayDate = () => {
 //   return new Date(Date.now()).toLocaleString();
 // };
 
+// export const getTodayDateWithHour = () => {
+//   return (
+//     getTodayDate() +
+//     ", " +
+//     new Date(Date.now()).toLocaleString(navigator.language, {
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     })
+//   );
+// };
+
 export const getTodayDateWithHour = () => {
-  return (
-    getTodayDate() +
-    " " +
-    new Date(Date.now()).toLocaleString(navigator.language, {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
+  let date = new Date();
+  date = new Date(date.getTime());
+  return date
+    .toLocaleString()
+    .split("T")[0]
+    .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
 };
 
 export const hasNumber = (input) => {

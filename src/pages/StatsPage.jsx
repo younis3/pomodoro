@@ -40,6 +40,10 @@ export default StatsPage;
 //
 /****************** styles ******************/
 const StyledHistoryTab = styled.div`
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
   .tableTitle {
     padding-top: 10vh;
     margin-bottom: 3vh;

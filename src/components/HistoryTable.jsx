@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { capitalizeFirstLetter } from "../helper_functions";
 
 const HistoryTable = ({ user }) => {
   const [userSessionsArr, setUserSessionsArr] = useState([]);
@@ -49,7 +50,9 @@ const HistoryTable = ({ user }) => {
             {userSessionsArr.map((session, i) => {
               return (
                 <tr key={i}>
-                  <td>{session.sessionCtg}</td>
+                  <td style={{ fontSize: "smaller" }}>
+                    {capitalizeFirstLetter(session.sessionCtg)}
+                  </td>
                   <td>{session.sessionDuration}</td>
                   <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
                   <td>
@@ -75,19 +78,24 @@ export default HistoryTable;
 //
 /****************** styles ******************/
 const StyledTable = styled.table`
-  width: 60%;
+  width: 70%;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   border-collapse: separate;
   border-spacing: 0 6px;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
   @media only screen and (max-width: 650px) {
-    width: 90%;
+    width: 94%;
   }
 
   thead {
     .headTh {
       font-size: smaller;
-      padding: 12px;
+      padding: 9px;
     }
     tr {
     }
@@ -98,7 +106,7 @@ const StyledTable = styled.table`
   }
   tbody {
     .deleteBtnWrapper {
-      margin-left: 8px;
+      margin-left: 4px;
       margin-top: 2px;
       padding: 1px;
       font-size: smaller;

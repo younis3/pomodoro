@@ -37,9 +37,7 @@ function Pomodoro() {
   const [timerDuration, setTimerDuration] = useState(focusDuration);
 
   useEffect(() => {
-    breakStatus
-      ? setTimerDuration(breakDuration)
-      : setTimerDuration(focusDuration);
+    breakStatus ? setTimerDuration(breakDuration) : setTimerDuration(focusDuration);
   }, [breakStatus, focusDuration]);
 
   useEffect(() => {
@@ -103,7 +101,9 @@ function Pomodoro() {
   return (
     <div>
       <StyledHeader>
-        <h1>Pomodoro Plus</h1>
+        <h1>
+          POMO<span style={{ color: "#58a5d2dd", fontSize: "50px" }}>+</span>
+        </h1>
         <h3>Stay Focused. Stay Productive</h3>
         <h4 className="lstinHeader">Developed By Y3.</h4>
       </StyledHeader>
@@ -156,22 +156,13 @@ function Pomodoro() {
       </DownButtonsDiv>
 
       {settingsToggle && (
-        <SettingsModal
-          setSettingsToggle={setSettingsToggle}
-          disableStngs={disableSettings}
-        />
+        <SettingsModal setSettingsToggle={setSettingsToggle} disableStngs={disableSettings} />
       )}
       {soundModalToggle && (
-        <SoundsModal
-          setSoundModalToggle={setSoundModalToggle}
-          disableStngs={disableSettings}
-        />
+        <SoundsModal setSoundModalToggle={setSoundModalToggle} disableStngs={disableSettings} />
       )}
       {categoryModalToggle && (
-        <CategoryModal
-          setCategoryModalToggle={setCategoryModalToggle}
-          breakStatus={breakStatus}
-        />
+        <CategoryModal setCategoryModalToggle={setCategoryModalToggle} breakStatus={breakStatus} />
       )}
     </div>
   );
@@ -187,11 +178,12 @@ export default Pomodoro;
 const StyledHeader = styled.header`
   color: #d1d1d1b9;
   h1 {
-    padding-top: 11vh;
+    padding-top: 9vh;
     color: #f4f4f5db;
+    /* color: #4291bfda; */
   }
   .lstinHeader {
-    margin-bottom: 8vh;
+    margin-bottom: 6vh;
   }
 `;
 
