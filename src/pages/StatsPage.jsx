@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 const StatsPage = () => {
   const [userObj, setUserObj] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
