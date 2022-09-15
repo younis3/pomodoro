@@ -52,6 +52,7 @@ export const AuthContextProvider = ({ children }) => {
                   categories: ctgs_default,
                   sessionsCount: 0,
                   sessions: [],
+                  trashSessions: [],
                   tasks: [],
                 });
               } catch (error) {
@@ -92,6 +93,7 @@ export const AuthContextProvider = ({ children }) => {
           categories: ctgs_default,
           sessionsCount: 0,
           sessions: [],
+          trashSessions: [],
           tasks: [],
         });
       } catch (error) {

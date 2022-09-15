@@ -1,17 +1,25 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, increment } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { capitalizeFirstLetter } from "../helper_functions";
 
-const HistoryTable = ({ user }) => {
-  const [userSessionsArr, setUserSessionsArr] = useState([]);
-  // const [refresh, setRefresh] = useState(false);
+const HistoryTable = ({ user, tableMode }) => {
+  const [userSessionsArr, setUserSessionsArr] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    if (userSessionsArr.length === 0) {
-      getSessionsData();
+    if (!userSessionsArr) {
+      getSessionsData()
+        .then((res) => {
+          setUserSessionsArr(res);
+          setRefresh(!refresh);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, []);
 
@@ -19,10 +27,24 @@ const HistoryTable = ({ user }) => {
     const userDocReference = doc(db, "users", userID);
     const docSnap = await getDoc(userDocReference);
     if (docSnap.exists()) {
-      const data = docSnap.data().sessions.reverse();
-      setUserSessionsArr(data);
+      let dataArr = [];
+      if (tableMode === "default") {
+        dataArr = docSnap.data().sessions;
+      } else if (tableMode === "trash") {
+        dataArr = docSnap.data().trashSessions;
+      }
+      if (dataArr?.length > 0) {
+        dataArr.sort((a, b) => {
+          //sort array by date
+          //turn strings into dates then subtract them to get a value for sort
+          return new Date(b.sessionDate) - new Date(a.sessionDate);
+        });
+        // dataArr = dataArr.reverse();
+      }
+      return dataArr;
     } else {
       console.log("No such document!");
+      return null;
     }
   };
 
@@ -46,16 +68,46 @@ const HistoryTable = ({ user }) => {
         const docSnap = await getDoc(userDocReference);
         if (docSnap.exists()) {
           await updateDoc(userDocReference, {
+            sessionsCount: increment(-1),
             sessions: arrayRemove(objToDel),
+            trashSessions: arrayUnion(objToDel),
           });
-          getSessionsData(); //update table data
-          setTimeout(() => {
-            //removes element smoother (prevent flashing item back after animation over)
-            elm.classList.remove("deletedRow");
-          }, 200);
+          getSessionsData()
+            .then((res) => {
+              // console.log(res);
+              setUserSessionsArr(res);
+              elm.classList.remove("deletedRow");
+              setRefresh(!refresh);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       });
     }, 500);
+  };
+
+  const undoSessionHandler = async (i) => {
+    // handle adding data in firestore db
+    const objToAdd = userSessionsArr[i];
+    const userDocReference = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userDocReference);
+    if (docSnap.exists()) {
+      await updateDoc(userDocReference, {
+        sessionsCount: increment(1),
+        sessions: arrayUnion(objToAdd),
+        trashSessions: arrayRemove(objToAdd),
+      });
+      getSessionsData()
+        .then((res) => {
+          // console.log(res);
+          setUserSessionsArr(res);
+          setRefresh(!refresh);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   return (
@@ -79,7 +131,7 @@ const HistoryTable = ({ user }) => {
               </tr>
             </thead>
             <tbody>
-              {userSessionsArr.map((session, i) => {
+              {userSessionsArr?.map((session, i) => {
                 return (
                   <tr key={i} id={`${i}`}>
                     <td></td>
@@ -109,7 +161,12 @@ const HistoryTable = ({ user }) => {
                     <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
                     <td>
                       <div className="deleteBtnWrapper">
-                        <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                        {tableMode === "default" && (
+                          <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                        )}
+                        {tableMode === "trash" && (
+                          <ReplayIcon onClick={() => undoSessionHandler(i)} />
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -185,7 +242,7 @@ const StyledTable = styled.table`
 
   /* render table animation */
   animation-name: ${addTable};
-  animation-duration: 2.5s;
+  animation-duration: 2s;
   animation-fill-mode: forwards;
   animation-play-state: running;
 
