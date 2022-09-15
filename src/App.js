@@ -4,6 +4,7 @@ import { SoundContextProvider } from "./context/SoundContext";
 import { CategoryContextProvider } from "./context/CategoryContext";
 import { AuthContextProvider } from "./context/AuthContext";
 import { AppStateContextProvider } from "./context/AppStateContext";
+import { StatsContextProvider } from "./context/StatsContext";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -18,23 +19,25 @@ function App() {
     <div className="App">
       <AuthContextProvider>
         <AppStateContextProvider>
-          <CategoryContextProvider>
-            <SoundContextProvider>
-              <SettingsContextProvider>
-                <Navbar />
-                <HomePage />
-                <Routes>
-                  <Route path="/" />
-                  <Route path="/stats" element={<StatsPage />} />
-                  <Route element={<ProtectedRoutes />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignUpPage />} />
-                  </Route>
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </SettingsContextProvider>
-            </SoundContextProvider>
-          </CategoryContextProvider>
+          <StatsContextProvider>
+            <CategoryContextProvider>
+              <SoundContextProvider>
+                <SettingsContextProvider>
+                  <Navbar />
+                  <HomePage />
+                  <Routes>
+                    <Route path="/" />
+                    <Route path="/stats" element={<StatsPage />} />
+                    <Route element={<ProtectedRoutes />}>
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/signup" element={<SignUpPage />} />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </SettingsContextProvider>
+              </SoundContextProvider>
+            </CategoryContextProvider>
+          </StatsContextProvider>
         </AppStateContextProvider>
       </AuthContextProvider>
     </div>
