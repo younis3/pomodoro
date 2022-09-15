@@ -1,18 +1,16 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import AppStateContext from "../context/AppStateContext";
 
-const ConfirmDialog = ({
-  setConfirmStopToggle,
-  setKey,
-  setIsRunning,
-  setBreakStatus
-}) => {
+const ConfirmDialog = ({ setConfirmStopToggle, setKey, setIsRunning }) => {
+  const { changeBreakStatus } = useContext(AppStateContext);
   const closeDialogHandler = () => {
     setConfirmStopToggle(false);
   };
 
   const stopTimerHandler = () => {
     setIsRunning("stopped");
-    setBreakStatus(false);
+    changeBreakStatus(false);
     setKey((prevKey) => prevKey + 1);
     setConfirmStopToggle(false);
   };

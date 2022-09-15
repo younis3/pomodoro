@@ -22,13 +22,14 @@ function App() {
             <SoundContextProvider>
               <SettingsContextProvider>
                 <Navbar />
+                <HomePage />
                 <Routes>
-                  <Route path="/" element={<HomePage />} />
+                  <Route path="/" />
+                  <Route path="/stats" element={<StatsPage />} />
                   <Route element={<ProtectedRoutes />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignUpPage />} />
                   </Route>
-                  <Route path="/stats" element={<StatsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SettingsContextProvider>

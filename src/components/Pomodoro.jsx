@@ -33,12 +33,6 @@ function Pomodoro() {
   const { chosenSound } = useContext(SoundContext);
   const [breakStatus, setBreakStatus] = useState(false);
   const { focusDuration } = useContext(SettingsContext);
-  const { breakDuration } = useContext(SettingsContext);
-  const [timerDuration, setTimerDuration] = useState(focusDuration);
-
-  useEffect(() => {
-    breakStatus ? setTimerDuration(breakDuration) : setTimerDuration(focusDuration);
-  }, [breakStatus, focusDuration]);
 
   useEffect(() => {
     if (isRunning === "running" && chosenSound !== "none") {
@@ -120,13 +114,11 @@ function Pomodoro() {
       <Timer
         timerKey={key}
         setKey={setKey}
-        timer={timerDuration}
+        timer={focusDuration}
         animate={animation}
         isRunning={isRunning}
         setIsRunning={setIsRunning}
         setCategoryModalToggle={setCategoryModalToggle}
-        breakStatus={breakStatus}
-        setBreakStatus={setBreakStatus}
       />
 
       <DownButtonsDiv>
@@ -150,7 +142,6 @@ function Pomodoro() {
             setConfirmStopToggle={setConfirmStopToggle}
             setKey={setKey}
             setIsRunning={setIsRunning}
-            setBreakStatus={setBreakStatus}
           />
         )}
       </DownButtonsDiv>
@@ -178,7 +169,7 @@ export default Pomodoro;
 const StyledHeader = styled.header`
   color: #d1d1d1b9;
   h1 {
-    padding-top: 9vh;
+    padding-top: 10vh;
     color: #f4f4f5db;
     /* color: #4291bfda; */
   }

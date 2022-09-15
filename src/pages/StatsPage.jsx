@@ -24,6 +24,9 @@ const StatsPage = () => {
         <StyledHistoryTab>
           <h3 className="tableTitle">History Table</h3>
           <HistoryTable user={userObj} />
+          <div className="clearBtnWrapper">
+            <button>Clear History</button>
+          </div>
         </StyledHistoryTab>
       )}
 
@@ -40,6 +43,23 @@ export default StatsPage;
 //
 /****************** styles ******************/
 const StyledHistoryTab = styled.div`
+  .clearBtnWrapper {
+    button {
+      padding: 8px 6px;
+      width: 98%;
+      font-size: 18px;
+      color: rgb(255, 255, 255);
+      background-color: rgb(29, 24, 28);
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      opacity: 0.8;
+      &:hover {
+        background-color: rgb(86, 116, 161);
+      }
+    }
+  }
+
   .tableTitle {
     padding-top: 10vh;
     margin-bottom: 3vh;

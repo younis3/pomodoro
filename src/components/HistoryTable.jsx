@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { capitalizeFirstLetter } from "../helper_functions";
 
@@ -18,15 +18,23 @@ const HistoryTable = ({ user }) => {
     const userDocReference = doc(db, "users", userID);
     const docSnap = await getDoc(userDocReference);
     if (docSnap.exists()) {
-      let data = docSnap.data().sessions;
+      let data = docSnap.data().sessions.reverse();
       setUserSessionsArr(data);
     } else {
       console.log("No such document!");
     }
   };
 
-  const deleteSessionHanlder = (i) => {
-    console.log(userSessionsArr[i]);
+  const deleteSessionHanlder = async (i) => {
+    const objToDel = userSessionsArr[i];
+    const userDocReference = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userDocReference);
+    if (docSnap.exists()) {
+      await updateDoc(userDocReference, {
+        sessions: arrayRemove(objToDel),
+      });
+      getSessionsData();
+    }
   };
 
   return (
@@ -36,7 +44,8 @@ const HistoryTable = ({ user }) => {
           <StyledTable>
             <thead>
               <tr>
-                <th>
+                <th></th>
+                <th style={{ textAlign: "left" }}>
                   <div className="headTh">Category</div>
                 </th>
                 <th>
@@ -45,15 +54,37 @@ const HistoryTable = ({ user }) => {
                 <th>
                   <div className="headTh">Session Date</div>
                 </th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {userSessionsArr.map((session, i) => {
                 return (
                   <tr key={i}>
-                    <td style={{ fontSize: "smaller" }}>
+                    <td></td>
+
+                    <td
+                      id="tdCtg"
+                      style={{
+                        fontSize: "smaller",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "left",
+                        padding: "6px",
+                      }}
+                    >
+                      <div>
+                        <button
+                          className="ctgBtn"
+                          style={{
+                            color: `${session.ctgColor}`,
+                            backgroundColor: `${session.ctgColor}`,
+                          }}
+                        />
+                      </div>
                       {capitalizeFirstLetter(session.sessionCtg)}
                     </td>
+
                     <td>{session.sessionDuration}</td>
                     <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
                     <td>
@@ -80,7 +111,7 @@ export default HistoryTable;
 //
 /****************** styles ******************/
 const StyledOuterDiv = styled.div`
-  height: 80vh;
+  height: 69vh;
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
@@ -94,7 +125,7 @@ const StyledOuterDiv = styled.div`
 
 const StyledTable = styled.table`
   /* position: sticky; */
-  width: 70%;
+  width: 70vw;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -102,7 +133,7 @@ const StyledTable = styled.table`
   border-spacing: 0 6px;
 
   @media only screen and (max-width: 650px) {
-    width: 94%;
+    width: 94vw;
   }
 
   thead {
@@ -119,7 +150,7 @@ const StyledTable = styled.table`
   }
   tbody {
     .deleteBtnWrapper {
-      margin-left: 4px;
+      margin-left: 2px;
       margin-top: 2px;
       padding: 1px;
       font-size: smaller;
@@ -127,6 +158,19 @@ const StyledTable = styled.table`
     }
     tr td {
       color: #f0e9e9;
+    }
+    #tdCtg {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .ctgBtn {
+      font-size: 14px;
+      border-radius: 50%;
+      border: none;
+      width: 9px;
+      height: 9px;
+      margin-right: 8px;
+      margin-top: 4.7px;
     }
   }
 `;
