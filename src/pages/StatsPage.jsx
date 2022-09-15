@@ -1,13 +1,15 @@
 import styled from "styled-components";
 import HistoryTable from "../components/HistoryTable";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { useEffect, useRef, useState } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const StatsPage = () => {
   const [userObj, setUserObj] = useState(null);
   const [pageMode, setPageMode] = useState("history");
   const [tableMode, setTableMode] = useState("default");
-  // const [refresh, setRefresh] = useState(false);
+  const [refreshParent, setRefreshParent] = useState(false);
+  const [disableClearHistoryBtn, setDisableClearHistoryBtn] = useState(true);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -49,10 +51,23 @@ const StatsPage = () => {
     }
   }, [tableMode, pageMode, userObj]);
 
-  const clearHistoryHanlder = () => {
+  const clearHistoryHanlder = async () => {
     if (window.confirm("Are you sure to delete all items in trash? they will be gone forever!")) {
-      alert("function not working yet..it's beeing developed");
-      //TODO: clear all items in trash table
+      const userDocReference = doc(db, "users", auth.currentUser.uid);
+      const docSnap = await getDoc(userDocReference);
+      if (docSnap.exists()) {
+        await updateDoc(userDocReference, {
+          trashSessions: [],
+        })
+          .then(() => {
+            setRefreshParent(!refreshParent);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        console.log("No such document!");
+      }
     }
   };
 
@@ -81,13 +96,31 @@ const StatsPage = () => {
                     </div>
                   </div>
                   {tableMode === "trash" && (
-                    <div className="clearBtnWrapper" onClick={clearHistoryHanlder}>
+                    <button
+                      className="clearBtnWrapper"
+                      onClick={clearHistoryHanlder}
+                      disabled={disableClearHistoryBtn}
+                    >
                       Clear History
-                    </div>
+                    </button>
                   )}
                 </div>
-                {tableMode === "default" && <HistoryTable user={userObj} tableMode={"default"} />}
-                {tableMode === "trash" && <HistoryTable user={userObj} tableMode={"trash"} />}
+                {tableMode === "default" && (
+                  <HistoryTable
+                    user={userObj}
+                    tableMode={"default"}
+                    refreshParent={refreshParent}
+                    setDisableClearHistoryBtn={setDisableClearHistoryBtn}
+                  />
+                )}
+                {tableMode === "trash" && (
+                  <HistoryTable
+                    user={userObj}
+                    tableMode={"trash"}
+                    refreshParent={refreshParent}
+                    setDisableClearHistoryBtn={setDisableClearHistoryBtn}
+                  />
+                )}
               </StyledHistoryTab>
             )}
           </div>
@@ -188,6 +221,9 @@ const StyledHistoryTab = styled.div`
       background-color: #b6485199;
       color: #fff;
       opacity: 0.8;
+    }
+    :disabled {
+      opacity: 0.4;
     }
   }
 `;

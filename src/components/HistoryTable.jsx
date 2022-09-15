@@ -5,15 +5,42 @@ import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, increment } from "fire
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { capitalizeFirstLetter } from "../helper_functions";
+import { useUpdateEffect } from "react-use";
 
-const HistoryTable = ({ user, tableMode }) => {
+const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBtn }) => {
   const [userSessionsArr, setUserSessionsArr] = useState(null);
   const [refresh, setRefresh] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    if (userSessionsArr?.length === 0) {
+      if (tableMode === "trash") {
+        setMsg("Trash is empty!");
+      } else if (tableMode === "default") {
+        setMsg("No data :/");
+      }
+    } else {
+      setMsg("");
+    }
+  }, [userSessionsArr]);
+
+  useEffect(() => {
+    console.log(msg);
+    console.log(tableMode);
+    if (tableMode === "trash") {
+      if (msg !== "") {
+        setDisableClearHistoryBtn(true);
+      }
+    }
+  }, [msg]);
 
   useEffect(() => {
     if (!userSessionsArr) {
       getSessionsData()
         .then((res) => {
+          if (res.length > 0 && tableMode === "trash") {
+            setDisableClearHistoryBtn(false);
+          }
           setUserSessionsArr(res);
           setRefresh(!refresh);
         })
@@ -22,6 +49,20 @@ const HistoryTable = ({ user, tableMode }) => {
         });
     }
   }, []);
+
+  useUpdateEffect(() => {
+    //useupdateeffect skips first run
+    //this function triggered when 'clear history' button in trash table clicked in parent 'stats page'
+    getSessionsData()
+      .then((res) => {
+        // console.log(res);
+        setUserSessionsArr(res);
+        setRefresh(!refresh);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [refreshParent]);
 
   const getSessionsData = async (userID = user.uid) => {
     const userDocReference = doc(db, "users", userID);
@@ -41,6 +82,7 @@ const HistoryTable = ({ user, tableMode }) => {
         });
         // dataArr = dataArr.reverse();
       }
+      // console.log(dataArr);
       return dataArr;
     } else {
       console.log("No such document!");
@@ -84,7 +126,7 @@ const HistoryTable = ({ user, tableMode }) => {
             });
         }
       });
-    }, 500);
+    }, 600);
   };
 
   const undoSessionHandler = async (i) => {
@@ -113,7 +155,8 @@ const HistoryTable = ({ user, tableMode }) => {
   return (
     <div>
       <StyledOuterDiv>
-        {user && (
+        {msg !== "" && <h4 style={{ marginTop: "3vh", color: "#fff", opacity: "0.65" }}>{msg}</h4>}
+        {user && userSessionsArr?.length > 0 && (
           <StyledTable id="table">
             <thead>
               <tr>
@@ -242,7 +285,7 @@ const StyledTable = styled.table`
 
   /* render table animation */
   animation-name: ${addTable};
-  animation-duration: 2s;
+  animation-duration: 1.5s;
   animation-fill-mode: forwards;
   animation-play-state: running;
 
