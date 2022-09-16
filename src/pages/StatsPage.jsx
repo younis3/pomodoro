@@ -27,15 +27,15 @@ const StatsPage = () => {
   const statsPageModeRef = useRef();
 
   useEffect(() => {
-    historyPageRef.current.classList.remove("clickedPage");
-    statsPageModeRef.current.classList.remove("clickedPage");
+    historyPageRef.current?.classList.remove("clickedPage");
+    statsPageModeRef.current?.classList.remove("clickedPage");
 
     if (pageMode === "history") {
-      historyPageRef.current.classList.add("clickedPage");
+      historyPageRef.current?.classList.add("clickedPage");
     } else {
-      statsPageModeRef.current.classList.add("clickedPage");
+      statsPageModeRef.current?.classList.add("clickedPage");
     }
-  }, [pageMode]);
+  }, [pageMode, userObj]);
 
   const historyModeRef = useRef();
   const trashModeRef = useRef();
@@ -74,14 +74,25 @@ const StatsPage = () => {
   return (
     <div>
       <StyledOuter>
-        <div className="pageModes">
-          <div ref={statsPageModeRef} onClick={() => setPageMode("stats")}>
-            Statistics
+        {!userObj && (
+          <div>
+            <p style={{ color: "#ffffffbe", marginTop: "14vh" }}>You're not signed in yet!</p>
+            <p style={{ color: "#ffffffbe", marginTop: "1vh" }}>
+              Please login/register in order to save & view your data
+            </p>
           </div>
-          <div ref={historyPageRef} onClick={() => setPageMode("history")}>
-            History
+        )}
+
+        {userObj && (
+          <div className="pageModes">
+            <div ref={statsPageModeRef} onClick={() => setPageMode("stats")}>
+              Statistics
+            </div>
+            <div ref={historyPageRef} onClick={() => setPageMode("history")}>
+              History
+            </div>
           </div>
-        </div>
+        )}
         {userObj && (
           <div>
             {pageMode === "history" && (
@@ -123,10 +134,19 @@ const StatsPage = () => {
                 )}
               </StyledHistoryTab>
             )}
+
+            {pageMode === "stats" && (
+              <StyledStatsTab>
+                <span>
+                  <h4 style={{ marginBottom: "3vh", opacity: "0.8", fontWeight: "400" }}>
+                    still being developed..
+                  </h4>
+                </span>
+                {"❤" + process.env.REACT_APP_HABAL}
+              </StyledStatsTab>
+            )}
           </div>
         )}
-
-        <StyledStatsTab></StyledStatsTab>
       </StyledOuter>
     </div>
   );
@@ -228,4 +248,7 @@ const StyledHistoryTab = styled.div`
   }
 `;
 
-const StyledStatsTab = styled.div``;
+const StyledStatsTab = styled.div`
+  margin-top: 10vh;
+  color: #fff;
+`;
