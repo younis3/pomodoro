@@ -104,7 +104,7 @@ const Navbar = () => {
         <div className="rightContainer">
           <Link to="/" style={{ textDecoration: "none" }}>
             <li className="navItem" ref={pomodoroRef}>
-              Pomodoro
+              Pomo+
             </li>
           </Link>
           <Link to="/stats" style={{ textDecoration: "none" }}>
@@ -151,8 +151,8 @@ const StyledNav = styled.ul`
     hsl(0deg 0% 22%) 100%
   ); */
   background-color: transparent;
-  opacity: 0.9;
-  padding: 16px 18px;
+  opacity: 0.95;
+  padding: 14px 15px;
   margin-top: 0.5vh;
   .navItem {
     padding-top: 1px;
@@ -167,6 +167,7 @@ const StyledNav = styled.ul`
   }
   .rightContainer {
     display: flex;
+    margin-top: 1px;
     padding-top: 3px;
     padding-bottom: 3px;
     .navItem {
@@ -179,7 +180,7 @@ const StyledNav = styled.ul`
     background-color: #4e51555d;
     padding-left: 12px;
     padding-right: 2px;
-    padding-top: 3px;
+    padding-top: 5px;
     padding-bottom: 3px;
     .navItem {
       padding-left: 2px;

@@ -137,6 +137,7 @@ function Timer({
           sessionCtg: category.ctg,
           sessionDate: getTodayDateWithHour(),
           sessionDuration: timer,
+          trash: false,
         }),
       });
     } catch (error) {

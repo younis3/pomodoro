@@ -1,28 +1,92 @@
 import styled, { keyframes } from "styled-components";
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, increment } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { capitalizeFirstLetter } from "../helper_functions";
+import { useUpdateEffect } from "react-use";
 
-const HistoryTable = ({ user }) => {
-  const [userSessionsArr, setUserSessionsArr] = useState([]);
-  // const [refresh, setRefresh] = useState(false);
+const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBtn }) => {
+  const [userSessionsArr, setUserSessionsArr] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+  const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    if (userSessionsArr.length === 0) {
-      getSessionsData();
+    if (userSessionsArr?.length === 0) {
+      if (tableMode === "trash") {
+        setMsg("Trash is empty!");
+      } else if (tableMode === "default") {
+        setMsg("No data :/");
+      }
+    } else {
+      setMsg("");
+    }
+  }, [userSessionsArr]);
+
+  useEffect(() => {
+    console.log(msg);
+    console.log(tableMode);
+    if (tableMode === "trash") {
+      if (msg !== "") {
+        setDisableClearHistoryBtn(true);
+      }
+    }
+  }, [msg]);
+
+  useEffect(() => {
+    if (!userSessionsArr) {
+      getSessionsData()
+        .then((res) => {
+          if (res.length > 0 && tableMode === "trash") {
+            setDisableClearHistoryBtn(false);
+          }
+          setUserSessionsArr(res);
+          setRefresh(!refresh);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, []);
+
+  useUpdateEffect(() => {
+    //useupdateeffect skips first run
+    //this function triggered when 'clear history' button in trash table clicked in parent 'stats page'
+    getSessionsData()
+      .then((res) => {
+        // console.log(res);
+        setUserSessionsArr(res);
+        setRefresh(!refresh);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [refreshParent]);
 
   const getSessionsData = async (userID = user.uid) => {
     const userDocReference = doc(db, "users", userID);
     const docSnap = await getDoc(userDocReference);
     if (docSnap.exists()) {
-      const data = docSnap.data().sessions.reverse();
-      setUserSessionsArr(data);
+      let dataArr = [];
+      if (tableMode === "default") {
+        dataArr = docSnap.data().sessions;
+      } else if (tableMode === "trash") {
+        dataArr = docSnap.data().trashSessions;
+      }
+      if (dataArr?.length > 0) {
+        dataArr.sort((a, b) => {
+          //sort array by date
+          //turn strings into dates then subtract them to get a value for sort
+          return new Date(b.sessionDate) - new Date(a.sessionDate);
+        });
+        // dataArr = dataArr.reverse();
+      }
+      // console.log(dataArr);
+      return dataArr;
     } else {
       console.log("No such document!");
+      return null;
     }
   };
 
@@ -46,22 +110,53 @@ const HistoryTable = ({ user }) => {
         const docSnap = await getDoc(userDocReference);
         if (docSnap.exists()) {
           await updateDoc(userDocReference, {
+            sessionsCount: increment(-1),
             sessions: arrayRemove(objToDel),
+            trashSessions: arrayUnion(objToDel),
           });
-          getSessionsData(); //update table data
-          setTimeout(() => {
-            //removes element smoother (prevent flashing item back after animation over)
-            elm.classList.remove("deletedRow");
-          }, 200);
+          getSessionsData()
+            .then((res) => {
+              // console.log(res);
+              setUserSessionsArr(res);
+              elm.classList.remove("deletedRow");
+              setRefresh(!refresh);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       });
-    }, 500);
+    }, 600);
+  };
+
+  const undoSessionHandler = async (i) => {
+    // handle adding data in firestore db
+    const objToAdd = userSessionsArr[i];
+    const userDocReference = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userDocReference);
+    if (docSnap.exists()) {
+      await updateDoc(userDocReference, {
+        sessionsCount: increment(1),
+        sessions: arrayUnion(objToAdd),
+        trashSessions: arrayRemove(objToAdd),
+      });
+      getSessionsData()
+        .then((res) => {
+          // console.log(res);
+          setUserSessionsArr(res);
+          setRefresh(!refresh);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   return (
     <div>
       <StyledOuterDiv>
-        {user && (
+        {msg !== "" && <h4 style={{ marginTop: "3vh", color: "#fff", opacity: "0.65" }}>{msg}</h4>}
+        {user && userSessionsArr?.length > 0 && (
           <StyledTable id="table">
             <thead>
               <tr>
@@ -79,7 +174,7 @@ const HistoryTable = ({ user }) => {
               </tr>
             </thead>
             <tbody>
-              {userSessionsArr.map((session, i) => {
+              {userSessionsArr?.map((session, i) => {
                 return (
                   <tr key={i} id={`${i}`}>
                     <td></td>
@@ -109,7 +204,12 @@ const HistoryTable = ({ user }) => {
                     <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
                     <td>
                       <div className="deleteBtnWrapper">
-                        <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                        {tableMode === "default" && (
+                          <DeleteOutlineIcon onClick={() => deleteSessionHanlder(i)} />
+                        )}
+                        {tableMode === "trash" && (
+                          <ReplayIcon onClick={() => undoSessionHandler(i)} />
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -185,7 +285,7 @@ const StyledTable = styled.table`
 
   /* render table animation */
   animation-name: ${addTable};
-  animation-duration: 2.5s;
+  animation-duration: 1.5s;
   animation-fill-mode: forwards;
   animation-play-state: running;
 
