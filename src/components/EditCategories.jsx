@@ -11,10 +11,7 @@ import CategoryContext from "../context/CategoryContext";
 import { capitalizeFirstLetter } from "../helper_functions";
 
 const EditCategories = () => {
-  const { categories } = useContext(CategoryContext);
-  const { addCtg } = useContext(CategoryContext);
-  const { removeCtg } = useContext(CategoryContext);
-  const { toggleFav } = useContext(CategoryContext);
+  const { categories, addCtg, removeCtg, toggleFav } = useContext(CategoryContext);
   const [refresh, setRefresh] = useState(false);
 
   const addCategoryHandler = (e) => {
@@ -44,12 +41,7 @@ const EditCategories = () => {
     <div>
       <StyledInputWrapper>
         <form id="input" onSubmit={(e) => addCategoryHandler(e)}>
-          <StyledInput
-            type={"text"}
-            id="addCtg"
-            maxLength={15}
-            placeholder="Add New Category"
-          />
+          <StyledInput type={"text"} id="addCtg" maxLength={15} placeholder="Add New Category" />
           <StyledInputBtn>
             <AddBoxIcon fontSize="inherit" />
           </StyledInputBtn>
@@ -68,21 +60,10 @@ const EditCategories = () => {
               </StyledCtg>
               <StyledCtgBtns>
                 {!el.fav && (
-                  <FavoriteBorderIcon
-                    onClick={() => FavBtnHandler(ctg)}
-                    fontSize="inherit"
-                  />
+                  <FavoriteBorderIcon onClick={() => FavBtnHandler(ctg)} fontSize="inherit" />
                 )}
-                {el.fav && (
-                  <FavoriteIcon
-                    onClick={() => FavBtnHandler(ctg)}
-                    fontSize="inherit"
-                  />
-                )}
-                <RemoveCircleOutlineIcon
-                  onClick={() => removeCtgHandler(ctg)}
-                  fontSize="inherit"
-                />
+                {el.fav && <FavoriteIcon onClick={() => FavBtnHandler(ctg)} fontSize="inherit" />}
+                <RemoveCircleOutlineIcon onClick={() => removeCtgHandler(ctg)} fontSize="inherit" />
               </StyledCtgBtns>
             </StyledCtgWrapper>
           );

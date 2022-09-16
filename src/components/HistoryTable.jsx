@@ -80,7 +80,6 @@ const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBt
         });
         // dataArr = dataArr.reverse();
       }
-      // console.log(dataArr);
       return dataArr;
     } else {
       console.log("No such document!");

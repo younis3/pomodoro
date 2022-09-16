@@ -163,7 +163,7 @@ function Timer({
         }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler} disabled={breakStatus}>
           <StyledCategoryBtn color={category.color} />
-          <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
+          <div className="category">{capitalizeFirstLetter(category?.ctg)}</div>
         </div>
       </StyledTimerContentWrapper>
     );
