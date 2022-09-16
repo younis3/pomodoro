@@ -25,8 +25,6 @@ const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBt
   }, [userSessionsArr]);
 
   useEffect(() => {
-    console.log(msg);
-    console.log(tableMode);
     if (tableMode === "trash") {
       if (msg !== "") {
         setDisableClearHistoryBtn(true);

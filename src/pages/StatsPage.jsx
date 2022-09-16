@@ -77,7 +77,7 @@ const StatsPage = () => {
         {!userObj && (
           <div>
             <p style={{ color: "#ffffffbe", marginTop: "14vh" }}>You're not signed in yet!</p>
-            <p style={{ color: "#ffffffbe", marginTop: "1vh" }}>
+            <p style={{ color: "#ffffffbe", marginTop: "1vh", fontSize: "smaller" }}>
               Please login/register in order to save & view your data
             </p>
           </div>
@@ -112,7 +112,7 @@ const StatsPage = () => {
                       onClick={clearHistoryHanlder}
                       disabled={disableClearHistoryBtn}
                     >
-                      Clear History
+                      Empty Trash
                     </button>
                   )}
                 </div>
@@ -189,6 +189,14 @@ const StyledOuter = styled.div`
 `;
 
 const StyledHistoryTab = styled.div`
+  width: 70vw;
+  max-width: 900px;
+  margin: auto;
+  padding: auto;
+  @media only screen and (max-width: 650px) {
+    width: 98vw;
+  }
+
   .modesContainer {
     margin-top: 3vh;
     margin-left: 4vw;
@@ -226,7 +234,7 @@ const StyledHistoryTab = styled.div`
   }
 
   .clearBtnWrapper {
-    margin-right: 8vw;
+    margin-right: 6vw;
     color: whitesmoke;
     border: none;
     padding: 3px 12px;
