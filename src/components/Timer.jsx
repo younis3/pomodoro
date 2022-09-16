@@ -163,7 +163,7 @@ function Timer({
         }`}</div>
         <div className="categoryWrapper" onClick={categoryHandler} disabled={breakStatus}>
           <StyledCategoryBtn color={category.color} />
-          <div className="category">{capitalizeFirstLetter(category.ctg)}</div>
+          <div className="category">{capitalizeFirstLetter(category?.ctg)}</div>
         </div>
       </StyledTimerContentWrapper>
     );
@@ -175,8 +175,8 @@ function Timer({
         <CountdownCircleTimer
           key={timerKey}
           isPlaying={animate}
-          // duration={timerX * 60}
-          duration={timerX}
+          duration={timerX * 60}
+          // duration={timerX}
           size={size}
           colors={["#58a5d2dd"]}
           strokeLinecap={"square"}
@@ -208,14 +208,16 @@ const StyledTimerContainer = styled.div`
 const StyledTimerContentWrapper = styled.div`
   .textWrapper {
     display: flex;
+    text-align: center;
     justify-content: center;
+    align-items: center;
   }
   .sessions {
     color: whitesmoke;
     font-size: 18px;
   }
   .text {
-    margin-left: 2vw;
+    margin-left: 1px;
     color: whitesmoke;
     font-size: 18px;
   }

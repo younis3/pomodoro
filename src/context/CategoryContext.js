@@ -1,36 +1,142 @@
 import { createContext, useState, useEffect } from "react";
 import { ctgs_default } from "../values";
+import { auth, db } from "../firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 const CategoryContext = createContext();
 
-const getCtgArray = () => {
-  if (localStorage.getItem(`categories`) === null) {
-    localStorage.setItem(`categories`, JSON.stringify(ctgs_default));
-    return ctgs_default;
-  } else {
-    return JSON.parse(localStorage.getItem("categories"));
-  }
-};
-
-const getChosenCtg = () => {
-  if (localStorage.getItem(`ChosenCategory`) === null) {
-    localStorage.setItem(`ChosenCategory`, JSON.stringify(ctgs_default[0]));
-    return ctgs_default[0];
-  } else {
-    return JSON.parse(localStorage.getItem("ChosenCategory"));
-  }
-};
-
 export const CategoryContextProvider = ({ children }) => {
-  const [categories, setCategories] = useState(getCtgArray);
-  const [category, setCategory] = useState(getChosenCtg);
+  const [curUser, setCurUser] = useState(null);
+  const [categories, setCategories] = useState(ctgs_default);
+  const [category, setCategory] = useState(ctgs_default[0]);
 
   useEffect(() => {
-    localStorage.setItem("categories", JSON.stringify(categories));
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        auth.currentUser = user;
+        setCurUser(auth.currentUser);
+      }
+    });
+  }, [curUser]);
+
+  useEffect(() => {
+    getCtgArray()
+      .then((res) => {
+        // console.log(res);
+        setCategories(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [auth.currentUser]);
+
+  useEffect(() => {
+    getChosenCtg()
+      .then((res) => {
+        // console.log(res);
+        setCategory(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [auth.currentUser]);
+
+  const getCtgArray = async () => {
+    if (curUser) {
+      //if signed in get data from firestore db, otherwise from local storage
+      const userDocReference = doc(db, "users", auth.currentUser.uid);
+      const docSnap = await getDoc(userDocReference);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let dataArr = [];
+        if (data.categories) {
+          dataArr = docSnap.data().categories;
+        }
+        return dataArr;
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    } else {
+      //not signed in - get data from local storage
+      if (localStorage.getItem(`categories`) === null) {
+        localStorage.setItem(`categories`, JSON.stringify(ctgs_default));
+        return ctgs_default;
+      } else {
+        return JSON.parse(localStorage.getItem("categories"));
+      }
+    }
+  };
+
+  const getChosenCtg = async () => {
+    if (curUser) {
+      const userDocReference = doc(db, "users", curUser.uid);
+      const docSnap = await getDoc(userDocReference);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let chosenCtg = ctgs_default[0];
+        if (data.chosenCtg) {
+          chosenCtg = docSnap.data().chosenCtg;
+        } else {
+          await updateDoc(userDocReference, {
+            chosenCtg: ctgs_default[0],
+          });
+        }
+        return chosenCtg;
+      } else {
+        console.log("No such document!");
+        return {};
+      }
+    } else {
+      if (localStorage.getItem(`ChosenCategory`) === null) {
+        localStorage.setItem(`ChosenCategory`, JSON.stringify(ctgs_default[0]));
+        return ctgs_default[0];
+      } else {
+        return JSON.parse(localStorage.getItem("ChosenCategory"));
+      }
+    }
+  };
+
+  const updateCategoriesDatabase = async (categories) => {
+    const userDocReference = doc(db, "users", curUser.uid);
+    const docSnap = await getDoc(userDocReference);
+
+    if (docSnap.exists()) {
+      await updateDoc(userDocReference, {
+        categories: categories,
+      });
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  const updateChosenCtgDatabase = async (category) => {
+    const userDocReference = doc(db, "users", curUser.uid);
+    const docSnap = await getDoc(userDocReference);
+
+    if (docSnap.exists()) {
+      await updateDoc(userDocReference, {
+        chosenCtg: category,
+      });
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  useEffect(() => {
+    if (curUser) {
+      updateCategoriesDatabase(categories);
+    } else {
+      localStorage.setItem("categories", JSON.stringify(categories));
+    }
   }, [categories]);
 
   useEffect(() => {
-    localStorage.setItem("ChosenCategory", JSON.stringify(category));
+    if (curUser) {
+      updateChosenCtgDatabase(category);
+    } else {
+      localStorage.setItem("ChosenCategory", JSON.stringify(category));
+    }
   }, [category]);
 
   const addCtg = (ctgToAdd) => {
@@ -62,9 +168,7 @@ export const CategoryContextProvider = ({ children }) => {
         count++;
       }
     });
-
     const ctgIndex = categories.findIndex((obj) => obj.ctg === ctg);
-
     if (categories[ctgIndex].fav) {
       if (category.ctg === ctg) {
         alert("Can't unfavorite category while it's being used");
@@ -78,8 +182,12 @@ export const CategoryContextProvider = ({ children }) => {
         alert("Maximum number of 5 favorite categories reached");
       }
     }
-    //save object changes (fav/unfav) to local storage
-    localStorage.setItem("categories", JSON.stringify(categories));
+    //save object changes (fav/unfav) to db if user is signed in, otherwise to local storage
+    if (curUser) {
+      updateCategoriesDatabase(categories);
+    } else {
+      localStorage.setItem("categories", JSON.stringify(categories));
+    }
   };
 
   return (
