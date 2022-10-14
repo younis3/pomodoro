@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import HistoryTable from "../components/HistoryTable";
+import Stats from "../components/Stats";
 import { auth, db } from "../firebase";
 import { useEffect, useRef, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -139,10 +140,13 @@ const StatsPage = () => {
               <StyledStatsTab>
                 <span>
                   <h4 style={{ marginBottom: "3vh", opacity: "0.8", fontWeight: "400" }}>
-                    still being developed..
+                    Stats Page
                   </h4>
                 </span>
-                {"❤" + process.env.REACT_APP_HABAL}
+                {/* {"❤" + process.env.REACT_APP_HABAL} */}
+                {/* //TODO:  */}
+                {/* //stats */}
+                <Stats user={userObj} />
               </StyledStatsTab>
             )}
           </div>
