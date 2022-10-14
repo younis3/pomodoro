@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 //--
 export const capitalizeFirstLetter = (string) => {
   return string[0].toUpperCase() + string.slice(1);
@@ -25,6 +26,35 @@ export const getTodayDate = () => {
 export const getTodayDateWithHour = () => {
   let date = new Date();
   date = new Date(date.getTime());
+  return date
+    .toLocaleString()
+    .split("T")[0]
+    .replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
+};
+
+export const convertDate = (d) => {
+  let date;
+  if (typeof d == "string") {
+    date = new Date(d);
+    if (!(date instanceof Date && !isNaN(date))) {
+      //if failed to convert to Date return original string
+      return d;
+    }
+  } else {
+    //else if it's TimeStamp Object
+    const timeStamp = new Timestamp(d.seconds, d.nanoseconds);
+    date = timeStamp.toDate();
+  }
+  // return date;
+  return date;
+};
+
+export const convertDateToStringWithHour = (d) => {
+  if (!(d instanceof Date && !isNaN(d))) {
+    //if failed to convert to Date return original string
+    return d;
+  }
+  let date = new Date(d.getTime());
   return date
     .toLocaleString()
     .split("T")[0]

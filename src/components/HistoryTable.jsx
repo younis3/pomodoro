@@ -4,7 +4,11 @@ import { db } from "../firebase";
 import { doc, getDoc, updateDoc, arrayRemove, arrayUnion, increment } from "firebase/firestore";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ReplayIcon from "@mui/icons-material/Replay";
-import { capitalizeFirstLetter } from "../helper_functions";
+import {
+  capitalizeFirstLetter,
+  convertDateToStringWithHour,
+  convertDate,
+} from "../helper_functions";
 import { useUpdateEffect } from "react-use";
 
 const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBtn }) => {
@@ -198,7 +202,9 @@ const HistoryTable = ({ user, tableMode, refreshParent, setDisableClearHistoryBt
                       {capitalizeFirstLetter(session.sessionCtg)}
                     </td>
                     <td>{session.sessionDuration}</td>
-                    <td style={{ fontSize: "14px" }}>{session.sessionDate}</td>
+                    <td style={{ fontSize: "14px" }}>
+                      {convertDateToStringWithHour(convertDate(session.sessionDate))}
+                    </td>
                     <td>
                       <div className="deleteBtnWrapper">
                         {tableMode === "default" && (
