@@ -8,6 +8,7 @@ import {
   convertDate,
 } from "../helper_functions";
 import { Timestamp } from "firebase/firestore";
+import PieChart from "./PieChart";
 
 const Stats = ({ user }) => {
   const [userSessionsArr, setUserSessionsArr] = useState(null);
@@ -81,11 +82,57 @@ const Stats = ({ user }) => {
     };
   };
 
+  // {
+  //   id: "go",
+  //   label: "go",
+  //   value: userSessionsArr.length
+  //   color: session.ctgColor,
+  // },
+  const getPieData = () => {
+    const ctgDict = [];
+    let maxMinutesCounter = 0;
+    let maxCategory = "";
+
+    if (userSessionsArr) {
+      userSessionsArr.map((session) => {
+        const checkCtg = (obj) => obj.id === session.sessionCtg;
+        const objFound = ctgDict.find(checkCtg);
+        if (objFound) {
+          //if category exist in pie data array, count++ else insert new category in the pie data arr
+          // const count = objFound.count + 1;
+          objFound.count++;
+          objFound.value += session.sessionDuration;
+          // objFound.value = (count / userSessionsArr.length).toFixed(2) * 100;
+
+          if (objFound.value > maxMinutesCounter) {
+            //get most used category
+            maxMinutesCounter = objFound.value;
+            maxCategory = objFound.id;
+          }
+
+          // console.log(objFound);
+        } else {
+          ctgDict.push({
+            key: session.sessionCtg,
+            id: session.sessionCtg,
+            label: session.sessionCtg,
+            color: session.ctgColor,
+            count: 1,
+            value: 0,
+            // value: (1 / userSessionsArr.length).toFixed(2) * 100,
+          });
+        }
+      });
+    }
+    return [ctgDict, maxMinutesCounter, maxCategory];
+  };
+
+  const pieData = getPieData();
   const totalStats = getTotal();
 
   return (
-    <div>
-      <div className="statsContainer">
+    <div style={{ height: "80vh" }}>
+      <StyledStatsContainer>
         <h3>
           Sessions Last 7 Days:<p>{totalStats.thisWeekSessions}</p>
         </h3>
@@ -107,9 +154,42 @@ const Stats = ({ user }) => {
         <h3>
           Total Minutes:<p>{totalStats.totalMinutes}</p>
         </h3>
-      </div>
+        <h2 style={{ marginTop: "3vh" }}>
+          Most Used Category:{" "}
+          <p>
+            {pieData[2] + " (" + ((pieData[1] / totalStats.totalMinutes) * 100).toFixed() + "%)"}
+          </p>
+        </h2>
+      </StyledStatsContainer>
+
+      <StyledPieContainer>
+        <PieChart data={pieData[0]} />
+      </StyledPieContainer>
     </div>
   );
 };
 
 export default Stats;
+//
+//
+//
+//
+//
+/****************** styles ******************/
+const StyledStatsContainer = styled.div`
+  h3 {
+    margin-top: 1.5vh;
+    p {
+      margin-top: 0.5vh;
+    }
+  }
+`;
+
+const StyledPieContainer = styled.div`
+  height: 50vh;
+  width: 88vw;
+  margin: auto;
+  margin-top: 1vh;
+  opacity: 0.9;
+  /* filter: saturate(10); */
+`;

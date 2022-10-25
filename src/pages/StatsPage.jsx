@@ -4,6 +4,7 @@ import Stats from "../components/Stats";
 import { auth, db } from "../firebase";
 import { useEffect, useRef, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import PieChart from "../components/PieChart";
 
 const StatsPage = () => {
   const [userObj, setUserObj] = useState(null);
@@ -138,14 +139,7 @@ const StatsPage = () => {
 
             {pageMode === "stats" && (
               <StyledStatsTab>
-                <span>
-                  <h4 style={{ marginBottom: "3vh", opacity: "0.8", fontWeight: "400" }}>
-                    Stats Page
-                  </h4>
-                </span>
                 {/* {"❤" + process.env.REACT_APP_HABAL} */}
-                {/* //TODO:  */}
-                {/* //stats */}
                 <Stats user={userObj} />
               </StyledStatsTab>
             )}
@@ -164,6 +158,7 @@ export default StatsPage;
 //
 /****************** styles ******************/
 const StyledOuter = styled.div`
+  /* min-height: 100vh; */
   padding-top: 9vh;
   .pageModes {
     display: flex;
@@ -261,6 +256,15 @@ const StyledHistoryTab = styled.div`
 `;
 
 const StyledStatsTab = styled.div`
-  margin-top: 10vh;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  &::-webkit-scrollbar {
+    /* hides scrollbar */
+    width: 0;
+    height: 0;
+  }
+  margin-top: 5vh;
   color: #fff;
 `;
