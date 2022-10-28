@@ -1,4 +1,5 @@
 import { ResponsivePie } from "@nivo/pie";
+import { useEffect, useState } from "react";
 
 const PieChart = ({ data }) => {
   return (

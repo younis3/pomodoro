@@ -51,8 +51,8 @@ export const convertDate = (d) => {
 
 export const convertDateToStringWithHour = (d) => {
   if (!(d instanceof Date && !isNaN(d))) {
-    //if failed to convert to Date return original string
-    return d;
+    //if failed to convert to Date return original date string
+    return d.toString();
   }
   let date = new Date(d.getTime());
   return date

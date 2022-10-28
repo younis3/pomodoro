@@ -4,11 +4,10 @@ import Stats from "../components/Stats";
 import { auth, db } from "../firebase";
 import { useEffect, useRef, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import PieChart from "../components/PieChart";
 
 const StatsPage = () => {
   const [userObj, setUserObj] = useState(null);
-  const [pageMode, setPageMode] = useState("history");
+  const [pageMode, setPageMode] = useState("stats");
   const [tableMode, setTableMode] = useState("default");
   const [refreshParent, setRefreshParent] = useState(false);
   const [disableClearHistoryBtn, setDisableClearHistoryBtn] = useState(true);
@@ -140,7 +139,7 @@ const StatsPage = () => {
             {pageMode === "stats" && (
               <StyledStatsTab>
                 {/* {"❤" + process.env.REACT_APP_HABAL} */}
-                <Stats user={userObj} />
+                <Stats user={userObj} pageMode={pageMode} />
               </StyledStatsTab>
             )}
           </div>
@@ -192,6 +191,7 @@ const StyledHistoryTab = styled.div`
   max-width: 900px;
   margin: auto;
   padding: auto;
+
   @media only screen and (max-width: 650px) {
     width: 98vw;
   }
@@ -265,6 +265,6 @@ const StyledStatsTab = styled.div`
     width: 0;
     height: 0;
   }
-  margin-top: 5vh;
+  /* margin-top: 5vh; */
   color: #fff;
 `;

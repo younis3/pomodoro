@@ -288,7 +288,7 @@ const StyledTable = styled.table`
 
   /* render table animation */
   animation-name: ${addTable};
-  animation-duration: 1.5s;
+  animation-duration: 1s;
   animation-fill-mode: forwards;
   animation-play-state: running;
 
