@@ -135,7 +135,7 @@ function Timer({
         sessions: arrayUnion({
           ctgColor: category.color,
           sessionCtg: category.ctg,
-          sessionDate: getTodayDateWithHour(),
+          sessionDate: new Date(Date.now()),
           sessionDuration: timer,
           trash: false,
         }),
