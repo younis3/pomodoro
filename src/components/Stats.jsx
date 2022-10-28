@@ -299,7 +299,7 @@ const Stats = ({ user, pageMode }) => {
               <p>
                 {lastWeekPieData[2] +
                   " (" +
-                  ((lastWeekPieData[1] / totalStats.thisWeekMinutes) * 100).toFixed(2) +
+                  ((lastWeekPieData[1] / totalStats.thisWeekMinutes) * 100).toFixed() +
                   "%)"}
               </p>
             )}
