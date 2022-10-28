@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { convertDate } from "../helper_functions";
 import PieChart from "./PieChart";
 import { useUpdateEffect } from "react-use";
+import StatCounterBox from "./StatCounterBox";
 
 const Stats = ({ user, pageMode }) => {
   const [userSessionsArr, setUserSessionsArr] = useState(null);
@@ -252,45 +253,23 @@ const Stats = ({ user, pageMode }) => {
             </div>
           </div>
         </StyledStatsModesTabs>
-        {statsMode === "lastweek" && (
-          <div>
-            <h3>
-              Sessions <p>{totalStats.thisWeekSessions}</p>
-            </h3>
-            <h3>
-              Hours <p>{(totalStats.thisWeekMinutes / 60).toFixed()}</p>
-            </h3>
-            <h3>
-              Minutes <p>{totalStats.thisWeekMinutes}</p>
-            </h3>
-          </div>
-        )}
-        {statsMode === "lastmonth" && (
-          <div>
-            <h3>
-              Sessions <p>{totalStats.thisMonthSessions}</p>
-            </h3>
-            <h3>
-              Hours <p>{(totalStats.thisMonthMinutes / 60).toFixed()}</p>
-            </h3>
-            <h3>
-              Minutes <p>{totalStats.thisMonthMinutes}</p>
-            </h3>
-          </div>
-        )}
-        {statsMode === "alltime" && (
-          <div>
-            <h3>
-              Total Sessions:<p>{totalStats.totalSessions}</p>
-            </h3>
-            <h3>
-              Total Hours:<p>{totalStats.totalHours}</p>
-            </h3>
-            <h3>
-              Total Minutes:<p>{totalStats.totalMinutes}</p>
-            </h3>
-          </div>
-        )}
+        <StyledCounterBoxContainer>
+          {statsMode === "lastweek" && (
+            <StatCounterBox
+              sessions={totalStats.thisWeekSessions}
+              minutes={totalStats.thisWeekMinutes}
+            />
+          )}
+          {statsMode === "lastmonth" && (
+            <StatCounterBox
+              sessions={totalStats.thisMonthSessions}
+              minutes={totalStats.thisMonthMinutes}
+            />
+          )}
+          {statsMode === "alltime" && (
+            <StatCounterBox sessions={totalStats.totalSessions} minutes={totalStats.totalMinutes} />
+          )}
+        </StyledCounterBoxContainer>
 
         {(pieData.length > 0 || lastWeekPieData.length > 0) && (
           <h2 style={{ marginTop: "3vh" }}>
@@ -394,6 +373,8 @@ const StyledStatsModesTabs = styled.div`
     }
   }
 `;
+
+const StyledCounterBoxContainer = styled.div``;
 
 const StyledPieContainer = styled.div`
   height: 50vh;
