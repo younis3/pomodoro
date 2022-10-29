@@ -273,7 +273,7 @@ const Stats = ({ user, pageMode }) => {
         </StyledCounterBoxContainer>
 
         {(pieData.length > 0 || allTimePieData.length > 0) && (
-          <h3 style={{ marginTop: "3vh", opacity: "0.8" }}>
+          <h4 style={{ marginTop: "3vh", opacity: "0.8" }}>
             Most Used Category:{" "}
             {statsMode === "lastweek" && (
               <p>
@@ -299,12 +299,13 @@ const Stats = ({ user, pageMode }) => {
                   "%)"}
               </p>
             )}
-          </h3>
+          </h4>
         )}
       </StyledStatsContainer>
 
       <StyledPieContainer>
         <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
+        <h5 style={{ opacity: "0.6" }}>*Pie Data (Minutes)</h5>
       </StyledPieContainer>
     </div>
   );
@@ -382,9 +383,22 @@ const StyledCounterBoxContainer = styled.div`
 `;
 
 const StyledPieContainer = styled.div`
-  height: 47vh;
+  height: 37vh;
   width: 94vw;
   margin: auto;
   opacity: 0.86;
-  /* filter: saturate(10); */
+  margin-top: 3.5vh;
+  max-width: 370px;
+  max-height: 325px;
+
+  @media only screen and (max-width: 650px) {
+    height: 50vh;
+    width: 94vw;
+    margin-top: 1vh;
+    max-width: 400px;
+    max-height: 342px;
+    > * {
+      margin-bottom: -2.5vh;
+    }
+  }
 `;

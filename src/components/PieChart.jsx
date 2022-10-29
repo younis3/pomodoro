@@ -5,7 +5,7 @@ const PieChart = ({ data }) => {
   return (
     <ResponsivePie
       data={data}
-      margin={{ top: 10, right: 85, bottom: 40, left: 85 }}
+      margin={{ top: 10, right: 85, bottom: 20, left: 85 }}
       innerRadius={0.3}
       padAngle={1.1}
       cornerRadius={21}
