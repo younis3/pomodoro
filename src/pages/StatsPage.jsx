@@ -158,7 +158,7 @@ export default StatsPage;
 /****************** styles ******************/
 const StyledOuter = styled.div`
   /* min-height: 100vh; */
-  padding-top: 9vh;
+  padding-top: 11vh;
   .pageModes {
     display: flex;
     justify-content: center;
@@ -197,7 +197,7 @@ const StyledHistoryTab = styled.div`
   }
 
   .modesContainer {
-    margin-top: 3vh;
+    margin-top: 2.5vh;
     margin-left: 4vw;
     margin-bottom: 2vh;
     display: flex;

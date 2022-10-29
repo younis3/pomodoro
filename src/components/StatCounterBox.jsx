@@ -1,24 +1,62 @@
-import styled, { keyframes } from "styled-components";
+import { useEffect } from "react";
+import styled from "styled-components";
 
 const StatCounterBox = ({ sessions, minutes }) => {
+  useEffect(() => {
+    counter("countSessions", 0, sessions, 300);
+    counter("countHours", 0, Math.floor(minutes / 60), 300);
+    counter("countMinutes", 0, minutes, 700);
+  }, [minutes]);
+
+  const counter = (id, start, end, duration) => {
+    //counter animation
+    const obj = document.getElementById(id);
+    let current = start;
+    const range = end - start;
+    if (range === 0) {
+      obj.innerText = 0;
+      return;
+    }
+    let increment;
+    if (id === "countMinutes") {
+      if (end > 700) {
+        //if minutes more than 700 finish animation faster
+        increment = end > start ? 5 : -1;
+      } else {
+        increment = end > start ? 3 : -1;
+      }
+    } else {
+      increment = end > start ? 1 : -1;
+    }
+    const step = Math.abs(Math.floor(duration / range));
+    const timer = setInterval(() => {
+      current += increment;
+      obj.innerText = current;
+      if (current >= end) {
+        obj.innerText = end;
+        clearInterval(timer);
+      }
+    }, step);
+  };
+
   return (
     <div>
       <StyledCounterBoxWrapper>
         <StyledCounter>
           <h3>
-            Sessions <p>{sessions}</p>
+            Sessions <p id="countSessions">0</p>
           </h3>
         </StyledCounter>
 
         <StyledCounter>
           <h3>
-            Hours <p>{(minutes / 60).toFixed()}</p>
+            Hours <p id="countHours">0</p>
           </h3>
         </StyledCounter>
 
         <StyledCounter>
           <h3>
-            Minutes <p>{minutes}</p>
+            Minutes <p id="countMinutes">0</p>
           </h3>
         </StyledCounter>
       </StyledCounterBoxWrapper>
@@ -46,10 +84,10 @@ const StyledCounterBoxWrapper = styled.div`
 `;
 
 const StyledCounter = styled.div`
-  margin: 10px;
+  margin: 12px;
   padding: 16px;
   display: flex;
-  border: 2px solid #5452523a;
-
-  background-color: #6760603b;
+  border: 2px solid #52535439;
+  opacity: 0.88;
+  background-color: #6363633d;
 `;
