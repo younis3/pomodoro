@@ -5,11 +5,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { convertDate } from "../helper_functions";
 import PieChart from "./PieChart";
 import { useUpdateEffect } from "react-use";
+import StatCounterBox from "./StatCounterBox";
 
 const Stats = ({ user, pageMode }) => {
   const [userSessionsArr, setUserSessionsArr] = useState(null);
   const [refresh, setRefresh] = useState(false);
-  const [statsMode, setStatsMode] = useState("lastweek");
+  const [statsMode, setStatsMode] = useState("alltime");
 
   const [pieData, setPieData] = useState([]);
 
@@ -232,7 +233,7 @@ const Stats = ({ user, pageMode }) => {
   };
 
   const totalStats = getTotal();
-  const lastWeekPieData = getPieDataLastWeek();
+  const allTimePieData = getPieDataAllTime();
 
   return (
     <div style={{ height: "80vh" }}>
@@ -240,66 +241,45 @@ const Stats = ({ user, pageMode }) => {
         <StyledStatsModesTabs>
           <div className="modesContainer">
             <div className="modes">
-              <div ref={lastWeekModeRef} onClick={() => setStatsMode("lastweek")}>
-                Last Week
+              <div ref={allTimeModeRef} onClick={() => setStatsMode("alltime")}>
+                All Time
               </div>
               <div ref={lastMonthModeRef} onClick={() => setStatsMode("lastmonth")}>
                 Last Month
               </div>
-              <div ref={allTimeModeRef} onClick={() => setStatsMode("alltime")}>
-                All Time
+              <div ref={lastWeekModeRef} onClick={() => setStatsMode("lastweek")}>
+                Last Week
               </div>
             </div>
           </div>
         </StyledStatsModesTabs>
-        {statsMode === "lastweek" && (
-          <div>
-            <h3>
-              Sessions <p>{totalStats.thisWeekSessions}</p>
-            </h3>
-            <h3>
-              Hours <p>{(totalStats.thisWeekMinutes / 60).toFixed()}</p>
-            </h3>
-            <h3>
-              Minutes <p>{totalStats.thisWeekMinutes}</p>
-            </h3>
-          </div>
-        )}
-        {statsMode === "lastmonth" && (
-          <div>
-            <h3>
-              Sessions <p>{totalStats.thisMonthSessions}</p>
-            </h3>
-            <h3>
-              Hours <p>{(totalStats.thisMonthMinutes / 60).toFixed()}</p>
-            </h3>
-            <h3>
-              Minutes <p>{totalStats.thisMonthMinutes}</p>
-            </h3>
-          </div>
-        )}
-        {statsMode === "alltime" && (
-          <div>
-            <h3>
-              Total Sessions:<p>{totalStats.totalSessions}</p>
-            </h3>
-            <h3>
-              Total Hours:<p>{totalStats.totalHours}</p>
-            </h3>
-            <h3>
-              Total Minutes:<p>{totalStats.totalMinutes}</p>
-            </h3>
-          </div>
-        )}
+        <StyledCounterBoxContainer>
+          {statsMode === "alltime" && (
+            <StatCounterBox sessions={totalStats.totalSessions} minutes={totalStats.totalMinutes} />
+          )}
 
-        {(pieData.length > 0 || lastWeekPieData.length > 0) && (
-          <h2 style={{ marginTop: "3vh" }}>
+          {statsMode === "lastmonth" && (
+            <StatCounterBox
+              sessions={totalStats.thisMonthSessions}
+              minutes={totalStats.thisMonthMinutes}
+            />
+          )}
+          {statsMode === "lastweek" && (
+            <StatCounterBox
+              sessions={totalStats.thisWeekSessions}
+              minutes={totalStats.thisWeekMinutes}
+            />
+          )}
+        </StyledCounterBoxContainer>
+
+        {(pieData.length > 0 || allTimePieData.length > 0) && (
+          <h3 style={{ marginTop: "3vh", opacity: "0.8" }}>
             Most Used Category:{" "}
             {statsMode === "lastweek" && (
               <p>
-                {lastWeekPieData[2] +
+                {pieData[2] +
                   " (" +
-                  ((lastWeekPieData[1] / totalStats.thisWeekMinutes) * 100).toFixed(2) +
+                  ((pieData[1] / totalStats.thisWeekMinutes) * 100).toFixed() +
                   "%)"}
               </p>
             )}
@@ -313,18 +293,18 @@ const Stats = ({ user, pageMode }) => {
             )}
             {statsMode === "alltime" && (
               <p>
-                {pieData[2] +
+                {allTimePieData[2] +
                   " (" +
-                  ((pieData[1] / totalStats.totalMinutes) * 100).toFixed() +
+                  ((allTimePieData[1] / totalStats.totalMinutes) * 100).toFixed() +
                   "%)"}
               </p>
             )}
-          </h2>
+          </h3>
         )}
       </StyledStatsContainer>
 
       <StyledPieContainer>
-        <PieChart data={!pieData[0] ? lastWeekPieData[0] : pieData[0]} />
+        <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
       </StyledPieContainer>
     </div>
   );
@@ -358,9 +338,9 @@ const StyledStatsModesTabs = styled.div`
   justify-content: center;
 
   .modesContainer {
-    margin-top: 3vh;
+    margin-top: 2.5vh;
     margin-left: 4vw;
-    margin-bottom: 2vh;
+    margin-bottom: 1.5vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -395,11 +375,16 @@ const StyledStatsModesTabs = styled.div`
   }
 `;
 
+const StyledCounterBoxContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 2vh;
+`;
+
 const StyledPieContainer = styled.div`
-  height: 50vh;
-  width: 88vw;
+  height: 47vh;
+  width: 94vw;
   margin: auto;
-  margin-top: 1vh;
-  opacity: 0.9;
+  opacity: 0.86;
   /* filter: saturate(10); */
 `;
