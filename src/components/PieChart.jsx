@@ -1,7 +1,20 @@
 import { ResponsivePie } from "@nivo/pie";
-import { useEffect, useState } from "react";
 
 const PieChart = ({ data }) => {
+  const generatePatterns = () => {
+    const fillDataArr = [];
+    data.map((ctg) => {
+      const randomPattern = Math.round(Math.random());
+      fillDataArr.push({
+        match: {
+          id: ctg.id,
+        },
+        id: randomPattern === 1 ? "dots" : "lines",
+      });
+    });
+    return fillDataArr;
+  };
+
   return (
     <ResponsivePie
       data={data}
@@ -55,38 +68,39 @@ const PieChart = ({ data }) => {
           spacing: 10,
         },
       ]}
-      fill={[
-        {
-          match: {
-            id: "study",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "work",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "meditation",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "reading",
-          },
-          id: "lines",
-        },
-        {
-          match: {
-            id: "writing",
-          },
-          id: "lines",
-        },
-      ]}
+      fill={generatePatterns()}
+      // fill={[
+      //   {
+      //     match: {
+      //       id: "study",
+      //     },
+      //     id: "dots",
+      //   },
+      //   {
+      //     match: {
+      //       id: "work",
+      //     },
+      //     id: "dots",
+      //   },
+      //   {
+      //     match: {
+      //       id: "meditation",
+      //     },
+      //     id: "dots",
+      //   },
+      //   {
+      //     match: {
+      //       id: "reading",
+      //     },
+      //     id: "lines",
+      //   },
+      //   {
+      //     match: {
+      //       id: "writing",
+      //     },
+      //     id: "lines",
+      //   },
+      // ]}
       //   legends={[
       //     {
       //       anchor: "bottom",

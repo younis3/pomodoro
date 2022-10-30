@@ -84,10 +84,15 @@ const StyledCounterBoxWrapper = styled.div`
 `;
 
 const StyledCounter = styled.div`
+  width: 110px;
   margin: 12px;
-  padding: 16px;
+  padding: 12px;
   display: flex;
-  border: 2px solid #52535439;
-  opacity: 0.88;
-  background-color: #6363633d;
+  border: 1px dotted #5c9ddfab;
+  opacity: 0.86;
+  background-color: #3c3c3c60;
+  h3,
+  p {
+    margin: auto;
+  }
 `;

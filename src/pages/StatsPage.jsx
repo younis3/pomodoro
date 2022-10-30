@@ -164,24 +164,32 @@ const StyledOuter = styled.div`
     justify-content: center;
     align-items: center;
     padding: 8px;
+
     .clickedPage {
-      color: #7399ca;
+      color: #c2cedcf2;
+      background-color: #34547e4e;
+
       opacity: 0.98;
       font-weight: 500;
+      border: 2px dotted #dcdcdcac;
     }
   }
   .pageModes div {
     color: whitesmoke;
     opacity: 0.5;
     padding: 2px 16px;
+    margin-left: 2px;
+    margin-right: 3px;
     cursor: pointer;
     font-weight: 400;
     &:hover {
       color: #fff;
       opacity: 0.8;
     }
+    border: 2.32px dotted #dcdcdc7d;
+
     &:first-child {
-      border-right: 2px solid #64a1b1;
+      /* border-right: 2px solid #64a1b1; */
     }
   }
 `;
