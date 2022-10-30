@@ -271,10 +271,10 @@ const Stats = ({ user, pageMode }) => {
             />
           )}
         </StyledCounterBoxContainer>
-
-        {(pieData.length > 0 || allTimePieData.length > 0) && (
+        {/* totalStats.thisMonthSessions */}
+        {(pieData[1] > 0 || allTimePieData[1] > 0) && (
           <h4 style={{ marginTop: "3vh", opacity: "0.75" }}>
-            Most Used Category:{" "}
+            Most Used Category:
             {statsMode === "lastweek" && (
               <p>
                 {pieData[2] +
@@ -303,10 +303,19 @@ const Stats = ({ user, pageMode }) => {
         )}
       </StyledStatsContainer>
 
-      <StyledPieContainer>
-        <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
-        <h5 style={{ opacity: "0.5" }}>*Pie Data (Minutes)</h5>
-      </StyledPieContainer>
+      {(pieData[1] > 0 || allTimePieData[1] > 0) && (
+        <StyledPieContainer>
+          <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
+          <h5 style={{ opacity: "0.5" }}>*Pie Data (Minutes)</h5>
+        </StyledPieContainer>
+      )}
+
+      {(pieData[1] === 0 || allTimePieData[1] === 0) && (
+        <h4 style={{ marginTop: "10vh", opacity: "0.7" }}>
+          No data was recorded in this period :/{" "}
+          <h5>Stats will be updated every time you finish a new session!</h5>
+        </h4>
+      )}
     </div>
   );
 };
