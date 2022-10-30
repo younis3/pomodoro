@@ -271,10 +271,10 @@ const Stats = ({ user, pageMode }) => {
             />
           )}
         </StyledCounterBoxContainer>
-
-        {(pieData.length > 0 || allTimePieData.length > 0) && (
-          <h3 style={{ marginTop: "3vh", opacity: "0.8" }}>
-            Most Used Category:{" "}
+        {/* totalStats.thisMonthSessions */}
+        {(pieData[1] > 0 || allTimePieData[1] > 0) && (
+          <h4 style={{ marginTop: "3vh", opacity: "0.75" }}>
+            Most Used Category:
             {statsMode === "lastweek" && (
               <p>
                 {pieData[2] +
@@ -299,13 +299,25 @@ const Stats = ({ user, pageMode }) => {
                   "%)"}
               </p>
             )}
-          </h3>
+          </h4>
         )}
       </StyledStatsContainer>
 
-      <StyledPieContainer>
-        <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
-      </StyledPieContainer>
+      {(pieData[1] > 0 || allTimePieData[1] > 0) && (
+        <StyledPieContainer>
+          <PieChart data={!pieData[0] ? allTimePieData[0] : pieData[0]} />
+          <h5 style={{ opacity: "0.5" }}>*Pie Data (Minutes)</h5>
+        </StyledPieContainer>
+      )}
+
+      {(pieData[1] === 0 || allTimePieData[1] === 0) && (
+        <div>
+          <h4 style={{ marginTop: "10vh", opacity: "0.7" }}>
+            No data was recorded in this period :/{" "}
+          </h4>
+          <h5>Stats will be updated every time you finish a new session!</h5>
+        </div>
+      )}
     </div>
   );
 };
@@ -382,9 +394,22 @@ const StyledCounterBoxContainer = styled.div`
 `;
 
 const StyledPieContainer = styled.div`
-  height: 47vh;
+  height: 37vh;
   width: 94vw;
   margin: auto;
   opacity: 0.86;
-  /* filter: saturate(10); */
+  margin-top: 3.5vh;
+  max-width: 370px;
+  max-height: 325px;
+
+  @media only screen and (max-width: 650px) {
+    height: 54vh;
+    width: 94vw;
+    margin-top: 1vh;
+    max-width: 400px;
+    max-height: 356px;
+    > * {
+      margin-bottom: -2.8vh;
+    }
+  }
 `;
