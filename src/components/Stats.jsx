@@ -311,10 +311,12 @@ const Stats = ({ user, pageMode }) => {
       )}
 
       {(pieData[1] === 0 || allTimePieData[1] === 0) && (
-        <h4 style={{ marginTop: "10vh", opacity: "0.7" }}>
-          No data was recorded in this period :/{" "}
+        <div>
+          <h4 style={{ marginTop: "10vh", opacity: "0.7" }}>
+            No data was recorded in this period :/{" "}
+          </h4>
           <h5>Stats will be updated every time you finish a new session!</h5>
-        </h4>
+        </div>
       )}
     </div>
   );
