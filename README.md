@@ -1,4 +1,2 @@
-# pomodoro
-### REACT APP
+## POMO+
 
-####  app still being developed....
